@@ -8,7 +8,7 @@
             <li class="nav-item"><a class="nav-link" href="{{route('admin.dashboard')}}">Dashboard</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.products.index') }}">Products</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.orders.index')}}">Orders</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ ('settings.index')}}">Settings</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('settings.index')}}">Settings</a></li>
         </ul>
     </div>
            
