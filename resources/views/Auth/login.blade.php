@@ -20,7 +20,7 @@ License: You must have a valid license purchased only from templatemonster to le
 
         <!-- Main Content -->
         <div class="hk-pg-wrapper hk-auth-wrapper">
-            <header class="d-flex justify-content-between align-items-center">
+            <!-- <header class="d-flex justify-content-between align-items-center">
 				<a class="d-flex font-24 font-weight-500 auth-brand" href="#">
                     Scrooge
                 </a>
@@ -28,7 +28,7 @@ License: You must have a valid license purchased only from templatemonster to le
                     <a href="#" class="btn btn-outline-secondary">Help</a>
                     <a href="#" class="btn btn-outline-secondary">About Us</a>
                 </div>
-            </header>
+            </header> -->
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-5 pa-0">
@@ -63,12 +63,12 @@ License: You must have a valid license purchased only from templatemonster to le
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="custom-control custom-checkbox mb-25">
+                                    <!-- <div class="custom-control custom-checkbox mb-25">
                                         <input class="custom-control-input" id="same-address" type="checkbox" checked>
                                         <label class="custom-control-label font-14" for="same-address">Keep me logged in</label>
-                                    </div>
+                                    </div> -->
                                     <button class="btn btn-danger btn-block" type="submit">Login</button>
-                                    <p class="font-14 text-center mt-15">Having trouble logging in?</p>
+                                    <!-- <p class="font-14 text-center mt-15">Having trouble logging in?</p>
                                     <div class="option-sep">or</div>
                                     <div class="form-row">
                                         <div class="col-sm-6 mb-20">
@@ -78,7 +78,7 @@ License: You must have a valid license purchased only from templatemonster to le
                                             <button class="btn btn-sky btn-block btn-wth-icon"> <span class="icon-label"><i class="fa fa-twitter"></i> </span><span class="btn-text">Login with Twitter</span></button>
                                         </div>
                                     </div>
-                                    <p class="text-center">Do have an account yet? <a href="signup.html">Sign Up</a></p>
+                                    <p class="text-center">Do have an account yet? <a href="signup.html">Sign Up</a></p> -->
                                 </form>
                             </div>
                         </div>

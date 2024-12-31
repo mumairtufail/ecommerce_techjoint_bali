@@ -12,10 +12,7 @@ class Banner extends Model
         'image',
         'title',
         'subtitle',
-        'button_text',
-        'button_link',
-        'is_active',
-        'sort_order'
+       
     ];
 
     protected $casts = [

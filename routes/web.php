@@ -50,6 +50,10 @@ Route::middleware(['auth'])->group(function () {
     // Banners
     Route::apiResource('/admin/banners', BannerController::class);
 
+
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+Route::put('/settings/banners', [SettingsController::class, 'updateBanners'])->name('settings.update.banners');
+
     // Logout Route
     Route::post('/logout', [AuthController::class, 'logout'])->name('admin.logout');
 });

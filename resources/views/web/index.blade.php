@@ -1,165 +1,40 @@
 @extends('web.layout.app')
 @section('content')
 
-<!-- start of wpo-hero-section-1 -->
- <section class="hero hero-style-4">
-            <div class="hero-slider">
-                <div class="slide">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col col-lg-7 col-md-8 col-sm-12 slide-caption">
-                                <div class="slide-title">
-                                    <h2>Sneakers For Men</h2>
-                                </div>
-                                <div class="slide-subtitle">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Libero, vel, facilisis
-                                        purus,
-                                        turpis tincidunt vel. Aliquet egestas in nibh mattis.</p>
-                                </div>
-                                <div class="pordact-content">
-                                    <div class="filter-item">
-                                        <div class="shop-filter-item price">
-                                            <h3>Price :</h3>
-                                            <span>$50.60</span>
-                                        </div>
-                                    </div>
-                                    <div class="filter-item">
-                                        <div class="shop-filter-item color">
-                                            <h3>Color :</h3>
-                                            <div class="color-name">
-                                                <div>
-                                                    <input type="radio" name="color" id="001" class="aggree color1" checked />
-                                                    <span style="margin:5px"></span>
-                                                    <input type="radio" name="color" class="aggree color2" />
-                                                    <span style="margin:5px"> </span>
-                                                    <input type="radio" name="color" class="aggree color3" />
-                                                    <span style="margin:5px"> </span>
-                                                    <input type="radio" name="color" class="aggree color4" />
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="filter-item">
-                                        <div class="shop-filter-item size">
-                                            <h3>Size :</h3>
-                                            <div class="size-item">
-                                                <div class="button-group">
-                                                    <input type="radio" id="1" name="size" class="size1" value="1"  />
-                                                    <label class="size-btn" for="1">9</label>
-                                                </div>
-                                                <div class="button-group">
-                                                    <input type="radio" id="2" name="size" class="size1" value="1" />
-                                                    <label class="size-btn" for="2">10</label>
-                                                </div>
-                                                <div class="button-group">
-                                                    <input type="radio" id="3" name="size" class="size1" value="1" />
-                                                    <label class="size-btn" for="3">11</label>
-                                                </div>
-                                                <div class="button-group">
-                                                    <input type="radio" id="4" name="size" class="size1" value="1" />
-                                                    <label class="size-btn" for="4">12</label>
-                                                </div>
-                                                <div class="button-group">
-                                                    <input type="radio" id="5" name="size" class="size1" value="1" />
-                                                    <label class="size-btn" for="5">13</label>
-                                                </div>
-                                                
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="hero-btn">
-                                    <a href="shop.html" class="theme-btn s1">40% Off</a>
-                                    <a href="shop.html" class="theme-btn">Shop Now</a>
-                                </div>
-                                <div class="slider-pic">
-                                    <img src="{{ asset('assets/images/slider/8.png') }}" alt>
-                                </div>
-                                <div class="bg-shape"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="slide">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col col-lg-7 col-md-8 col-sm-12 slide-caption">
-                                <div class="slide-title">
-                                    <h2>Sneakers For Women</h2>
-                                </div>
-                                <div class="slide-subtitle">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Libero, vel, facilisis
-                                        purus,
-                                        turpis tincidunt vel. Aliquet egestas in nibh mattis.</p>
-                                </div>
-                                <div class="pordact-content">
-                                    <div class="filter-item">
-                                        <div class="shop-filter-item price">
-                                            <h3>Price :</h3>
-                                            <span>$25.60</span>
-                                        </div>
-                                    </div>
-                                    <div class="filter-item">
-                                        <div class="shop-filter-item color">
-                                            <h3>Color :</h3>
-                                            <div class="color-name">
-                                                <div>
-                                                    <input type="radio" name="color" id="01" class="aggree color1" checked />
-                                                    <span style="margin:5px"></span>
-                                                    <input type="radio" name="color" class="aggree color2" />
-                                                    <span style="margin:5px"> </span>
-                                                    <input type="radio" name="color" class="aggree color3" />
-                                                    <span style="margin:5px"> </span>
-                                                    <input type="radio" name="color" class="aggree color4" />
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="filter-item">
-                                        <div class="shop-filter-item size">
-                                            <h3>Size :</h3>
-                                            <div class="size-item">
-                                                <div class="button-group">
-                                                    <input type="radio" id="6" name="size" class="size1" value="1"  />
-                                                    <label class="size-btn" for="6">9</label>
-                                                </div>
-                                                <div class="button-group">
-                                                    <input type="radio" id="7" name="size" class="size1" value="1" />
-                                                    <label class="size-btn" for="7">10</label>
-                                                </div>
-                                                <div class="button-group">
-                                                    <input type="radio" id="8" name="size" class="size1" value="1" />
-                                                    <label class="size-btn" for="8">11</label>
-                                                </div>
-                                                <div class="button-group">
-                                                    <input type="radio" id="9" name="size" class="size1" value="1" />
-                                                    <label class="size-btn" for="9">12</label>
-                                                </div>
-                                                <div class="button-group">
-                                                    <input type="radio" id="10" name="size" class="size1" value="1" />
-                                                    <label class="size-btn" for="10">13</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="hero-btn">
-                                    <a href="shop.html" class="theme-btn s1">50% Off</a>
-                                    <a href="shop.html" class="theme-btn">Shop Now</a>
-                                </div>
-                                <div class="slider-pic">
-                                    <img src="{{ asset('assets/images/slider/9.png') }}" alt>
-                                </div>
-                                <div class="bg-shape"></div>
-                            </div>
-                        </div>
+   <!-- start wpo-page-title -->
+   @if(isset($homeBanner) && $homeBanner->image)
+    <section class="wpo-page-title" style="background: url('{{ asset('storage/'.$homeBanner->image) }}') no-repeat center center/cover;">
+        <div class="container">
+            <div class="row">
+                <div class="col col-xs-12">
+                    <div class="wpo-breadcumb-wrap">
+                        <h2>{{ $homeBanner->title ?? 'Home' }}</h2>
+                        <ol class="wpo-breadcumb-wrap">
+                            <li><a href="{{ url('/') }}">{{ $homeBanner->subtitle ?? 'Home' }}</a></li>
+                        </ol>
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+@else
+   <section class="wpo-page-title">
+            <div class="container">
+                <div class="row">
+                    <div class="col col-xs-12">
+                        <div class="wpo-breadcumb-wrap">
+                            <h2>Home</h2>
+                            <ol class="wpo-breadcumb-wrap">
+                                <li><a href="index.html">Home</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div> <!-- end row -->
+            </div> <!-- end container -->
         </section>
-        <!-- end of wpo-hero-section-1 -->
+        @endif
+        <!-- end page-title -->
+
 
         <!-- start of pengu-product-section -->
         <section class="pengu-product-section section-padding">
