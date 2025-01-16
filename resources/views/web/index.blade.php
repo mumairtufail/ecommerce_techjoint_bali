@@ -2,7 +2,7 @@
 @section('content')
 
    <!-- start wpo-page-title -->
-   @if(isset($homeBanner) && $homeBanner->image)
+   <!-- @if(isset($homeBanner) && $homeBanner->image)
     <section class="wpo-page-title" style="background: url('{{ asset('storage/'.$homeBanner->image) }}') no-repeat center center/cover;">
         <div class="container">
             <div class="row">
@@ -16,8 +16,8 @@
                 </div>
             </div>
         </div>
-    </section>
-@else
+    </section> -->
+<!-- @else
    <section class="wpo-page-title">
             <div class="container">
                 <div class="row">
@@ -29,12 +29,234 @@
                             </ol>
                         </div>
                     </div>
-                </div> <!-- end row -->
-            </div> <!-- end container -->
+                </div> 
+            </div> 
         </section>
-        @endif
+        @endif -->
         <!-- end page-title -->
 
+
+<!-- Banner Carousel -->
+<div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        <!-- First Slide -->
+        <div class="carousel-item active">
+            <div class="banner-bg"></div>
+            <div class="banner-content">
+                <div class="banner-text">
+                    <!-- <div class="brand-logo">
+                        <img src="{{ asset('logo.png') }}" alt="Brand Logo" class="img-fluid" />
+                    </div> -->
+                    <h1>Taysan & co</h1>
+                    <p class="cursive-text">wedding unstitched</p>
+                    <div class="live-tag">LIVE NOW</div>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="banner-bg" style="background-image: url('assets/crousels/home1.png');"></div>
+            <div class="banner-content">
+                <div class="banner-text">
+                    <h1>Taysan & co</h1>
+                    <p class="cursive-text">Autumn Collection</p>
+                    <div class="live-tag">SALE</div>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="banner-bg" style="background-image: url('assets/crousels/home1.png');"></div>
+            <div class="banner-content">
+                <div class="banner-text">
+                    <h1>Taysan & co</h1>
+                    <p class="cursive-text">Formal Wear</p>
+                    <div class="live-tag">NEW</div>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="banner-bg" style="background-image: url('assets/crousels/home3.jpg');"></div>
+            <!-- <div class="banner-content">
+                <div class="banner-text">
+                    <h1>Taysan & co</h1>
+                    <p class="cursive-text">Exclusive Edition</p>
+                    <div class="live-tag">HOT</div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    
+    <!-- Carousel Navigation -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<style>
+/* Banner Styles */
+.carousel {
+    position: relative;
+    height: 700px;
+    overflow: hidden;
+}
+
+.carousel-item {
+    height: 700px;
+    position: relative;
+}
+
+.banner-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('assets/crousels/home1.png');
+    background-size: cover;
+    background-position: center;
+    filter: blur(0px); /* Adjust blur value as needed */
+}
+
+.banner-content {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 5%;
+    z-index: 2;
+}
+
+.banner-text {
+    text-align: left;
+    color: white;
+    max-width: 600px;
+}
+
+.brand-logo {
+    margin-bottom: 2rem;
+}
+
+.brand-logo img {
+    max-width: 200px;
+    height: auto;
+}
+
+.banner-text h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.cursive-text {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: white;
+}
+
+.live-tag {
+    display: inline-block;
+    padding: 10px 25px;
+    background-color: white;
+    color: #9977B5;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+/* Carousel Controls */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+    z-index: 3;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(153, 119, 181, 0.5);
+    border-radius: 50%;
+    padding: 25px;
+    transition: all 0.3s ease;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    .carousel, .carousel-item {
+        height: 600px;
+    }
+    
+    .banner-text h1 {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .carousel, .carousel-item {
+        height: 500px;
+    }
+    
+    .banner-text h1 {
+        font-size: 2.5rem;
+    }
+    
+    .cursive-text {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .carousel, .carousel-item {
+        height: 400px;
+    }
+    
+    .banner-text h1 {
+        font-size: 2rem;
+    }
+    
+    .cursive-text {
+        font-size: 1.5rem;
+    }
+    
+    .brand-logo img {
+        max-width: 150px;
+    }
+    
+    .live-tag {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .carousel, .carousel-item {
+        height: 350px;
+    }
+    
+    .banner-text h1 {
+        font-size: 1.8rem;
+    }
+    
+    .cursive-text {
+        font-size: 1.2rem;
+    }
+    
+    .brand-logo img {
+        max-width: 120px;
+    }
+    
+    .live-tag {
+        padding: 6px 15px;
+        font-size: 0.8rem;
+    }
+}
+</style>
 
         <!-- start of pengu-product-section -->
         <section class="pengu-product-section section-padding">

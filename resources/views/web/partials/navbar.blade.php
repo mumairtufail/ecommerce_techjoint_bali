@@ -1,13 +1,23 @@
-<!-- Start header -->
+<!-- Top Bar -->
 <header id="header" class="wpo-header-style-5 fixed-top">
-    <div class="wpo-site-header navbar-glassmorphism">
+    <div class="top-bar">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">Free Shipping Nationwide. Call/WhatsApp: +923117317930</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="wpo-site-header navbar-glassmorphism" style="background: rgba(255, 255, 255, 0.95); padding: 0rem 0px;">
         <nav class="navigation navbar navbar-expand-lg">
             <div class="container-fluid px-4">
                 <div class="row align-items-center w-100">
                     <!-- Mobile Menu Button -->
-                    <div class="col-lg-3 col-md-3 col-3 d-lg-none dl-block">
+                    <div class="col-lg-3 col-md-3 col-3 d-lg-none">
                         <div class="mobile-menu">
-                            <button type="button" class="navbar-toggler open-btn">
+                            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar">
                                 <span class="sr-only">Toggle navigation</span>
                                 <span class="icon-bar first-angle"></span>
                                 <span class="icon-bar middle-angle"></span>
@@ -47,6 +57,17 @@
 </header>
 
 <style>
+/* Top Bar Styling */
+.top-bar {
+    background-color: #000;
+    padding: 8px 0;
+}
+
+.top-bar p {
+    color: #fff;
+    margin: 0;
+}
+
 /* Glassmorphism Navbar */
 .navbar-glassmorphism {
     background: rgba(255, 255, 255, 0.8) !important;
@@ -56,6 +77,7 @@
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
     transition: all 0.3s ease;
 }
+
 
 /* Logo Sizing */
 .logo-img {
@@ -76,15 +98,11 @@
     color: #666 !important;
 }
 
-/* Adjust header spacing */
-.wpo-site-header {
-    padding: 0.5rem 0;
-}
-
 /* Mobile Menu Button */
 .navbar-toggler {
     border: none;
     padding: 0;
+    cursor: pointer;
 }
 
 .icon-bar {
@@ -98,7 +116,7 @@
 
 /* Add some spacing for the fixed header */
 body {
-    padding-top: 80px; /* Adjust based on your navbar height */
+    padding-top: 120px; /* Increased to account for top bar */
 }
 
 /* For smaller screens */
@@ -111,14 +129,23 @@ body {
         padding: 0.3rem 0;
     }
     
+    .navigation-holder {
+        background: rgba(255, 255, 255, 0.95);
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        padding: 1rem;
+        z-index: 1000;
+    }
+    
     body {
-        padding-top: 60px;
+        padding-top: 100px;
     }
 }
 </style>
 
 <script>
-// Add scroll effect to navbar
 document.addEventListener('DOMContentLoaded', function() {
     const header = document.querySelector('.navbar-glassmorphism');
     

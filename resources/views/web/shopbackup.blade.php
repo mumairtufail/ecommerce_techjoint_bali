@@ -722,51 +722,51 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCartUI();
     }
 
-    function updateCartQuantity(productId, action) {
-        const item = cart.find(item => item.id === productId);
-        if (item) {
-            if (action === 'increase' && item.quantity < 99) {
-                item.quantity++;
-            } else if (action === 'decrease' && item.quantity > 1) {
-                item.quantity--;
-            }
-            updateCartUI();
-        }
-    }
-
     function updateCartUI() {
         // Update cart count
         cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
         
         // Update cart items
         cartItems.innerHTML = cart.map(item => `
-            <div class="cart-item glass-card">
-                <div class="cart-item-img">
-                    <img src="${item.image}" alt="${item.name}">
-                </div>
-                <div class="cart-item-content">
-                    <div class="cart-item-header">
-                        <h4 class="cart-item-title">${item.name}</h4>
-                        <button class="cart-item-remove" onclick="removeFromCart(${item.id})">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="cart-item-price">$${item.price.toFixed(2)}</div>
-                    <div class="cart-item-controls">
-                        <div class="quantity-control cart-quantity-control">
-                            <button class="qty-btn cart-qty-btn" onclick="updateCartQuantity(${item.id}, 'decrease')">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <span class="quantity-display">${item.quantity}</span>
-                            <button class="qty-btn cart-qty-btn" onclick="updateCartQuantity(${item.id}, 'increase')">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
+    <div class="cart-item glass-card">
+        <div class="cart-item-img">
+            <img src="${item.image}" alt="${item.name}">
+        </div>
+        <div class="cart-item-content">
+            <div class="cart-item-header">
+                <h4 class="cart-item-title">${item.name}</h4>
+                <button class="cart-item-remove" onclick="removeFromCart(${item.id})">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+            <div class="cart-item-controls">
+                <div class="quantity-control cart-quantity-control">
+                    <button class="qty-btn cart-qty-btn" onclick="updateCartQuantity(${item.id}, 'decrease')">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <span class="quantity-display">${item.quantity}</span>
+                    <button class="qty-btn cart-qty-btn" onclick="updateCartQuantity(${item.id}, 'increase')">
+                        <i class="fas fa-plus"></i>
+                    </button>
                 </div>
             </div>
-        `).join('');
+        </div>
+    </div>
+`).join('');
         
+// Add cart quantity update function
+function updateCartQuantity(productId, action) {
+    const item = cart.find(item => item.id === productId);
+    if (item) {
+        if (action === 'increase' && item.quantity < 99) {
+            item.quantity++;
+        } else if (action === 'decrease' && item.quantity > 1) {
+            item.quantity--;
+        }
+        updateCartUI();
+    }
+}
         // Update total
         const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         totalAmount.textContent = `$${total.toFixed(2)}`;

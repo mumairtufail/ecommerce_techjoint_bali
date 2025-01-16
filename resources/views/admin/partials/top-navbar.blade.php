@@ -3,7 +3,7 @@
             <a class="navbar-brand text-red" href="dashboard1.html">
                 Tayson
             </a>
-            <div class="collapse navbar-collapse" id="navbarCollapseAlt">
+    <div class="collapse navbar-collapse" id="navbarCollapseAlt">
         <ul class="navbar-nav">
             <li class="nav-item"><a class="nav-link" href="{{route('admin.dashboard')}}">Dashboard</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.products.index') }}">Products</a></li>
