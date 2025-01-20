@@ -1,6 +1,6 @@
 <div class="ts-cart-sidebar" id="cartSidebar">
     <div class="ts-cart-header">
-        <h3>Shopping Cart</h3>
+        <h3 class="text-white">Shopping Cart</h3>
         <button class="ts-cart-close">
             <i class="fas fa-times"></i>
         </button>
@@ -16,5 +16,24 @@
         <button class="ts-checkout-btn">
             Proceed to Checkout
         </button>
+        <button class="ts-clear-cart-btn" style="
+    padding: 8px 16px !important;
+    background: #f8f0ff !important;  /* Light purple background */
+    color: #8D68AD !important;       /* Same purple as your theme */
+    border: 2px solid #8D68AD !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    margin: 10px 0 !important;
+">
+    <i class="fas fa-trash-alt"></i>
+    Clear Cart
+</button>
     </div>
 </div>

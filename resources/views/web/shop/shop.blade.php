@@ -1,11 +1,6 @@
-
 @extends('web.layout.app')
 @section('content')
 
-<!-- Required CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link rel="stylesheet" href="{{ asset('assets/css/shop.css') }}">
-<meta name="csrf-token" content="{{ csrf_token() }}">
 
 
 <!-- start wpo-page-title -->
@@ -94,7 +89,7 @@
 @include('web.shop.partials.cart-sidebar')
 
 <!-- Floating Cart Button -->
-@include('web.shop.partials.floating-cart')
+{{-- @include('web.shop.partials.floating-cart') --}}
 
 <!-- Toast Notification -->
 @include('web.shop.partials.toast')
@@ -244,4 +239,7 @@ if ('ontouchstart' in window) {
     });
 }
 </script>
+@push('scripts')
+<script src="{{ asset('js/cart-manager.js') }}"></script>
+@endpush
 @endsection

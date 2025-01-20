@@ -70,6 +70,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     cartSidebar.classList.remove('active');
                 }
             });
+
+            // Clear Cart Button
+            const clearCartBtn = document.querySelector('.ts-clear-cart-btn');
+            clearCartBtn?.addEventListener('click', () => {
+                this.clearCart();
+            });
         },
 
         initializeQuickView() {
@@ -154,6 +160,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.updateCartUI();
                 this.saveCartToStorage();
             }
+        },
+
+        clearCart() {
+            this.cart = [];
+            this.updateCartUI();
+            this.saveCartToStorage();
+            this.showToast("Cart cleared");
         },
 
         updateCartUI() {
