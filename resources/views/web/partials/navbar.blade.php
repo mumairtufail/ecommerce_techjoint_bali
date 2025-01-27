@@ -51,6 +51,10 @@
                     </ul>
                 </div>
 
+                <!-- Cart Icon -->
+                <div class="ts-navbar__cart">
+                   
+                </div>
             </div>
         </div>
     </nav>
@@ -161,6 +165,31 @@
     width: 80%;
 }
 
+/* Cart Toggle */
+.ts-cart-toggle {
+    background: none;
+    border: none;
+    padding: 8px;
+    position: relative;
+    cursor: pointer;
+    color: var(--ts-dark);
+    transition: var(--ts-transition);
+}
+
+.ts-cart-count {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--ts-primary);
+    color: var(--ts-light);
+    font-size: 12px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 /* Mobile Menu Toggle */
 .ts-menu-toggle {

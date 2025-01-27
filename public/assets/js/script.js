@@ -765,23 +765,23 @@
     /*------------------------------------------
         = BACK TO TOP BTN SETTING
     -------------------------------------------*/
-    $("body").append("<a href='#' class='back-to-top'><i class='ti-arrow-up'></i></a>");
+    // $("body").append("<a href='#' class='back-to-top'><i class='ti-arrow-up'></i></a>");
 
-    function toggleBackToTopBtn() {
-        var amountScrolled = 1000;
-        if ($(window).scrollTop() > amountScrolled) {
-            $("a.back-to-top").fadeIn("slow");
-        } else {
-            $("a.back-to-top").fadeOut("slow");
-        }
-    }
+    // function toggleBackToTopBtn() {
+    //     var amountScrolled = 1000;
+    //     if ($(window).scrollTop() > amountScrolled) {
+    //         $("a.back-to-top").fadeIn("slow");
+    //     } else {
+    //         $("a.back-to-top").fadeOut("slow");
+    //     }
+    // }
 
-    $(".back-to-top").on("click", function () {
-        $("html,body").animate({
-            scrollTop: 0
-        }, 700);
-        return false;
-    })
+    // $(".back-to-top").on("click", function () {
+    //     $("html,body").animate({
+    //         scrollTop: 0
+    //     }, 700);
+    //     return false;
+    // })
 
 
 
