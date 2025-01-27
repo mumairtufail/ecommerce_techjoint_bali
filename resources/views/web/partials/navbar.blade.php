@@ -1,161 +1,308 @@
-<!-- Top Bar -->
-<header id="header" class="wpo-header-style-5 fixed-top">
-    <div class="top-bar">
+<!-- Main Header -->
+<header class="ts-header">
+    <!-- Announcement Bar -->
+    <div class="ts-announce">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <p class="mb-0">Free Shipping Nationwide. Call/WhatsApp: +923117317930</p>
-                </div>
-            </div>
+            <p class="ts-announce__text">Free Shipping Nationwide. Call/WhatsApp: +923117317930</p>
         </div>
     </div>
     
-    <div class="wpo-site-header navbar-glassmorphism" style="background: rgba(255, 255, 255, 0.95); padding: 0rem 0px;">
-        <nav class="navigation navbar navbar-expand-lg">
-            <div class="container-fluid px-4">
-                <div class="row align-items-center w-100">
-                    <!-- Mobile Menu Button -->
-                    <div class="col-lg-3 col-md-3 col-3 d-lg-none">
-                        <div class="mobile-menu">
-                            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar first-angle"></span>
-                                <span class="icon-bar middle-angle"></span>
-                                <span class="icon-bar last-angle"></span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Logo -->
-                    <div class="col-lg-2 col-md-6 col-6">
-                        <div class="navbar-header">
-                            <a class="navbar-brand" href="{{ url('/') }}">
-                                <img src="{{ asset('logo.png') }}" alt="logo" class="logo-img">
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Navigation -->
-                    <div class="col-lg-8 col-md-1 col-1">
-                        <div id="navbar" class="collapse navbar-collapse navigation-holder">
-                            <button class="menu-close"><i class="ti-close"></i></button>
-                            <ul class="nav navbar-nav mb-2 mb-lg-0">
-                                <li><a href="{{ route('web.view.index') }}">Home</a></li>
-                                <li><a href="{{ route('web.view.shop') }}">Shop</a></li>
-                                <li><a href="{{ route('web.view.about') }}">About</a></li>
-                                <li><a href="{{ route('web.view.contact') }}">Contact Us</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Cart Section -->
-                    @include('web.partials.cart')
+    <!-- Main Navigation -->
+    <nav class="ts-navbar">
+        <div class="container-fluid">
+            <div class="ts-navbar__wrapper">
+                <!-- Mobile Menu Toggle -->
+                <div class="ts-navbar__mobile d-lg-none">
+                    <button class="ts-menu-toggle" type="button" aria-label="Toggle menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
                 </div>
+
+                <!-- Brand Logo -->
+                <div class="ts-navbar__brand">
+                    <a href="{{ url('/') }}" class="ts-logo">
+                        <img src="{{ asset('logo.png') }}" alt="Taysan & Co" class="ts-logo__img">
+                    </a>
+                </div>
+
+                <!-- Navigation Menu -->
+                <div class="ts-navbar__menu" id="tsMainMenu">
+                    <!-- Close Button for Mobile -->
+                    <button class="ts-menu-close d-lg-none">
+                        <i class="fas fa-times"></i>
+                    </button>
+
+                    <!-- Navigation Links -->
+                    <ul class="ts-menu">
+                        <li class="ts-menu__item {{ Request::is('/') ? 'active' : '' }}">
+                            <a href="{{ route('web.view.index') }}" class="ts-menu__link">Home</a>
+                        </li>
+                        <li class="ts-menu__item {{ Request::is('shop*') ? 'active' : '' }}">
+                            <a href="{{ route('web.view.shop') }}" class="ts-menu__link">Shop</a>
+                        </li>
+                        <li class="ts-menu__item {{ Request::is('about') ? 'active' : '' }}">
+                            <a href="{{ route('web.view.about') }}" class="ts-menu__link">About</a>
+                        </li>
+                        <li class="ts-menu__item {{ Request::is('contact') ? 'active' : '' }}">
+                            <a href="{{ route('web.view.contact') }}" class="ts-menu__link">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+
             </div>
-        </nav>
-    </div>
+        </div>
+    </nav>
 </header>
 
 <style>
-/* Top Bar Styling */
-.top-bar {
-    background-color: #000;
+/* Core Variables */
+:root {
+    --ts-primary: #9977B5;
+    --ts-dark: #333333;
+    --ts-light: #FFFFFF;
+    --ts-gray: #666666;
+    --ts-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --ts-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Base */
+.ts-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1040;
+    will-change: transform;
+}
+
+/* Announcement Bar */
+.ts-announce {
+    background: var(--ts-dark);
     padding: 8px 0;
+    text-align: center;
 }
 
-.top-bar p {
-    color: #fff;
+.ts-announce__text {
+    color: var(--ts-light);
     margin: 0;
+    font-size: 14px;
+    letter-spacing: 0.5px;
 }
 
-/* Glassmorphism Navbar */
-.navbar-glassmorphism {
-    background: rgba(255, 255, 255, 0.8) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
-    transition: all 0.3s ease;
+/* Main Navbar */
+.ts-navbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: var(--ts-transition);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+.ts-navbar.scrolled {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: var(--ts-shadow);
+}
 
-/* Logo Sizing */
-.logo-img {
-    max-height: 50px;
+.ts-navbar__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 0;
+    position: relative;
+}
+
+/* Logo Styling */
+.ts-logo {
+    display: inline-block;
+    padding: 5px 0;
+}
+
+.ts-logo__img {
+    height: 50px;
     width: auto;
-    transition: all 0.3s ease;
+    transition: var(--ts-transition);
 }
 
-/* Navigation Links */
-.navbar-nav li a {
-    color: #333 !important;
-    font-weight: 500;
-    padding: 1.5rem 1rem !important;
-    transition: all 0.3s ease;
-}
-
-.navbar-nav li a:hover {
-    color: #666 !important;
-}
-
-/* Mobile Menu Button */
-.navbar-toggler {
-    border: none;
+/* Navigation Menu */
+.ts-menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
     padding: 0;
-    cursor: pointer;
+    gap: 20px;
 }
 
-.icon-bar {
+.ts-menu__link {
+    color: var(--ts-dark);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 8px 16px;
+    transition: var(--ts-transition);
+    position: relative;
+}
+
+.ts-menu__link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--ts-primary);
+    transition: var(--ts-transition);
+    transform: translateX(-50%);
+}
+
+.ts-menu__link:hover::after,
+.ts-menu__item.active .ts-menu__link::after {
+    width: 80%;
+}
+
+
+/* Mobile Menu Toggle */
+.ts-menu-toggle {
+    border: none;
+    background: none;
+    padding: 10px;
+    cursor: pointer;
+    display: none;
+}
+
+.ts-menu-toggle span {
     display: block;
     width: 25px;
     height: 2px;
-    background: #333;
+    background: var(--ts-dark);
     margin: 5px 0;
-    transition: all 0.3s ease;
+    transition: var(--ts-transition);
 }
 
-/* Add some spacing for the fixed header */
-body {
-    padding-top: 120px; /* Increased to account for top bar */
-}
-
-/* For smaller screens */
+/* Mobile Styles */
 @media (max-width: 991px) {
-    .logo-img {
-        max-height: 40px;
+    .ts-navbar__menu {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        width: 280px;
+        height: 100vh;
+        background: var(--ts-light);
+        padding: 40px 20px;
+        transition: var(--ts-transition);
+        box-shadow: var(--ts-shadow);
+        overflow-y: auto;
+        z-index: 1050;
     }
-    
-    .wpo-site-header {
-        padding: 0.3rem 0;
-    }
-    
-    .navigation-holder {
-        background: rgba(255, 255, 255, 0.95);
-        position: absolute;
-        top: 100%;
+
+    .ts-navbar__menu.active {
         left: 0;
-        width: 100%;
-        padding: 1rem;
-        z-index: 1000;
     }
-    
+
+    .ts-menu {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .ts-menu__link {
+        padding: 12px 0;
+        display: block;
+    }
+
+    .ts-menu-toggle {
+        display: block;
+    }
+
+    .ts-menu-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: var(--ts-dark);
+        cursor: pointer;
+    }
+
+    .ts-logo__img {
+        height: 40px;
+    }
+
     body {
-        padding-top: 100px;
+        padding-top: 98px; /* Adjusted for mobile header height */
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const header = document.querySelector('.navbar-glassmorphism');
+    // Elements
+    const navbar = document.querySelector('.ts-navbar');
+    const menuToggle = document.querySelector('.ts-menu-toggle');
+    const mobileMenu = document.querySelector('.ts-navbar__menu');
+    const menuClose = document.querySelector('.ts-menu-close');
     
+    // Scroll handling
+    let lastScroll = 0;
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            header.style.background = 'rgba(255, 255, 255, 0.95)';
-            header.style.padding = '0.3rem 0';
+        const currentScroll = window.pageYOffset;
+        
+        // Add scrolled class for background change
+        if (currentScroll > 50) {
+            navbar.classList.add('scrolled');
         } else {
-            header.style.background = 'rgba(255, 255, 255, 0.8)';
-            header.style.padding = '0.5rem 0';
+            navbar.classList.remove('scrolled');
+        }
+        
+        lastScroll = currentScroll;
+    });
+
+    // Mobile menu handling
+    if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mobileMenu.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    if (menuClose) {
+        menuClose.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (mobileMenu && !mobileMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 991 && mobileMenu) {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
         }
     });
 });
