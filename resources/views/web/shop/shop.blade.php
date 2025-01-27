@@ -1,6 +1,6 @@
 @extends('web.layout.app')
 @section('content')
-
+@include('web.partials.cart_related')
 
 
 <!-- start wpo-page-title -->

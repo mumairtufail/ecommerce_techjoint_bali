@@ -1,6 +1,9 @@
 @extends('web.layout.app')
 @section('content')
 
+@include('web.partials.cart_related')
+
+
    <!-- start wpo-page-title -->
    <!-- @if(isset($homeBanner) && $homeBanner->image)
     <section class="wpo-page-title" style="background: url('{{ asset('storage/'.$homeBanner->image) }}') no-repeat center center/cover;">
