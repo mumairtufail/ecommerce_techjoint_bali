@@ -26,6 +26,10 @@ Route::get('/', [IndexController::class, 'index'])->name('web.view.index');
 Route::get('/shop', [ShopController::class, 'view'])->name('web.view.shop');
 Route::get('/about-us', [AboutController::class, 'view'])->name('web.view.about');
 Route::get('/contact', [ContactController::class, 'view'])->name('web.view.contact');
+ROute::get('/orders-web', function() {
+    return view('web.order');
+})->name('web.orders.index');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -61,5 +65,6 @@ Route::put('/settings/banners', [SettingsController::class, 'updateBanners'])->n
 Route::get('/login', function () {
     return view('Auth.login');
 })->name('login');
+
 
 Route::post('/login', [AuthController::class, 'login'])->name('admin.login');

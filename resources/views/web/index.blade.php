@@ -246,17 +246,17 @@
                         <i class="fas fa-female home-feat__icon"></i>
                         <h3 class="home-feat__title">Women's Fashion</h3>
                         <p class="home-feat__text">Discover latest trends</p>
-                        <a href="/women" class="home-feat__link">Shop Now →</a>
+                        <a href="/shop" class="home-feat__link">Shop Now →</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="home-feat__card">
                     <div class="home-feat__content">
-                        <i class="fas fa-male home-feat__icon"></i>
-                        <h3 class="home-feat__title">Men's Collection</h3>
+                        <i class="fas fa-female home-feat__icon"></i>
+                        <h3 class="home-feat__title">Women's Collection</h3>
                         <p class="home-feat__text">Style redefined</p>
-                        <a href="/men" class="home-feat__link">Shop Now →</a>
+                        <a href="/shop" class="home-feat__link">Shop Now →</a>
                     </div>
                 </div>
             </div>
@@ -266,7 +266,7 @@
                         <i class="fas fa-gem home-feat__icon"></i>
                         <h3 class="home-feat__title">Accessories</h3>
                         <p class="home-feat__text">Complete your look</p>
-                        <a href="/accessories" class="home-feat__link">Shop Now →</a>
+                        <a href="/shop" class="home-feat__link">Shop Now →</a>
                     </div>
                 </div>
             </div>
