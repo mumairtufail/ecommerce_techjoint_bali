@@ -119,6 +119,8 @@
     max-width: 100%;
     max-height: 400px;
     object-fit: contain;
+    transition: opacity 0.3s ease; /* Added transition for smooth fade-in */
+    opacity: 0; /* Start hidden */
 }
 
 .custom-quickview__title {
@@ -235,8 +237,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 image: this.dataset.image
             };
             
+            const quickViewImage = document.getElementById('quickViewImage');
+            
+            // Prepare image fade-in: clear opacity and assign onload handler
+            quickViewImage.style.opacity = '0';
+            quickViewImage.onload = function() {
+                quickViewImage.style.opacity = '1';
+            };
+            
             // Update modal content
-            document.getElementById('quickViewImage').src = currentProductData.image;
+            quickViewImage.src = currentProductData.image;
             document.getElementById('quickViewTitle').textContent = currentProductData.name;
             document.getElementById('quickViewPrice').textContent = `$${currentProductData.price.toFixed(2)}`;
             document.getElementById('quickViewDescription').textContent = this.dataset.description;

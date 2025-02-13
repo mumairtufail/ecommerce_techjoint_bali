@@ -3,72 +3,136 @@
 @include('web.partials.cart_related')
 
 
-<!-- start wpo-page-title -->
+<!-- start shop-page-banner -->
 @if(isset($shopBanner) && $shopBanner->image)
-<section class="wpo-page-title" style="background: url('{{ asset('storage/'.$shopBanner->image) }}') no-repeat center center/cover;">
+<section class="shop-page-banner" style="background: url('{{ asset('storage/'.$shopBanner->image) }}') no-repeat center center/cover;">
     <div class="container">
         <div class="row">
             <div class="col col-xs-12">
-                <div class="wpo-breadcumb-wrap" style="margin-left:600px !important">
-                    <h2>{{ $shopBanner->title ?? 'Shop' }}</h2>
-                    <ol class="wpo-breadcumb-wrap">
+                <div class="shop-banner-content">
+                    <h2 class="shop-banner-title">{{ $shopBanner->title ?? 'Shop' }}</h2>
+                    <ol class="shop-banner-breadcrumb">
                         <!-- <li><a href="{{ url('/') }}">{{ $shopBanner->subtitle ?? 'Home' }}</a></li> -->
                         <!-- <li>about</li> -->
                     </ol>
                 </div>
             </div>
-        </div> <!-- end row -->
-    </div> <!-- end container -->
+        </div>
+    </div>
 </section>
 @else
-<section class="wpo-page-title">
+<section class="shop-page-banner">
     <div class="container">
         <div class="row">
             <div class="col col-xs-12">
-                <div class="wpo-breadcumb-wrap">
-                    <h2>about us</h2>
-                    <ol class="wpo-breadcumb-wrap">
+                <div class="shop-banner-content">
+                    <h2 class="shop-banner-title">about us</h2>
+                    <ol class="shop-banner-breadcrumb">
                         <li><a href="index.html">Home</a></li>
                         <li>about</li>
                     </ol>
                 </div>
             </div>
-        </div> <!-- end row -->
-    </div> <!-- end container -->
+        </div>
+    </div>
 </section>
 @endif
-<!-- end page-title -->
-<style>
-/* Responsive Styles */
-@media (max-width: 768px) {
-    .wpo-page-title {
-        padding: 50px 0 !important;
-    }
-    
-    .wpo-page-title h2 {
-        font-size: 32px !important;
-    }
-    
-    .wpo-breadcumb-wrap {
-        font-size: 14px !important;
-        margin-left: 0px !important;
 
+<style>
+.shop-page-banner {
+    position: relative;
+    padding: 120px 0 80px; /* Increased top padding to account for navbar */
+    background-color: #f5f5f5;
+    margin-top: 0; /* Remove any top margin */
+    z-index: 1; /* Ensure banner is above default elements */
+    min-height: 300px; /* Minimum height for the banner */
+    display: flex;
+    align-items: center;
+}
+
+.shop-banner-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 15px;
+    position: relative; /* Ensure content stays above background */
+    z-index: 2;
+}
+
+.shop-banner-title {
+    font-size: 48px;
+    color: #fff;
+    margin-bottom: 15px;
+    font-weight: 700;
+    text-transform: capitalize;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.shop-banner-breadcrumb {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.shop-banner-breadcrumb li {
+    color: #fff;
+    font-size: 16px;
+    position: relative;
+}
+
+.shop-banner-breadcrumb li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.shop-banner-breadcrumb li:not(:last-child)::after {
+    content: "/";
+    margin-left: 10px;
+    color: #fff;
+}
+
+/* Tablet Responsive */
+@media (max-width: 768px) {
+    .shop-page-banner {
+        padding: 100px 0 60px; /* Adjusted padding for mobile */
+        min-height: 250px;
+    }
+    
+    .shop-banner-title {
+        font-size: 36px;
+    }
+    
+    .shop-banner-breadcrumb li {
+        font-size: 14px;
     }
 }
 
+/* Mobile Responsive */
 @media (max-width: 480px) {
-    .wpo-page-title {
-        padding: 40px 0 !important;
+    .shop-page-banner {
+        padding: 80px 0 40px;
+        min-height: 200px;
     }
     
-    .wpo-page-title h2 {
-        font-size: 28px !important;
+    .shop-banner-title {
+        font-size: 28px;
     }
     
-    .wpo-breadcumb-wrap {
-        font-size: 13px !important;
-        margin-left: 0px !important;
+    .shop-banner-breadcrumb li {
+        font-size: 13px;
+    }
+}
+</style>
 
+<!-- Added desktop banner margin fix -->
+<style>
+@media (min-width: 992px) {
+    .shop-page-banner {
+        margin-top: 130px !important;
     }
 }
 </style>
@@ -242,4 +306,5 @@ if ('ontouchstart' in window) {
 @push('scripts')
 <script src="{{ asset('js/cart-manager.js') }}"></script>
 @endpush
+
 @endsection

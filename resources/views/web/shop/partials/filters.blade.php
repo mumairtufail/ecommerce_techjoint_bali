@@ -1,15 +1,13 @@
 <div class="ts-filters-container" style="
-    width: 300px !important; 
-    position: fixed !important;  /* Changed from sticky to fixed */
-    top: 20px !important;
-    left: 20px !important;      /* Added left positioning */
-    height: calc(100vh - 40px) !important; 
-    overflow-y: auto !important; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important; 
-    border-radius: 8px !important; 
-    padding: 20px !important; 
-    background: white !important;
-    z-index: 100 !important;    /* Added z-index to ensure it stays above content */
+    width: 300px;
+    position: sticky;
+    top: 130px; /* Adjust to match the top banner height */
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    background: white;
+    z-index: 100;
 ">
 <!-- Search Filter -->
     <div style="margin-bottom: 25px !important;">

@@ -1,9 +1,29 @@
 @extends('web.layout.app')
 @section('content')
 
+@include('web.partials.cart_related')
+
+
+
+<!-- Quick View Modal -->
+@include('web.shop.partials.quick-view-modal')
+
+<!-- Cart Sidebar -->
+@include('web.shop.partials.cart-sidebar')
+@include('web.shop.partials.toast')
+<!-- Added desktop banner margin fix -->
+<style>
+@media (min-width: 992px) {
+    .page-title {
+        margin-top: 130px !important;
+    }
+}
+</style>
+
+
 <!-- start wpo-page-title -->
 @if(isset($aboutBanner) && $aboutBanner->image)
-<section class="wpo-page-title" style="background: url('{{ asset('storage/'.$aboutBanner->image) }}') no-repeat center center/cover;">
+<section class="wpo-page-title page-title" style="background: url('{{ asset('storage/'.$aboutBanner->image) }}') no-repeat center center/cover;">
     <div class="container">
         <div class="row">
             <div class="col col-xs-12">
@@ -23,7 +43,7 @@
     <div class="container">
         <div class="row">
             <div class="col col-xs-12">
-                <div class="wpo-breadcumb-wrap">
+                <div c                                                      lass="wpo-breadcumb-wrap">
                     <h2>about us</h2>
                     <ol class="wpo-breadcumb-wrap">
                         <li><a href="index.html">Home</a></li>

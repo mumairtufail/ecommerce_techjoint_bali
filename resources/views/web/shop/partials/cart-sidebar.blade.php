@@ -13,7 +13,7 @@
             <span>Total:</span>
             <span class="ts-cart-total-amount">$0.00</span>
         </div>
-        <button class="ts-checkout-btn">
+        <button class="ts-checkout-btn" id="checkoutBtn">
             Proceed to Checkout
         </button>
         <button class="ts-clear-cart-btn" style="
@@ -37,3 +37,17 @@
 </button>
     </div>
 </div>
+
+<script>
+document.getElementById('checkoutBtn').addEventListener('click', () => {
+    const cart = localStorage.getItem('ts-cart');
+    const cartItems = cart ? JSON.parse(cart) : [];
+    if (cartItems.length > 0) {
+        // Redirect to order screen when cart has items
+        window.location.href = '/orders-web';
+    } else {
+        // Show error message when cart is empty
+        alert('Your cart is empty. Please add something to proceed.');
+    }
+});
+</script>
