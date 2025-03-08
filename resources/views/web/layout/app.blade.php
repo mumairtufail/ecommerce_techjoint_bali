@@ -2,7 +2,10 @@
 <html lang="en">
 
 @include('web.partials.head')
-<script src="{{ asset('js/cart-manager.js') }}"></script>
+<!-- <script src="{{ asset('js/cart-manager.js') }}"></script> -->
+<!-- Required CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <body>
 
@@ -106,7 +109,6 @@ window.addEventListener('load', function() {
         <!-- end preloader -->
     @include('web.partials.navbar')
 
-
     <!-- all content for pages extensd here -->
        @yield('content')
     <!-- all content for pages extensd here -->
@@ -117,12 +119,14 @@ window.addEventListener('load', function() {
 
         <!-- popup-quickview  -->
       @include('web.partials.quickview')
+      @include('web.shop.partials.floating-cart')
         <!-- end of popup-quickview -->
 
     </div>
     <!-- end of page-wrapper -->
 
 @include('web.partials.scripts')
+@stack('scripts')
 
 </body>
 

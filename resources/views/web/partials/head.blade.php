@@ -22,3 +22,4 @@
     <!-- In app.blade.php, add this before the closing </head> tag -->
 <script src="{{ asset('js/cart-manager.js') }}" defer></script>
 </head>
+

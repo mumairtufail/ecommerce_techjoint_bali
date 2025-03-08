@@ -119,8 +119,6 @@
     max-width: 100%;
     max-height: 400px;
     object-fit: contain;
-    transition: opacity 0.3s ease; /* Added transition for smooth fade-in */
-    opacity: 0; /* Start hidden */
 }
 
 .custom-quickview__title {
@@ -218,10 +216,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Bootstrap modal
     const quickViewModal = new bootstrap.Modal(document.getElementById('quickViewModal'), {
-        backdrop: true
+        backdrop: 'static' // Prevents closing when clicking outside
     });
-    
-    let currentProductData = null;
     
     // Quick View Button Click Handlers
     document.querySelectorAll('.ts-quick-view-btn').forEach(btn => {
@@ -229,26 +225,10 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation();
             
-            // Store current product data
-            currentProductData = {
-                id: parseInt(this.dataset.id),  // Make sure ID is integer to match shop.js
-                name: this.dataset.name,
-                price: parseFloat(this.dataset.price),
-                image: this.dataset.image
-            };
-            
-            const quickViewImage = document.getElementById('quickViewImage');
-            
-            // Prepare image fade-in: clear opacity and assign onload handler
-            quickViewImage.style.opacity = '0';
-            quickViewImage.onload = function() {
-                quickViewImage.style.opacity = '1';
-            };
-            
             // Update modal content
-            quickViewImage.src = currentProductData.image;
-            document.getElementById('quickViewTitle').textContent = currentProductData.name;
-            document.getElementById('quickViewPrice').textContent = `$${currentProductData.price.toFixed(2)}`;
+            document.getElementById('quickViewImage').src = this.dataset.image;
+            document.getElementById('quickViewTitle').textContent = this.dataset.name;
+            document.getElementById('quickViewPrice').textContent = `$${parseFloat(this.dataset.price).toFixed(2)}`;
             document.getElementById('quickViewDescription').textContent = this.dataset.description;
             
             // Reset quantity
@@ -262,45 +242,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Quantity Controls
     const quantityInput = document.getElementById('quantityInput');
     
-    document.getElementById('decreaseQuantity')?.addEventListener('click', () => {
+    document.getElementById('decreaseQuantity').addEventListener('click', () => {
         const currentValue = parseInt(quantityInput.value);
         if (currentValue > 1) {
             quantityInput.value = currentValue - 1;
         }
     });
     
-    document.getElementById('increaseQuantity')?.addEventListener('click', () => {
+    document.getElementById('increaseQuantity').addEventListener('click', () => {
         const currentValue = parseInt(quantityInput.value);
-        if (currentValue < 99) {  // Match shop.js max quantity
-            quantityInput.value = currentValue + 1;
-        }
+        quantityInput.value = currentValue + 1;
     });
     
     // Validate quantity input
-    quantityInput?.addEventListener('change', () => {
-        let value = parseInt(quantityInput.value);
-        if (value < 1) value = 1;
-        if (value > 99) value = 99;  // Match shop.js max quantity
-        quantityInput.value = value;
-    });
-
-    // Add to Cart functionality from Quick View Modal
-    document.getElementById('quickViewAddToCart')?.addEventListener('click', function() {
-        if (!currentProductData || !window.shopManager) return;
-
-        const quantity = parseInt(document.getElementById('quantityInput').value);
-        
-        // Use the existing shopManager to add to cart
-        window.shopManager.addToCart({
-            id: currentProductData.id,
-            name: currentProductData.name,
-            price: currentProductData.price,
-            image: currentProductData.image,
-            quantity: quantity
-        });
-        
-        // Reset quantity input
-        document.getElementById('quantityInput').value = 1;
+    quantityInput.addEventListener('change', () => {
+        if (quantityInput.value < 1) {
+            quantityInput.value = 1;
+        }
     });
 });
 </script>

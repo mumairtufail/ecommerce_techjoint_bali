@@ -219,7 +219,7 @@ img {
 }
 
 /*** back to top **/
-.back-to-top {
+/* .back-to-top {
   background-color: rgba(245, 96, 97, 0.7);
   width: 45px;
   height: 45px;
@@ -253,7 +253,7 @@ img {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-}
+} */
 
 /** for popup image ***/
 .mfp-wrap {

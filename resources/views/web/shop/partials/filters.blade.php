@@ -1,4 +1,14 @@
-<div class="ts-filters-container" style="width: 300px !important; position: fixed !important; top: 20px !important; height: calc(100vh - 40px) !important; overflow-y: auto !important; margin-left: 20px !important; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important; border-radius: 8px !important; padding: 20px !important; background: white !important;">
+<div class="ts-filters-container" style="
+    width: 300px;
+    position: sticky;
+    top: 130px; /* Adjust to match the top banner height */
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    background: white;
+    z-index: 100;
+">
 <!-- Search Filter -->
     <div style="margin-bottom: 25px !important;">
         <h3 style="font-size: 18px !important; color: #333 !important; margin-bottom: 15px !important;">Search Products</h3>
@@ -99,3 +109,5 @@ document.querySelectorAll('input[name="category"]').forEach(radio => {
 // Initial call to set up filters
 updateFilters();
 </script>
+
+

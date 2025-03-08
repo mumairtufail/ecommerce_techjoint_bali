@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\{
     ShopController,
     AboutController,
     ContactController,
+    OrderController as WebOrderController,
 };
 use App\Http\Controllers\Admin\{
     IndexController as AdminIndexController,
@@ -26,6 +27,10 @@ Route::get('/', [IndexController::class, 'index'])->name('web.view.index');
 Route::get('/shop', [ShopController::class, 'view'])->name('web.view.shop');
 Route::get('/about-us', [AboutController::class, 'view'])->name('web.view.about');
 Route::get('/contact', [ContactController::class, 'view'])->name('web.view.contact');
+Route::get('/orders-web', [WebOrderController::class, 'view'])->name('web.orders.index');
+
+// New route to store the order
+Route::post('/orders', [WebOrderController::class, 'store'])->name('web.orders.store');
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +51,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Orders
     Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders.index');
+    Route::get('/admin/orders/{id}', [OrderController::class, 'show'])->name('admin.orders.show');
 
     // Banners
     Route::apiResource('/admin/banners', BannerController::class);
@@ -61,5 +67,6 @@ Route::put('/settings/banners', [SettingsController::class, 'updateBanners'])->n
 Route::get('/login', function () {
     return view('Auth.login');
 })->name('login');
+
 
 Route::post('/login', [AuthController::class, 'login'])->name('admin.login');
