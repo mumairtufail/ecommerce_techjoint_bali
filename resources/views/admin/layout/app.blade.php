@@ -43,7 +43,22 @@
         .hk-pg-wrapper {
             flex: 1;
         }
+        :root {
+    --ts-primary: #8D68AD;
+    --ts-primary-light: #A587C1;
+    --ts-primary-dark: #735891;
+    --ts-white: #ffffff;
+    --ts-black: #333333;
+    --ts-gray: #666666;
+    --ts-light-gray: #f5f5f5;
+}
+
+   .breadcrumb a {
+        color: var(--ts-primary);
+    }
+
     </style>
+    
 </head>
 
 <body>

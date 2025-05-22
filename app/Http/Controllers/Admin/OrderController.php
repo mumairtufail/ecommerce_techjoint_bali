@@ -10,11 +10,11 @@ class OrderController extends Controller
 {
     public function index() {
         $orders = Order::all();
-        return view('admin.orders', compact('orders'));
+        return view('admin.orders.view', compact('orders'));
     }
 
     public function show($id) {
         $order = Order::findOrFail($id);
-        return response()->json($order);
+       return view('admin.orders.order-details', compact('order'));
     }
 }

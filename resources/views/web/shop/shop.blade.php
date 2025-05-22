@@ -26,10 +26,10 @@
         <div class="row">
             <div class="col col-xs-12">
                 <div class="shop-banner-content">
-                    <h2 class="shop-banner-title">about us</h2>
+                    <h2 class="shop-banner-title">Shop</h2>
                     <ol class="shop-banner-breadcrumb">
-                        <li><a href="index.html">Home</a></li>
-                        <li>about</li>
+                        <li><a href="/">Home</a></li>
+                        <li>Shop</li>
                     </ol>
                 </div>
             </div>

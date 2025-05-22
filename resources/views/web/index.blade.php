@@ -356,8 +356,8 @@
             <div class="row align-items-center">
                 <div class="col-lg-6">
                     <div class="home-sale__content">
-                        <h2 class="home-sale__title">Summer Sale</h2>
-                        <p class="home-sale__text">Up to 50% off on selected items</p>
+                        <h2 class="home-sale__title" style="color: #fff !important;">Summer Sale</h2>
+                        <p class="home-sale__text" style="color: #fff !important;">Up to 50% off on selected items</p>
                         <div class="home-sale__timer">
                             <div class="timer-item">
                                 <span class="count days">00</span>
@@ -376,7 +376,7 @@
                                 <span class="label">Seconds</span>
                             </div>
                         </div>
-                        <a href="/sale" class="home-sale__btn">Shop Now</a>
+                        <a href="/shop" class="home-sale__btn">Shop Now</a>
                     </div>
                 </div>
             </div>

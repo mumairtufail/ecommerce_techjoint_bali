@@ -17,7 +17,7 @@ class ProductController extends Controller
         $products = Product::with('category')->latest()->get();
         $categories = Category::all();
         
-        return view('admin.products', compact('products', 'categories'));
+        return view('admin.products.view', compact('products', 'categories'));
     }
 
     public function store(Request $request)

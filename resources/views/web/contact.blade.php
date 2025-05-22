@@ -25,7 +25,7 @@
                 <div class="wpo-breadcumb-wrap">
                     <h2>Contact</h2>
                     <ol class="wpo-breadcumb-wrap">
-                        <li><a href="index.html">Home</a></li>
+                        <li><a href="/">Home</a></li>
                         <li>Contact</li>
                     </ol>
                 </div>
