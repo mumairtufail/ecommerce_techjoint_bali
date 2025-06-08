@@ -148,6 +148,12 @@
     position: relative;
 }
 
+.ts-menu__link:hover,
+.ts-menu__item.active .ts-menu__link {
+    color: var(--ts-primary);
+    text-decoration: none;
+}
+
 .ts-menu__link::after {
     content: '';
     position: absolute;
@@ -163,6 +169,17 @@
 .ts-menu__link:hover::after,
 .ts-menu__item.active .ts-menu__link::after {
     width: 80%;
+}
+
+/* Additional styles to override any default link behavior */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--ts-primary);
+    text-decoration: none;
 }
 
 /* Cart Toggle */

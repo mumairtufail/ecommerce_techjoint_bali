@@ -1,5 +1,6 @@
+<!-- filepath: d:\taysan\resources\views\admin\queries.blade.php -->
 @extends('admin.layout.app')
-@section('title', 'Orders Management')
+@section('title', 'Contact Queries Management')
 
 @section('content')
 
@@ -21,7 +22,7 @@
         --info: #4299E1;
     }
 
-    .orders-container {
+    .queries-container {
         background-color: var(--background);
         min-height: 100vh;
         padding: 2rem 0;
@@ -70,7 +71,7 @@
         box-shadow: 0 1px 3px rgba(139, 123, 168, 0.08);
     }
 
-    .order-id {
+    .query-id {
         font-weight: 600;
         color: var(--primary-color);
     }
@@ -86,33 +87,43 @@
         font-size: 0.8rem;
     }
 
-    .location-info {
-        font-weight: 500;
-        color: var(--text-dark);
-        margin-bottom: 2px;
+    .message-preview {
+        color: var(--text-medium);
+        font-size: 0.9rem;
+        max-width: 250px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
-    .location-detail {
-        color: var(--text-light);
-        font-size: 0.8rem;
-    }
-
-    .items-badge {
+    .service-badge {
         background: var(--primary-lightest);
         color: var(--primary-dark);
         padding: 0.25rem 0.75rem;
         border-radius: 12px;
         font-size: 0.8rem;
         font-weight: 500;
+        display: inline-block;
     }
 
-    .total-amount {
-        color: var(--success);
-        font-size: 1rem;
-        font-weight: 700;
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
     }
 
-    .order-date {
+    .status-read {
+        background: var(--success);
+        color: var(--white);
+    }
+
+    .status-unread {
+        background: var(--info);
+        color: var(--white);
+    }
+
+    .query-date {
         color: var(--text-medium);
         font-weight: 500;
     }
@@ -200,13 +211,13 @@
     }
 </style>
 
-<div class="orders-container">
+<div class="queries-container">
     <div class="container-fluid">
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb breadcrumb-custom">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Orders</li>
+                <li class="breadcrumb-item active" aria-current="page">Queries</li>
             </ol>
         </nav>
 
@@ -215,63 +226,70 @@
             <div class="row align-items-center">
                 <div class="col-lg-12">
                     <h1 class="page-title">
-                        <i class="fas fa-shopping-cart"></i>
-                        Orders Management
+                        <i class="fas fa-envelope"></i>
+                        Contact Queries Management
                     </h1>
-                    <p class="page-subtitle">Manage customer orders and track order details</p>
+                    <p class="page-subtitle">Manage and respond to customer inquiries and messages</p>
                 </div>
             </div>
         </div>
 
-        <!-- Orders Table -->
+        <!-- Queries Table -->
         <div class="table-container">
-            <table id="ordersTable" class="table table-hover w-100">
+            <table id="queriesTable" class="table table-hover w-100">
                 <thead>
                     <tr>
-                        <th>Order ID</th>
-                        <th>Customer</th>
-                        <th>Contact</th>
-                        <th>Location</th>
-                        <th>Items</th>
-                        <th>Total Amount</th>
-                        <th>Order Date</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Service</th>
+                        <th>Message</th>
+                        <th>Status</th>
+                        <th>Date</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($orders as $order)
+                    @foreach($queries as $query)
                     <tr>
                         <td>
-                            <div class="order-id">#{{ $order->id }}</div>
+                            <div class="query-id">#{{ $query->id }}</div>
                         </td>
                         <td>
-                            <div class="customer-info">{{ $order->first_name }} {{ $order->last_name }}</div>
+                            <div class="customer-info">{{ $query->name }}</div>
+                            @if($query->address)
+                            <div class="customer-contact">{{ $query->address }}</div>
+                            @endif
                         </td>
                         <td>
-                            <div class="customer-info">{{ $order->email }}</div>
-                            <div class="customer-contact">{{ $order->phone }}</div>
+                            <div class="customer-info">{{ $query->email }}</div>
                         </td>
                         <td>
-                            <div class="location-info">{{ $order->city }}</div>
-                            <div class="location-detail">{{ $order->country }}</div>
+                            @if($query->service)
+                            <span class="service-badge">{{ $query->service }}</span>
+                            @else
+                            <span class="service-badge">General Inquiry</span>
+                            @endif
                         </td>
                         <td>
-                            @php
-                                $items = json_decode($order->order_items, true) ?: [];
-                                $itemCount = collect($items)->sum('quantity');
-                            @endphp
-                            <span class="items-badge">{{ $itemCount }} items</span>
+                            <div class="message-preview">{{ $query->message }}</div>
                         </td>
                         <td>
-                            <div class="total-amount">PKR {{ number_format($order->total, 2) }}</div>
+                            @if($query->is_read)
+                            <span class="status-badge status-read">Read</span>
+                            @else
+                            <span class="status-badge status-unread">Unread</span>
+                            @endif
                         </td>
                         <td>
-                            <div class="order-date">{{ \Carbon\Carbon::parse($order->created_at)->format('M d, Y') }}</div>
+                            <div class="query-date">{{ \Carbon\Carbon::parse($query->created_at)->format('M d, Y') }}</div>
                         </td>
                         <td>
-                            <a href="{{ route('admin.orders.show', $order->id) }}" 
+                            <a href="#" 
                                class="action-btn btn-view" 
-                               title="View Order">
+                               data-toggle="modal" 
+                               data-target="#viewQueryModal{{ $query->id }}" 
+                               title="View Query">
                                 <i class="fas fa-eye"></i>
                             </a>
                         </td>
@@ -283,13 +301,56 @@
     </div>
 </div>
 
+<!-- Modal for each query -->
+@foreach($queries as $query)
+<div class="modal fade" id="viewQueryModal{{ $query->id }}" tabindex="-1" aria-labelledby="viewQueryModalLabel{{ $query->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewQueryModalLabel{{ $query->id }}">Query from {{ $query->name }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <h6>Contact Information</h6>
+                    <p><strong>Name:</strong> {{ $query->name }}</p>
+                    <p><strong>Email:</strong> {{ $query->email }}</p>
+                    @if($query->address)
+                    <p><strong>Address:</strong> {{ $query->address }}</p>
+                    @endif
+                    @if($query->service)
+                    <p><strong>Service:</strong> {{ $query->service }}</p>
+                    @endif
+                </div>
+                
+                <div class="mb-3">
+                    <h6>Message</h6>
+                    <p>{{ $query->message }}</p>
+                </div>
+                
+                <div>
+                    <h6>Date Received</h6>
+                    <p>{{ \Carbon\Carbon::parse($query->created_at)->format('F d, Y g:i A') }}</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a href="#" class="btn btn-primary">Mark as {{ $query->is_read ? 'Unread' : 'Read' }}</a>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
 $(document).ready(function() {
     // Initialize DataTable
-    $('#ordersTable').DataTable({
+    $('#queriesTable').DataTable({
         responsive: true,
         pageLength: 25,
         lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],

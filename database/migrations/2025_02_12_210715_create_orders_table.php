@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('country')->nullable();
             $table->json('order_items')->nullable();
             $table->decimal('total', 10, 2)->nullable();
+             $table->string('status')->default('pending'); // pending, processing, shipped, delivered, cancelled
+
             $table->timestamps();
         });
     }

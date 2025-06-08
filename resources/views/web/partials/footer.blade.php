@@ -58,19 +58,19 @@
                 <ul class="list-unstyled" style="margin: 0 !important; padding: 0 !important; list-style: none !important;">
                     <li class="d-flex gap-3 mb-3" style="display: flex !important; gap: 15px !important; margin-bottom: 15px !important; color: #666 !important;">
                         <i class="fas fa-map-marker-alt" style="color: #8D68AD !important; margin-top: 4px !important;"></i>
-                        <span>123 Commerce Street, Business District, City</span>
+                        <span>Lahore, Pakistan</span>
                     </li>
                     <li class="d-flex gap-3 mb-3" style="display: flex !important; gap: 15px !important; margin-bottom: 15px !important;">
                         <i class="fas fa-phone" style="color: #8D68AD !important; margin-top: 4px !important;"></i>
                         <a href="tel:+1234567890" style="color: #666 !important; text-decoration: none !important; transition: color 0.3s !important;"
                            onmouseover="this.style.color='#8D68AD !important'" 
-                           onmouseout="this.style.color='#666 !important'">+1 (234) 567-890</a>
+                           onmouseout="this.style.color='#666 !important'">+92 3117317930</a>
                     </li>
                     <li class="d-flex gap-3 mb-3" style="display: flex !important; gap: 15px !important; margin-bottom: 15px !important;">
                         <i class="fas fa-envelope" style="color: #8D68AD !important; margin-top: 4px !important;"></i>
-                        <a href="mailto:support@yourstore.com" style="color: #666 !important; text-decoration: none !important; transition: color 0.3s !important;"
+                        <a href="mailto:info@taysan.co" style="color: #666 !important; text-decoration: none !important; transition: color 0.3s !important;"
                            onmouseover="this.style.color='#8D68AD !important'" 
-                           onmouseout="this.style.color='#666 !important'">support@yourstore.com</a>
+                           onmouseout="this.style.color='#666 !important'">info@taysan.co</a>
                     </li>
                 </ul>
             </div>

@@ -2,13 +2,12 @@
 <html lang="en">
 
 @include('web.partials.head')
-<!-- <script src="{{ asset('js/cart-manager.js') }}"></script> -->
 <!-- Required CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <body>
-
+@include('toast')
     <!-- start page-wrapper -->
     <div class="page-wrapper">
         <!-- start preloader -->

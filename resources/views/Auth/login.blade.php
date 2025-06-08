@@ -716,7 +716,7 @@
 
                         <!-- Logo -->
                         <a href="#" class="ts-logo">
-                            <img src="/api/placeholder/180/72" alt="Taysan & Co" class="ts-logo__img">
+                            <img src="logo.png" alt="Taysan & Co" class="ts-logo__img">
                         </a>
 
                         <!-- Welcome Text -->

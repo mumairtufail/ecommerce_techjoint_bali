@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('stock');
             $table->string('image')->nullable();
             $table->boolean('status')->default(true);
+            $table->string('flag')->default('new')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

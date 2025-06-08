@@ -17,6 +17,7 @@ class Product extends Model
         'stock',
         'image',
         'status',
+        'flag',
     ];
 
     public function category()
@@ -25,10 +26,10 @@ class Product extends Model
     }
 
     public function getImageUrlAttribute()
-{
-    if ($this->image && file_exists(public_path('storage/' . $this->image))) {
-        return asset('storage/' . $this->image);
+    {
+        if ($this->image && file_exists(public_path('storage/' . $this->image))) {
+            return asset('storage/' . $this->image);
+        }
+        return asset('images/default-product.jpg');
     }
-    return asset('images/default-product.jpg');
-}
 }
