@@ -7,11 +7,11 @@
 
 <style>
     :root {
-        --primary-color: #8B7BA8;
-        --primary-light: #A893C4;
-        --primary-lighter: #C4B5D8;
-        --primary-lightest: #E9E3F0;
-        --primary-dark: #6B5B7D;
+        --primary-color: #FC5F49;
+        --primary-light: #FD7A67;
+        --primary-lighter: #FE9585;
+        --primary-lightest: #FFF0EE;
+        --primary-dark: #E04732;
         --background: #F8F9FA;
         --white: #FFFFFF;
         --text-dark: #2D3748;
@@ -74,7 +74,7 @@
         background: var(--white);
         border-radius: 16px;
         padding: 2rem;
-        box-shadow: 0 1px 3px rgba(139, 123, 168, 0.08);
+        box-shadow: 0 1px 3px rgba(252, 95, 73, 0.08);
     }
 
     .form-label {
@@ -94,7 +94,7 @@
     .form-control:focus {
         outline: none;
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(139, 123, 168, 0.1);
+        box-shadow: 0 0 0 3px rgba(252, 95, 73, 0.1);
     }
 
     .form-control.is-invalid {

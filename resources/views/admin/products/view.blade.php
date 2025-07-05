@@ -1,15 +1,20 @@
 @extends('admin.layout.app')
 @section('title', 'Products Management')
 
+@push('head')
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+@endpush
+
 @section('content')
 
 <style>
     :root {
-        --primary-color: #8B7BA8;
-        --primary-light: #A893C4;
-        --primary-lighter: #C4B5D8;
-        --primary-lightest: #E9E3F0;
-        --primary-dark: #6B5B7D;
+        --primary-color: #FC5F49;
+        --primary-light: #FD7A67;
+        --primary-lighter: #FE9585;
+        --primary-lightest: #FFF0EE;
+        --primary-dark: #E04732;
         --background: #F8F9FA;
         --white: #FFFFFF;
         --text-dark: #2D3748;
@@ -88,7 +93,7 @@
         background: var(--white);
         border-radius: 16px;
         padding: 1.5rem;
-        box-shadow: 0 1px 3px rgba(139, 123, 168, 0.08);
+        box-shadow: 0 1px 3px rgba(252, 95, 73, 0.08);
     }
 
     .product-image {
@@ -239,7 +244,7 @@
     }
 
     .table tbody tr:hover {
-        background-color: rgba(139, 123, 168, 0.02);
+        background-color: rgba(252, 95, 73, 0.02);
     }
 
     .dataTables_wrapper .dataTables_length select,
@@ -253,7 +258,7 @@
     .dataTables_wrapper .dataTables_filter input:focus {
         outline: none;
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 2px rgba(139, 123, 168, 0.1);
+        box-shadow: 0 0 0 2px rgba(252, 95, 73, 0.1);
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button {
@@ -306,6 +311,35 @@
 
 <div class="products-container">
     <div class="container-fluid">
+        <!-- Session Flash Messages -->
+        @if(session('success'))
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: '{{ session('success') }}',
+                        confirmButtonColor: '#FC5F49',
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                });
+            </script>
+        @endif
+
+        @if(session('error'))
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: '{{ session('error') }}',
+                        confirmButtonColor: '#FC5F49'
+                    });
+                });
+            </script>
+        @endif
+
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb breadcrumb-custom">
@@ -414,69 +448,147 @@
     </div>
 </div>
 
-<meta name="csrf-token" content="{{ csrf_token() }}">
+@endsection
 
+@push('scripts')
+<!-- Load jQuery first (only once) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Then load SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- DataTables JS -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
+console.log('Products page script loaded');
+
 $(document).ready(function() {
-    // Initialize DataTable
-    $('#productsTable').DataTable({
-        responsive: true,
-        pageLength: 25,
-        lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
-        order: [[1, 'asc']],
-        columnDefs: [
-            { targets: [0, 7], orderable: false, searchable: false }
-        ]
-    });
-
-    // Delete Product with SweetAlert
-    $(document).on('click', '.delete-product', function(e) {
-        e.preventDefault();
+    console.log('Products jQuery ready');
+    console.log('jQuery version:', $.fn.jquery);
+    console.log('SweetAlert2 available:', typeof Swal !== 'undefined');
+    console.log('DataTable available:', typeof $.fn.DataTable !== 'undefined');
+    
+    // Wait a bit for all scripts to load
+    setTimeout(function() {
+        console.log('Products page initialization starting...');
         
-        const productId = $(this).data('id');
-        const productName = $(this).data('name');
-        
-        Swal.fire({
-            title: 'Delete Product?',
-            html: `Are you sure you want to delete <strong>"${productName}"</strong>?<br><small class="text-muted">This action cannot be undone.</small>`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#F56565',
-            cancelButtonColor: '#718096',
-            confirmButtonText: 'Yes, Delete!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Create form and submit
-                const form = $('<form>', {
-                    method: 'POST',
-                    action: `/admin/products/${productId}`
+        // Initialize DataTable
+        try {
+            if (typeof $.fn.DataTable !== 'undefined') {
+                const table = $('#productsTable').DataTable({
+                    responsive: true,
+                    pageLength: 25,
+                    lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                    order: [[1, 'asc']],
+                    columnDefs: [
+                        { targets: [0, 7], orderable: false, searchable: false }
+                    ]
                 });
-                
-                form.append($('<input>', {
-                    type: 'hidden',
-                    name: '_token',
-                    value: $('meta[name="csrf-token"]').attr('content')
-                }));
-                
-                form.append($('<input>', {
-                    type: 'hidden',
-                    name: '_method',
-                    value: 'DELETE'
-                }));
-                
-                $('body').append(form);
-                form.submit();
+                console.log('DataTable initialized successfully');
+            } else {
+                console.error('DataTable is not available');
             }
-        });
-    });
+        } catch (error) {
+            console.error('DataTable initialization failed:', error);
+        }
 
- 
+        // Delete Product with SweetAlert
+        $(document).on('click', '.delete-product', function(e) {
+            console.log('Delete button clicked');
+            e.preventDefault();
+            
+            const productId = $(this).data('id');
+            const productName = $(this).data('name');
+            
+            console.log('Product ID:', productId);
+            console.log('Product Name:', productName);
+            
+            if (!productId || !productName) {
+                console.error('Missing product data');
+                return;
+            }
+            
+            if (typeof Swal === 'undefined') {
+                if (confirm('Are you sure you want to delete ' + productName + '?')) {
+                    // Fallback form submission
+                    const form = $('<form>', {
+                        method: 'POST',
+                        action: `/admin/products/${productId}`
+                    });
+                    
+                    form.append($('<input>', {
+                        type: 'hidden',
+                        name: '_token',
+                        value: $('meta[name="csrf-token"]').attr('content')
+                    }));
+                    
+                    form.append($('<input>', {
+                        type: 'hidden',
+                        name: '_method',
+                        value: 'DELETE'
+                    }));
+                    
+                    $('body').append(form);
+                    form.submit();
+                }
+                return;
+            }
+            
+            Swal.fire({
+                title: 'Delete Product?',
+                html: `Are you sure you want to delete <strong>"${productName}"</strong>?<br><small class="text-muted">This action cannot be undone.</small>`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#FC5F49',
+                cancelButtonColor: '#718096',
+                confirmButtonText: 'Yes, Delete!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                console.log('SweetAlert result:', result);
+                if (result.isConfirmed) {
+                    console.log('User confirmed deletion');
+                    
+                    // Show loading
+                    Swal.fire({
+                        title: 'Deleting...',
+                        text: 'Please wait while we delete the product.',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    // Create form and submit
+                    const form = $('<form>', {
+                        method: 'POST',
+                        action: `/admin/products/${productId}`
+                    });
+                    
+                    form.append($('<input>', {
+                        type: 'hidden',
+                        name: '_token',
+                        value: $('meta[name="csrf-token"]').attr('content')
+                    }));
+                    
+                    form.append($('<input>', {
+                        type: 'hidden',
+                        name: '_method',
+                        value: 'DELETE'
+                    }));
+                    
+                    console.log('Form created, submitting...');
+                    $('body').append(form);
+                    form.submit();
+                } else {
+                    console.log('User cancelled deletion');
+                }
+            });
+        });
+    }, 1000); // Wait 1 second for all scripts to load properly
 });
 </script>
-
-@endsection
+@endpush

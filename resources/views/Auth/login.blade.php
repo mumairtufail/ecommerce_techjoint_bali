@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Taysan & Co</title>
+    <title>Login - ecommerce & Co</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --ts-primary: #8D68AD;
-            --ts-primary-light: #A587C1;
-            --ts-primary-dark: #735891;
+            --ts-primary: #FC5F49;
+            --ts-primary-light: #FD7A67;
+            --ts-primary-dark: #E04732;
             --ts-white: #ffffff;
             --ts-black: #333333;
             --ts-gray: #666666;
@@ -217,7 +217,7 @@
 
         .form-control:focus {
             border-color: var(--ts-primary);
-            box-shadow: 0 0 0 0.25rem rgba(141, 104, 173, 0.25);
+            box-shadow: 0 0 0 0.25rem rgba(252, 95, 73, 0.25);
             background: var(--ts-white);
             transform: translateY(-2px);
         }
@@ -244,7 +244,7 @@
 
         .password-toggle:hover {
             color: var(--ts-primary);
-            background: rgba(141, 104, 173, 0.1);
+            background: rgba(252, 95, 73, 0.1);
         }
 
         .btn-login {
@@ -259,7 +259,7 @@
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(141, 104, 173, 0.3);
+            box-shadow: 0 8px 25px rgba(252, 95, 73, 0.3);
         }
 
         .btn-login::before {
@@ -279,7 +279,7 @@
 
         .btn-login:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(141, 104, 173, 0.5);
+            box-shadow: 0 15px 40px rgba(252, 95, 73, 0.5);
         }
 
         .btn-login:active {
@@ -716,7 +716,7 @@
 
                         <!-- Logo -->
                         <a href="#" class="ts-logo">
-                            <img src="logo.png" alt="Taysan & Co" class="ts-logo__img">
+                            <img src="logo.png" alt="ecommerce & Co" class="ts-logo__img">
                         </a>
 
                         <!-- Welcome Text -->

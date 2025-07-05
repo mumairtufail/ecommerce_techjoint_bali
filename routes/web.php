@@ -11,6 +11,7 @@ use App\Http\Controllers\Web\{
 use App\Http\Controllers\Admin\{
     IndexController as AdminIndexController,
     ProductController,
+    CategoryController,
     OrderController,
     SettingsController,
     AuthController,
@@ -51,12 +52,23 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/admin/products/{product}', [ProductController::class, 'update'])->name('admin.products.update');
     Route::delete('/admin/products/{product}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
     
+    // Categories Management
+    Route::get('/admin/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
+    Route::post('/admin/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+    Route::get('/admin/categories/{category}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
+    Route::put('/admin/categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
+    Route::delete('/admin/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
+    
     // Orders
     Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders.index');
     Route::get('/admin/orders/{id}', [OrderController::class, 'show'])->name('admin.orders.show');
 Route::put('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
 
     // Banners
+  
+
+    // contact
+
 
 
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');

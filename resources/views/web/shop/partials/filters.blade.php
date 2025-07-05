@@ -50,7 +50,7 @@
 
     <!-- Reset Button -->
     <button onclick="resetFilters()" 
-            style="width: 100% !important; padding: 12px !important; background: #8D68AD !important; color: white !important; border: none !important; border-radius: 8px !important; cursor: pointer !important; transition: all 0.3s ease !important; font-weight: 500 !important;">
+            style="width: 100% !important; padding: 12px !important; background: #FC5F49 !important; color: white !important; border: none !important; border-radius: 8px !important; cursor: pointer !important; transition: all 0.3s ease !important; font-weight: 500 !important;">
         Reset Filters
     </button>
 </div>

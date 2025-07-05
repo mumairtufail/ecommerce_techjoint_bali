@@ -12,99 +12,32 @@
     <div class="page-wrapper">
         <!-- start preloader -->
        <!-- Place this at the beginning of your body tag -->
-<div id="preloader">
-    <div class="loader-wrapper">
-        <div class="loader-content">
-            <img src="{{asset('logo.png')}}" alt="Taysan Logo" class="loader-logo">
-            <div class="loader-line"></div>
-        </div>
+ <!-- Start Preloader -->
+  {{-- <div class="cs_perloader">
+    <div class="cs_perloader_in">
+      <svg class="cs_cart_animation" role="img" aria-label="Sattiyas Preloader" viewBox="0 0 128 128" width="128px" height="128px" xmlns="http://www.w3.org/2000/svg">
+        <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="8">
+          <g class="cs_cart_track" stroke="hsla(0,10%,10%,0.1)">
+            <polyline points="4,4 21,4 26,22 124,22 112,64 35,64 39,80 106,80" />
+            <circle cx="43" cy="111" r="13" />
+            <circle cx="102" cy="111" r="13" />
+          </g>
+          <g class="cs_cart_lines" stroke="currentColor">
+            <polyline class="cs_cart_top" points="4,4 21,4 26,22 124,22 112,64 35,64 39,80 106,80" stroke-dasharray="338 338" stroke-dashoffset="-338" />
+            <g class="cs_cart_wheel_1" transform="rotate(-90,43,111)">
+              <circle class="cs_cart_wheel_stroke" cx="43" cy="111" r="13" stroke-dasharray="81.68 81.68" stroke-dashoffset="81.68" />
+            </g>
+            <g class="cs_cart_wheel_2" transform="rotate(90,102,111)">
+              <circle class="cs_cart_wheel_stroke" cx="102" cy="111" r="13" stroke-dasharray="81.68 81.68" stroke-dashoffset="81.68" />
+            </g>
+          </g>
+        </g>
+      </svg>
+      <span class="cs_perloader_text">Welcome to Sattiyas. Loading...</span>
     </div>
-</div>
+  </div> --}}
+  <!-- End Preloader -->
 
-<style>
-#preloader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease-out;
-}
-
-.loader-wrapper {
-    text-align: center;
-}
-
-.loader-logo {
-    width: 120px;
-    height: auto;
-    margin-bottom: 20px;
-    animation: fadeIn 1s ease-in;
-}
-
-.loader-line {
-    width: 100px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #9B59B6, transparent);
-    margin: 20px auto;
-    position: relative;
-    overflow: hidden;
-}
-
-.loader-line::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, #fff, transparent);
-    animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-    0% {
-        left: -100%;
-    }
-    100% {
-        left: 100%;
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Hide preloader once page is loaded */
-.preloader-fade {
-    opacity: 0;
-    pointer-events: none;
-}
-</style>
-
-<script>
-window.addEventListener('load', function() {
-    const preloader = document.getElementById('preloader');
-    preloader.classList.add('preloader-fade');
-    
-    // Remove preloader from DOM after animation
-    setTimeout(() => {
-        preloader.style.display = 'none';
-    }, 500);
-});
-</script>
         <!-- end preloader -->
     @include('web.partials.navbar')
 
@@ -115,11 +48,6 @@ window.addEventListener('load', function() {
         <!-- start of wpo-site-footer-section -->
        @include('web.partials.footer')
         <!-- end of wpo-site-footer-section -->
-
-        <!-- popup-quickview  -->
-      @include('web.partials.quickview')
-      @include('web.shop.partials.floating-cart')
-        <!-- end of popup-quickview -->
 
     </div>
     <!-- end of page-wrapper -->

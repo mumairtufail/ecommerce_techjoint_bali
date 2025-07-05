@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Tayson - @yield('title')</title>
+    <title>Ecommerce - @yield('title')</title>
     <meta name="description" content="A responsive bootstrap 4 admin dashboard template by hencework" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.0/css/all.css">

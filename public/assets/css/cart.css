@@ -1,0 +1,527 @@
+/* 
+ * Taysan Cart - Dedicated Cart Functionality Styles
+ * Version: 1.0
+ * Date: 2025
+ */
+
+:root {
+    --taysan-primary: #FC5F49;
+    --taysan-primary-light: #ff7b65;
+    --taysan-primary-dark: #d14436;
+    --taysan-white: #ffffff;
+    --taysan-black: #070707;
+    --taysan-gray: #666666;
+    --taysan-light-gray: #f5f5f5;
+    --taysan-border-color: #e0e0e0;
+    --taysan-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    --taysan-shadow-hover: 0 5px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Floating Cart Button */
+.taysan-floating-cart-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: var(--taysan-primary);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: var(--taysan-shadow-hover);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.taysan-floating-cart-btn:hover {
+    background: var(--taysan-primary-dark);
+    transform: scale(1.1);
+}
+
+.taysan-cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--taysan-black);
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    border: 2px solid white;
+}
+
+/* Cart Sidebar */
+.taysan-cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background: white;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s ease;
+}
+
+.taysan-cart-sidebar.active {
+    right: 0;
+}
+
+/* Cart Backdrop */
+.taysan-cart-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.taysan-cart-backdrop.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Cart Header */
+.taysan-cart-header {
+    background: var(--taysan-primary);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.taysan-cart-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Close Button */
+.taysan-cart-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.taysan-cart-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Cart Items Container */
+.taysan-cart-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    max-height: calc(100vh - 200px);
+}
+
+.taysan-cart-items::-webkit-scrollbar {
+    width: 6px;
+}
+
+.taysan-cart-items::-webkit-scrollbar-track {
+    background: var(--taysan-light-gray);
+}
+
+.taysan-cart-items::-webkit-scrollbar-thumb {
+    background: var(--taysan-primary);
+    border-radius: 3px;
+}
+
+/* Cart Item */
+.taysan-cart-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--taysan-border-color);
+    transition: background 0.3s ease;
+}
+
+.taysan-cart-item:hover {
+    background: var(--taysan-light-gray);
+    margin: 0 -20px;
+    padding: 15px 20px;
+}
+
+.taysan-cart-item:last-child {
+    border-bottom: none;
+}
+
+.taysan-cart-item-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: var(--taysan-light-gray);
+    flex-shrink: 0;
+}
+
+.taysan-cart-item-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.taysan-cart-item-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--taysan-black);
+    margin-bottom: 5px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    overflow: hidden;
+}
+
+.taysan-cart-item-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--taysan-primary);
+    margin-bottom: 8px;
+}
+
+/* Quantity Controls */
+.taysan-quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--taysan-light-gray);
+    border-radius: 6px;
+    padding: 4px;
+}
+
+.taysan-quantity-btn {
+    background: white;
+    border: 1px solid var(--taysan-border-color);
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--taysan-gray);
+    transition: all 0.3s ease;
+}
+
+.taysan-quantity-btn:hover {
+    background: var(--taysan-primary);
+    color: white;
+    border-color: var(--taysan-primary);
+}
+
+.taysan-quantity-display {
+    min-width: 30px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--taysan-black);
+}
+
+/* Remove Button */
+.taysan-cart-item-remove {
+    background: none;
+    border: none;
+    color: var(--taysan-gray);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.taysan-cart-item-remove:hover {
+    background: #ff4444;
+    color: white;
+}
+
+/* Cart Footer */
+.taysan-cart-footer {
+    padding: 20px;
+    border-top: 1px solid var(--taysan-border-color);
+    background: var(--taysan-light-gray);
+    flex-shrink: 0;
+}
+
+.taysan-cart-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--taysan-black);
+}
+
+.taysan-cart-total-amount {
+    color: var(--taysan-primary);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* Checkout Button */
+.taysan-checkout-btn {
+    width: 100%;
+    background: var(--taysan-primary);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.taysan-checkout-btn:hover {
+    background: var(--taysan-primary-dark);
+    transform: translateY(-2px);
+}
+
+/* Clear Cart Button */
+.taysan-clear-cart-btn {
+    width: 100%;
+    padding: 12px 16px;
+    background: #fff5f4;
+    color: var(--taysan-primary);
+    border: 2px solid var(--taysan-primary);
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.taysan-clear-cart-btn:hover {
+    background: var(--taysan-primary);
+    color: white;
+}
+
+/* Add to Cart Button */
+.taysan-add-to-cart-btn {
+    background: var(--taysan-primary);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+}
+
+.taysan-add-to-cart-btn:hover {
+    background: var(--taysan-primary-dark);
+    transform: translateY(-2px);
+}
+
+.taysan-add-to-cart-btn:disabled {
+    background: var(--taysan-gray);
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Empty Cart State */
+.taysan-cart-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--taysan-gray);
+}
+
+.taysan-cart-empty i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: var(--taysan-border-color);
+}
+
+.taysan-cart-empty h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--taysan-black);
+}
+
+.taysan-cart-empty p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Toast Notification */
+.taysan-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--taysan-primary);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: var(--taysan-shadow-hover);
+    z-index: 1002;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    max-width: 300px;
+}
+
+.taysan-toast.show {
+    transform: translateX(0);
+}
+
+.taysan-toast.success {
+    background: #4CAF50;
+}
+
+.taysan-toast.error {
+    background: #f44336;
+}
+
+.taysan-toast.warning {
+    background: #ff9800;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .taysan-cart-sidebar {
+        width: 100%;
+        right: -100%;
+    }
+    
+    .taysan-floating-cart-btn {
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+    }
+    
+    .taysan-cart-count {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+        top: -6px;
+        right: -6px;
+    }
+    
+    .taysan-cart-item {
+        gap: 10px;
+    }
+    
+    .taysan-cart-item-image {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .taysan-cart-item-title {
+        font-size: 13px;
+    }
+    
+    .taysan-cart-item-price {
+        font-size: 14px;
+    }
+    
+    .taysan-toast {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+}
+
+/* Animation Classes */
+.taysan-fade-in {
+    animation: taysanFadeIn 0.3s ease;
+}
+
+.taysan-slide-in {
+    animation: taysanSlideIn 0.3s ease;
+}
+
+@keyframes taysanFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes taysanSlideIn {
+    from {
+        transform: translateX(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Loading State */
+.taysan-loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.taysan-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: taysanLoading 1.5s infinite;
+}
+
+@keyframes taysanLoading {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}

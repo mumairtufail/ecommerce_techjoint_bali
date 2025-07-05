@@ -6,11 +6,11 @@
 
 <style>
     :root {
-        --primary-color: #8B7BA8;
-        --primary-light: #A893C4;
-        --primary-lighter: #C4B5D8;
-        --primary-lightest: #E9E3F0;
-        --primary-dark: #6B5B7D;
+        --primary-color: #FC5F49;
+        --primary-light: #FD7A67;
+        --primary-lighter: #FE9585;
+        --primary-lightest: #FFF0EE;
+        --primary-dark: #E04732;
         --background: #F8F9FA;
         --white: #FFFFFF;
         --text-dark: #2D3748;
@@ -31,14 +31,14 @@
     .dashboard-card {
         background: var(--white);
         border-radius: 16px;
-        box-shadow: 0 1px 3px rgba(139, 123, 168, 0.08);
-        border: 1px solid rgba(139, 123, 168, 0.06);
+        box-shadow: 0 1px 3px rgba(252, 95, 73, 0.08);
+        border: 1px solid rgba(252, 95, 73, 0.06);
         transition: all 0.2s ease;
     }
 
     .dashboard-card:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(139, 123, 168, 0.12);
+        box-shadow: 0 4px 12px rgba(252, 95, 73, 0.12);
     }
 
     .stat-card {
@@ -218,7 +218,7 @@
     }
 
     .table tbody tr:hover {
-        background-color: rgba(139, 123, 168, 0.02);
+        background-color: rgba(252, 95, 73, 0.02);
     }
 
     .status-badge {
@@ -242,7 +242,7 @@
     }
 
     .status-shipped {
-        background: rgba(139, 123, 168, 0.1);
+        background: rgba(252, 95, 73, 0.1);
         color: var(--primary-dark);
     }
 
@@ -797,12 +797,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     label: 'Revenue (PKR)',
                     data: @json(isset($revenueChartData['data']) ? $revenueChartData['data'] : []),
-                    borderColor: '#8B7BA8',
-                    backgroundColor: 'rgba(139, 123, 168, 0.08)',
+                    borderColor: '#FC5F49',
+                    backgroundColor: 'rgba(252, 95, 73, 0.08)',
                     borderWidth: 2,
                     fill: true,
                     tension: 0.4,
-                    pointBackgroundColor: '#8B7BA8',
+                    pointBackgroundColor: '#FC5F49',
                     pointBorderColor: '#fff',
                     pointBorderWidth: 2,
                     pointRadius: 4
@@ -823,7 +823,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         backgroundColor: 'rgba(45, 55, 72, 0.9)',
                         titleColor: '#fff',
                         bodyColor: '#fff',
-                        borderColor: '#8B7BA8',
+                        borderColor: '#FC5F49',
                         borderWidth: 1,
                         cornerRadius: 8
                     }
@@ -867,11 +867,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     data: statusData,
                     backgroundColor: [
-                        '#8B7BA8',
-                        '#A893C4', 
-                        '#C4B5D8',
-                        '#E9E3F0',
-                        '#D1C4E1'
+                        '#FC5F49',
+                        '#FD7A67', 
+                        '#FE9585',
+                        '#FFF0EE',
+                        '#FFB3A1'
                     ],
                     borderWidth: 0,
                     hoverBorderWidth: 2,
@@ -890,7 +890,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         backgroundColor: 'rgba(45, 55, 72, 0.9)',
                         titleColor: '#fff',
                         bodyColor: '#fff',
-                        borderColor: '#8B7BA8',
+                        borderColor: '#FC5F49',
                         borderWidth: 1,
                         cornerRadius: 8
                     }

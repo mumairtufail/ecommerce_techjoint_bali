@@ -5,11 +5,11 @@
 
 <style>
     :root {
-        --primary-color: #8B7BA8;
-        --primary-light: #A893C4;
-        --primary-lighter: #C4B5D8;
-        --primary-lightest: #E9E3F0;
-        --primary-dark: #6B5B7D;
+        --primary-color: #FC5F49;
+        --primary-light: #FD7A67;
+        --primary-lighter: #FE9585;
+        --primary-lightest: #FFF0EE;
+        --primary-dark: #E04732;
         --background: #F8F9FA;
         --white: #FFFFFF;
         --text-dark: #2D3748;
@@ -67,7 +67,7 @@
         background: var(--white);
         border-radius: 16px;
         padding: 1.5rem;
-        box-shadow: 0 1px 3px rgba(139, 123, 168, 0.08);
+        box-shadow: 0 1px 3px rgba(252, 95, 73, 0.08);
     }
 
     .order-id {
@@ -162,7 +162,7 @@
     }
 
     .table tbody tr:hover {
-        background-color: rgba(139, 123, 168, 0.02);
+        background-color: rgba(252, 95, 73, 0.02);
     }
 
     .dataTables_wrapper .dataTables_length select,
@@ -176,7 +176,7 @@
     .dataTables_wrapper .dataTables_filter input:focus {
         outline: none;
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 2px rgba(139, 123, 168, 0.1);
+        box-shadow: 0 0 0 2px rgba(252, 95, 73, 0.1);
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button {

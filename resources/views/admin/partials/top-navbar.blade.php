@@ -1,11 +1,11 @@
-<!-- filepath: d:\taysan\resources\views\admin\partials\top-navbar.blade.php -->
+<!-- filepath: d:\ecommerce\resources\views\admin\partials\top-navbar.blade.php -->
 <style>
     /* Theme Colors */
     :root {
-        --primary: #8365A0;
-        --primary-hover: #d62f26;
-        --primary-active: #c52820;
-        --primary-light: #fff1f0;
+        --primary: #FC5F49;
+        --primary-hover: #E04732;
+        --primary-active: #D03B28;
+        --primary-light: #FFF0EE;
         --text-primary: #333333;
         --text-secondary: #666666;
         --text-muted: #888888;
@@ -501,7 +501,7 @@
 
 <nav class="navbar navbar-expand-xl navbar-light fixed-top hk-navbar hk-navbar-alt">
     <a class="navbar-brand d-flex align-items-center" href="{{ route('admin.dashboard') }}">
-        <img src="{{ asset('logo.png') }}" alt="taysan" class="navbar-logo">
+        <img src="{{ asset('logo.png') }}" alt="ecommerce" class="navbar-logo">
     </a>
 
     <div class="collapse navbar-collapse" id="navbarCollapseAlt">
@@ -539,6 +539,13 @@
                 <a class="nav-link" href="{{ route('admin.products.index') }}">
                     <i class="fa fa-cube d-xl-none"></i>
                     <span>Products</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ request()->routeIs('admin.categories.index') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.categories.index') }}">
+                    <i class="fa fa-tags d-xl-none"></i>
+                    <span>Categories</span>
                 </a>
             </li>
 

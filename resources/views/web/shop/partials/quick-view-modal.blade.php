@@ -133,7 +133,7 @@
 .custom-quickview__price {
     font-size: 28px;
     font-weight: 700;
-    color: #8D68AD;
+    color: #FC5F49;
     margin-bottom: 20px;
 }
 
@@ -165,9 +165,9 @@
 }
 
 .custom-quickview__qty-btn:hover {
-    background: #8D68AD;
+    background: #FC5F49;
     color: #fff;
-    border-color: #8D68AD;
+    border-color: #FC5F49;
 }
 
 .custom-quickview__qty-input {
@@ -181,7 +181,7 @@
 .custom-quickview__add-btn {
     width: 100%;
     padding: 15px;
-    background: #8D68AD;
+    background: #FC5F49;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -195,7 +195,7 @@
 }
 
 .custom-quickview__add-btn:hover {
-    background: #735891;
+    background: #d14436;
     transform: translateY(-2px);
 }
 

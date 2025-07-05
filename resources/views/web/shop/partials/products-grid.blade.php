@@ -40,12 +40,12 @@
                         </span>
                     </div>
 
-                    <button class="ts-add-to-cart-btn"
-                            data-id="{{ $product->id }}"
-                            data-name="{{ $product->name }}"
-                            data-price="{{ $product->price }}"
-                            data-image="{{ asset('storage/' . $product->image) }}"
-                            style="width: 100% !important; padding: 0.75rem !important; background: #8D68AD !important; color: #fff !important; border: none !important; border-radius: 6px !important; font-weight: 500 !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 0.5rem !important; cursor: pointer !important; transition: all 0.3s ease !important; margin-top: auto !important;">
+                    <button class="taysan-add-to-cart-btn"
+                            data-product-id="{{ $product->id }}"
+                            data-product-name="{{ $product->name }}"
+                            data-product-price="{{ $product->price }}"
+                            data-product-image="{{ asset('storage/' . $product->image) }}"
+                            style="width: 100% !important; padding: 0.75rem !important; background: #FC5F49 !important; color: #fff !important; border: none !important; border-radius: 6px !important; font-weight: 500 !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 0.5rem !important; cursor: pointer !important; transition: all 0.3s ease !important; margin-top: auto !important;">
                         <i class="fas fa-shopping-cart"></i>
                         Add to Cart
                     </button>
@@ -74,14 +74,14 @@ document.querySelectorAll('.ts-product-card').forEach(card => {
     });
 });
 
-document.querySelectorAll('.ts-add-to-cart-btn').forEach(btn => {
+document.querySelectorAll('.taysan-add-to-cart-btn').forEach(btn => {
     btn.addEventListener('mouseenter', () => {
-        btn.style.background = '#735891';
+        btn.style.background = '#d14436';
         btn.style.transform = 'translateY(-2px)';
     });
 
     btn.addEventListener('mouseleave', () => {
-        btn.style.background = '#8D68AD';
+        btn.style.background = '#FC5F49';
         btn.style.transform = 'none';
     });
 });

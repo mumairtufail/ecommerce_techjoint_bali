@@ -1,25 +1,17 @@
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="wpOceans">
-    <link rel="shortcut icon" type="image/png" href="{{asset('logo.png')}}">
-    <title>Taysan</title>
-    <link href="{{ asset('assets/css/themify-icons.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/font-awesome.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/flaticon.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/animate.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/owl.carousel.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/owl.theme.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/slick.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/slick-theme.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/swiper.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/owl.transitions.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/jquery.fancybox.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/odometer-theme-default.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/sass/style.css') }}" rel="stylesheet">
-    <!-- In app.blade.php, add this before the closing </head> tag -->
-<script src="{{ asset('js/cart-manager.js') }}" defer></script>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Laralink">
+  <title>Sattiyas - Fashion & Jewelry eCommerce HTML5 Template</title>
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="web/assets/img/FAVICON.svg">
+  <!-- Plugins css -->
+  <link rel="stylesheet" href="web/assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="web/assets/css/fontawesome.min.css">
+  <link rel="stylesheet" href="web/assets/css/slick.css">
+  <link rel="stylesheet" href="web/assets/css/jquery-ui.min.css">
+  <link rel="stylesheet" href="web/assets/css/animated-headline.css">
+  <!-- Custom css -->
+  <link rel="stylesheet" href="web/assets/css/style.css">
 </head>
-

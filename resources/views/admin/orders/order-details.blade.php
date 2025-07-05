@@ -3,11 +3,11 @@
 
 <style>
     :root {
-        --primary-color: #8B7BA8;
-        --primary-light: #A893C4;
-        --primary-lighter: #C4B5D8;
-        --primary-lightest: #E9E3F0;
-        --primary-dark: #6B5B7D;
+        --primary-color: #FC5F49;
+        --primary-light: #FD7A67;
+        --primary-lighter: #FE9585;
+        --primary-lightest: #FFF0EE;
+        --primary-dark: #E04732;
         --background: #F8F9FA;
         --white: #FFFFFF;
         --text-dark: #2D3748;
@@ -29,8 +29,8 @@
     .order-card {
         background: var(--white);
         border-radius: 16px;
-        box-shadow: 0 1px 3px rgba(139, 123, 168, 0.08);
-        border: 1px solid rgba(139, 123, 168, 0.06);
+        box-shadow: 0 1px 3px rgba(252, 95, 73, 0.08);
+        border: 1px solid rgba(252, 95, 73, 0.06);
         margin-bottom: 1.5rem;
         overflow: hidden;
     }
@@ -162,7 +162,7 @@
     }
 
     .order-items-table tbody tr:hover {
-        background-color: rgba(139, 123, 168, 0.02);
+        background-color: rgba(252, 95, 73, 0.02);
     }
 
     .product-image {
@@ -245,7 +245,7 @@
     .form-control-custom:focus {
         outline: none;
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(139, 123, 168, 0.1);
+        box-shadow: 0 0 0 3px rgba(252, 95, 73, 0.1);
     }
 
     .breadcrumb-custom {
