@@ -40,7 +40,7 @@
                         </span>
                     </div>
 
-                    <button class="taysan-add-to-cart-btn"
+                    <button class="ecommerce-add-to-cart-btn"
                             data-product-id="{{ $product->id }}"
                             data-product-name="{{ $product->name }}"
                             data-product-price="{{ $product->price }}"
@@ -74,7 +74,7 @@ document.querySelectorAll('.ts-product-card').forEach(card => {
     });
 });
 
-document.querySelectorAll('.taysan-add-to-cart-btn').forEach(btn => {
+document.querySelectorAll('.ecommerce-add-to-cart-btn').forEach(btn => {
     btn.addEventListener('mouseenter', () => {
         btn.style.background = '#d14436';
         btn.style.transform = 'translateY(-2px)';

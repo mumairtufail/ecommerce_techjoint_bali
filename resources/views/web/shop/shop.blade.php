@@ -290,7 +290,7 @@
                                             </button>
                                         </div>
                                         
-                                        <button class="cs_cart_btn cs_accent_bg cs_fs_16 cs_white_color cs_medium position-absolute taysan-add-to-cart-btn"
+                                        <button class="cs_cart_btn cs_accent_bg cs_fs_16 cs_white_color cs_medium position-absolute ecommerce-add-to-cart-btn"
                                                 data-product-id="{{ $product->id }}"
                                                 data-product-name="{{ $product->name }}"
                                                 data-product-price="{{ $product->price }}"

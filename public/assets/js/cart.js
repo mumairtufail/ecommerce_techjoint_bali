@@ -1,5 +1,5 @@
 /**
- * Taysan Cart - Dedicated Cart Functionality JavaScript
+ * E-commerce Cart - Dedicated Cart Functionality JavaScript
  * Version: 1.0
  * Date: 2025
  * 
@@ -7,9 +7,9 @@
  * and can be used independently across different pages.
  */
 
-class TaysanCartManager {
+class EcommerceCartManager {
     constructor() {
-        this.cartKey = 'taysan-cart';
+        this.cartKey = 'ecommerce-cart';
         this.cart = this.loadCart();
         this.init();
     }
@@ -24,21 +24,21 @@ class TaysanCartManager {
     // Create cart DOM structure if it doesn't exist
     createCartStructure() {
         // Create backdrop if it doesn't exist
-        if (!document.querySelector('.taysan-cart-backdrop')) {
+        if (!document.querySelector('.ecommerce-cart-backdrop')) {
             const backdrop = document.createElement('div');
-            backdrop.className = 'taysan-cart-backdrop';
-            backdrop.id = 'taysanCartBackdrop';
+            backdrop.className = 'ecommerce-cart-backdrop';
+            backdrop.id = 'ecommerceCartBackdrop';
             document.body.appendChild(backdrop);
         }
 
         // Create floating cart button if it doesn't exist
-        if (!document.querySelector('.taysan-floating-cart-btn')) {
+        if (!document.querySelector('.ecommerce-floating-cart-btn')) {
             const floatingBtn = document.createElement('button');
-            floatingBtn.className = 'taysan-floating-cart-btn';
-            floatingBtn.id = 'taysanFloatingCartBtn';
+            floatingBtn.className = 'ecommerce-floating-cart-btn';
+            floatingBtn.id = 'ecommerceFloatingCartBtn';
             floatingBtn.innerHTML = `
                 <i class="fas fa-shopping-cart"></i>
-                <span class="taysan-cart-count">0</span>
+                <span class="ecommerce-cart-count">0</span>
             `;
             document.body.appendChild(floatingBtn);
         }
@@ -163,14 +163,14 @@ class TaysanCartManager {
 
     // Update cart display in sidebar
     updateCartDisplay() {
-        const cartItems = document.querySelector('.taysan-cart-items');
-        const cartTotal = document.querySelector('.taysan-cart-total-amount');
+        const cartItems = document.querySelector('.ecommerce-cart-items');
+        const cartTotal = document.querySelector('.ecommerce-cart-total-amount');
         
         if (!cartItems) return;
 
         if (this.cart.length === 0) {
             cartItems.innerHTML = `
-                <div class="taysan-cart-empty">
+                <div class="ecommerce-cart-empty">
                     <i class="fas fa-shopping-cart"></i>
                     <h4>Your cart is empty</h4>
                     <p>Add some products to get started</p>
@@ -178,25 +178,25 @@ class TaysanCartManager {
             `;
         } else {
             cartItems.innerHTML = this.cart.map(item => `
-                <div class="taysan-cart-item taysan-fade-in" data-product-id="${item.id}">
+                <div class="ecommerce-cart-item ecommerce-fade-in" data-product-id="${item.id}">
                     <img src="${item.image || '/assets/images/default-product.jpg'}" 
                          alt="${item.name}" 
-                         class="taysan-cart-item-image"
+                         class="ecommerce-cart-item-image"
                          onerror="this.src='/assets/images/default-product.jpg'">
-                    <div class="taysan-cart-item-details">
-                        <div class="taysan-cart-item-title">${item.name}</div>
-                        <div class="taysan-cart-item-price">$${item.price.toFixed(2)}</div>
-                        <div class="taysan-quantity-control">
-                            <button class="taysan-quantity-btn taysan-decrease-qty" data-product-id="${item.id}">
+                    <div class="ecommerce-cart-item-details">
+                        <div class="ecommerce-cart-item-title">${item.name}</div>
+                        <div class="ecommerce-cart-item-price">$${item.price.toFixed(2)}</div>
+                        <div class="ecommerce-quantity-control">
+                            <button class="ecommerce-quantity-btn ecommerce-decrease-qty" data-product-id="${item.id}">
                                 <i class="fas fa-minus"></i>
                             </button>
-                            <span class="taysan-quantity-display">${item.quantity}</span>
-                            <button class="taysan-quantity-btn taysan-increase-qty" data-product-id="${item.id}">
+                            <span class="ecommerce-quantity-display">${item.quantity}</span>
+                            <button class="ecommerce-quantity-btn ecommerce-increase-qty" data-product-id="${item.id}">
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
                     </div>
-                    <button class="taysan-cart-item-remove" data-product-id="${item.id}">
+                    <button class="ecommerce-cart-item-remove" data-product-id="${item.id}">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -214,7 +214,7 @@ class TaysanCartManager {
 
     // Update floating cart button
     updateFloatingButton() {
-        const countElement = document.querySelector('.taysan-cart-count');
+        const countElement = document.querySelector('.ecommerce-cart-count');
         if (countElement) {
             const count = this.getItemCount();
             countElement.textContent = count;
@@ -226,44 +226,44 @@ class TaysanCartManager {
     bindEvents() {
         // Floating cart button
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.taysan-floating-cart-btn')) {
+            if (e.target.closest('.ecommerce-floating-cart-btn')) {
                 this.openCart();
             }
         });
 
         // Cart sidebar close
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.taysan-cart-close')) {
+            if (e.target.closest('.ecommerce-cart-close')) {
                 this.closeCart();
             }
         });
 
         // Backdrop click
         document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('taysan-cart-backdrop')) {
+            if (e.target.classList.contains('ecommerce-cart-backdrop')) {
                 this.closeCart();
             }
         });
 
         // Add to cart buttons
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.taysan-add-to-cart-btn')) {
+            if (e.target.closest('.ecommerce-add-to-cart-btn')) {
                 e.preventDefault();
-                const button = e.target.closest('.taysan-add-to-cart-btn');
+                const button = e.target.closest('.ecommerce-add-to-cart-btn');
                 this.handleAddToCart(button);
             }
         });
 
         // Checkout button
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.taysan-checkout-btn')) {
+            if (e.target.closest('.ecommerce-checkout-btn')) {
                 this.handleCheckout();
             }
         });
 
         // Clear cart button
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.taysan-clear-cart-btn')) {
+            if (e.target.closest('.ecommerce-clear-cart-btn')) {
                 this.handleClearCart();
             }
         });
@@ -279,9 +279,9 @@ class TaysanCartManager {
     // Bind quantity control events
     bindQuantityControls() {
         // Decrease quantity
-        document.querySelectorAll('.taysan-decrease-qty').forEach(btn => {
+        document.querySelectorAll('.ecommerce-decrease-qty').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const productId = e.target.closest('.taysan-decrease-qty').dataset.productId;
+                const productId = e.target.closest('.ecommerce-decrease-qty').dataset.productId;
                 const item = this.cart.find(item => item.id === productId);
                 if (item) {
                     this.updateQuantity(productId, item.quantity - 1);
@@ -290,9 +290,9 @@ class TaysanCartManager {
         });
 
         // Increase quantity
-        document.querySelectorAll('.taysan-increase-qty').forEach(btn => {
+        document.querySelectorAll('.ecommerce-increase-qty').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const productId = e.target.closest('.taysan-increase-qty').dataset.productId;
+                const productId = e.target.closest('.ecommerce-increase-qty').dataset.productId;
                 const item = this.cart.find(item => item.id === productId);
                 if (item) {
                     this.updateQuantity(productId, item.quantity + 1);
@@ -301,9 +301,9 @@ class TaysanCartManager {
         });
 
         // Remove item
-        document.querySelectorAll('.taysan-cart-item-remove').forEach(btn => {
+        document.querySelectorAll('.ecommerce-cart-item-remove').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const productId = e.target.closest('.taysan-cart-item-remove').dataset.productId;
+                const productId = e.target.closest('.ecommerce-cart-item-remove').dataset.productId;
                 this.removeItem(productId);
             });
         });
@@ -327,20 +327,20 @@ class TaysanCartManager {
             }
 
             // Add loading state
-            button.classList.add('taysan-loading');
+            button.classList.add('ecommerce-loading');
             button.disabled = true;
 
             // Simulate network delay for better UX
             setTimeout(() => {
                 this.addItem(productData);
-                button.classList.remove('taysan-loading');
+                button.classList.remove('ecommerce-loading');
                 button.disabled = false;
             }, 300);
 
         } catch (error) {
             console.error('Error handling add to cart:', error);
             this.showToast('Failed to add item to cart', 'error');
-            button.classList.remove('taysan-loading');
+            button.classList.remove('ecommerce-loading');
             button.disabled = false;
         }
     }
@@ -370,8 +370,8 @@ class TaysanCartManager {
 
     // Open cart sidebar
     openCart() {
-        const sidebar = document.querySelector('.taysan-cart-sidebar');
-        const backdrop = document.querySelector('.taysan-cart-backdrop');
+        const sidebar = document.querySelector('.ecommerce-cart-sidebar');
+        const backdrop = document.querySelector('.ecommerce-cart-backdrop');
         
         if (sidebar) {
             sidebar.classList.add('active');
@@ -385,8 +385,8 @@ class TaysanCartManager {
 
     // Close cart sidebar
     closeCart() {
-        const sidebar = document.querySelector('.taysan-cart-sidebar');
-        const backdrop = document.querySelector('.taysan-cart-backdrop');
+        const sidebar = document.querySelector('.ecommerce-cart-sidebar');
+        const backdrop = document.querySelector('.ecommerce-cart-backdrop');
         
         if (sidebar) {
             sidebar.classList.remove('active');
@@ -401,10 +401,10 @@ class TaysanCartManager {
     // Show toast notification
     showToast(message, type = 'success') {
         // Remove existing toasts
-        document.querySelectorAll('.taysan-toast').forEach(toast => toast.remove());
+        document.querySelectorAll('.ecommerce-toast').forEach(toast => toast.remove());
 
         const toast = document.createElement('div');
-        toast.className = `taysan-toast ${type}`;
+        toast.className = `ecommerce-toast ${type}`;
         toast.textContent = message;
         
         document.body.appendChild(toast);
@@ -452,15 +452,15 @@ class TaysanCartManager {
 // Initialize cart manager when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Create global cart manager instance
-    if (!window.taysanCartManager) {
-        window.taysanCartManager = new TaysanCartManager();
+    if (!window.ecommerceCartManager) {
+        window.ecommerceCartManager = new EcommerceCartManager();
         
         // For backward compatibility
-        window.shopManager = window.taysanCartManager;
+        window.shopManager = window.ecommerceCartManager;
     }
 });
 
 // Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = TaysanCartManager;
+    module.exports = EcommerceCartManager;
 }

@@ -1,4 +1,4 @@
-<button class="taysan-floating-cart-btn" id="taysanFloatingCartBtn">
+<button class="ecommerce-floating-cart-btn" id="ecommerceFloatingCartBtn">
     <i class="fas fa-shopping-cart"></i>
-    <span class="taysan-cart-count">0</span>
+    <span class="ecommerce-cart-count">0</span>
 </button>
