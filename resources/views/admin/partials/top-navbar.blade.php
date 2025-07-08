@@ -549,6 +549,20 @@
                 </a>
             </li>
 
+            <li class="nav-item {{ request()->routeIs('admin.sizes.index') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.sizes.index') }}">
+                    <i class="fa fa-expand-arrows-alt d-xl-none"></i>
+                    <span>Sizes</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ request()->routeIs('admin.colors.index') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.colors.index') }}">
+                    <i class="fa fa-palette d-xl-none"></i>
+                    <span>Colors</span>
+                </a>
+            </li>
+
             <li class="nav-item {{ request()->routeIs('admin.orders.index') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.orders.index') }}">
                     <i class="fa fa-shopping-cart d-xl-none"></i>

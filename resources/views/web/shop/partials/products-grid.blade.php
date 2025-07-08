@@ -13,8 +13,7 @@
                          style="position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; transition: transform 0.5s ease !important;">
                     
                     <button class="ts-quick-view-btn" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#quickViewModal"
+                            onclick="window.location.href='{{ route('web.product.details', $product->id) }}'"
                             data-id="{{ $product->id }}"
                             data-name="{{ $product->name }}"
                             data-price="{{ $product->price }}"
@@ -28,7 +27,9 @@
 
                 <div class="ts-product-details" style="padding: 1.25rem !important; display: flex !important; flex-direction: column !important; gap: 0.75rem !important;">
                     <h3 class="ts-product-title" style="font-size: 1.1rem !important; font-weight: 600 !important; color: #333 !important; margin: 0 !important; line-height: 1.4 !important;">
-                        {{ $product->name }}
+                        <a href="{{ route('web.product.details', $product->id) }}" style="text-decoration: none !important; color: inherit !important;">
+                            {{ $product->name }}
+                        </a>
                     </h3>
                     
                     <div class="ts-product-meta" style="display: flex !important; justify-content: space-between !important; align-items: center !important;">

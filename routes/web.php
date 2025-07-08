@@ -15,6 +15,8 @@ use App\Http\Controllers\Admin\{
     OrderController,
     SettingsController,
     AuthController,
+    ProductSizeController,
+    ProductColorController,
 };
 
 /*
@@ -30,8 +32,13 @@ Route::get('/contact', [ContactController::class, 'view'])->name('web.view.conta
 Route::post('/contact', [ContactController::class, 'submitContact'])->name('web.contact.submit');
 Route::get('/orders-web', [WebOrderController::class, 'view'])->name('web.orders.index');
 
+// Product Details Route
+Route::get('/product/{id}', [ShopController::class, 'productDetails'])->name('web.product.details');
+// Route::get('/products/{id}', [ShopController::class, 'viewtest'])->name('web.products.view');
+
 // New route to store the order
 Route::post('/orders', [WebOrderController::class, 'storeWebOrders'])->name('web.orders.store');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -62,8 +69,21 @@ Route::middleware(['auth'])->group(function () {
     // Orders
     Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders.index');
     Route::get('/admin/orders/{id}', [OrderController::class, 'show'])->name('admin.orders.show');
-Route::put('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    Route::put('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
 
+    // Product Sizes Management
+    Route::get('/admin/sizes', [ProductSizeController::class, 'index'])->name('admin.sizes.index');
+    Route::post('/admin/sizes', [ProductSizeController::class, 'store'])->name('admin.sizes.store');
+    Route::put('/admin/sizes/{size}', [ProductSizeController::class, 'update'])->name('admin.sizes.update');
+    Route::delete('/admin/sizes/{size}', [ProductSizeController::class, 'destroy'])->name('admin.sizes.destroy');
+    Route::patch('/admin/sizes/{size}/toggle', [ProductSizeController::class, 'toggleStatus'])->name('admin.sizes.toggle');
+
+    // Product Colors Management
+    Route::get('/admin/colors', [ProductColorController::class, 'index'])->name('admin.colors.index');
+    Route::post('/admin/colors', [ProductColorController::class, 'store'])->name('admin.colors.store');
+    Route::put('/admin/colors/{color}', [ProductColorController::class, 'update'])->name('admin.colors.update');
+    Route::delete('/admin/colors/{color}', [ProductColorController::class, 'destroy'])->name('admin.colors.destroy');
+    Route::patch('/admin/colors/{color}/toggle', [ProductColorController::class, 'toggleStatus'])->name('admin.colors.toggle');
     // Banners
   
 

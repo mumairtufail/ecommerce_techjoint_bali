@@ -195,6 +195,76 @@
         display: none;
     }
 
+    .multiple-image-upload {
+        position: relative;
+    }
+
+    .image-previews-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .image-preview-item {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 2px solid var(--border-light);
+        background: var(--background);
+        flex-shrink: 0;
+    }
+
+    .image-preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .image-preview-item .remove-image {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: var(--danger);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 12px;
+        opacity: 0.9;
+        transition: opacity 0.2s;
+        z-index: 10;
+    }
+
+    .image-preview-item .remove-image:hover {
+        opacity: 1;
+        background: #dc3545;
+    }
+
+    .image-preview-item.primary {
+        border-color: var(--primary-color);
+    }
+
+    .image-preview-item .primary-badge {
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+        background: var(--primary-color);
+        color: white;
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: 500;
+        z-index: 10;
+    }
+
     .alert-custom {
         border: none;
         border-radius: 12px;
@@ -394,6 +464,43 @@
                     @enderror
                 </div>
 
+                <!-- Multiple Images Upload -->
+                <div class="mb-3">
+                    <label for="images" class="form-label">Additional Product Images</label>
+                    <div class="multiple-image-upload">
+                        <input type="file" 
+                               class="form-control @error('images.*') is-invalid @enderror" 
+                               id="images" 
+                               name="images[]" 
+                               accept="image/*"
+                               multiple
+                               onchange="handleMultipleImages(this)">
+                        <small class="text-muted">Upload multiple images. These will be additional images beyond the main product image above.</small>
+                        <div id="image-previews" class="image-previews-container mt-3">
+                            <!-- Image previews will be displayed here -->
+                        </div>
+                    </div>
+                    @error('images.*')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Product Variants -->
+                <div class="mb-3">
+                    <label class="form-label">Product Variants</label>
+                    <div class="border rounded p-3 bg-light">
+                        <p class="text-muted mb-3">Create specific size-color combinations with individual stock and pricing. Variants are required for products with size/color options.</p>
+                        
+                        <div id="variants-container">
+                            <!-- Variants will be dynamically added here -->
+                        </div>
+                        
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="add-variant">
+                            <i class="fas fa-plus"></i> Add Variant
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Status -->
                 <div class="mb-3">
                     <div class="form-check form-switch">
@@ -462,56 +569,185 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitText = document.getElementById('submitText');
     const submitSpinner = document.getElementById('submitSpinner');
 
-    // Image preview functionality
-    imageInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
+    console.log('Product create form initialized');
+
+    // Legacy single image preview functionality
+    if (imageInput) {
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    if (uploadArea) uploadArea.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Reset image preview if clicked again
+        imagePreview.addEventListener('click', function() {
+            imageInput.value = '';
+            imagePreview.style.display = 'none';
+            if (uploadArea) uploadArea.style.display = 'block';
+        });
+    }
+
+    // Drag and drop functionality for legacy single image
+    if (uploadArea) {
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                imageInput.files = files;
+                imageInput.dispatchEvent(new Event('change'));
+            }
+        });
+    }
+
+    // Form submission handling
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            console.log('Form submitting...');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                if (submitText) submitText.style.display = 'none';
+                if (submitSpinner) submitSpinner.style.display = 'inline';
+            }
+        });
+    }
+
+    // Variants handling
+    let variantIndex = 0;
+    const variantsContainer = document.getElementById('variants-container');
+    const addVariantBtn = document.getElementById('add-variant');
+
+    if (addVariantBtn && variantsContainer) {
+        function addVariant() {
+            const variantHtml = `
+                <div class="variant-row border rounded p-3 mb-3 bg-white">
+                    <div class="row align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label">Size</label>
+                            <select name="variants[${variantIndex}][size_id]" class="form-control size-select">
+                                <option value="">Select Size</option>
+                                @foreach($sizes as $size)
+                                <option value="{{ $size->id }}">{{ $size->name }} @if($size->display_name)({{ $size->display_name }})@endif</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Color</label>
+                            <select name="variants[${variantIndex}][color_id]" class="form-control color-select">
+                                <option value="">Select Color</option>
+                                @foreach($colors as $color)
+                                <option value="{{ $color->id }}">{{ $color->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Stock</label>
+                            <input type="number" name="variants[${variantIndex}][stock]" class="form-control" min="0" value="0" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Price Adjustment (PKR)</label>
+                            <input type="number" name="variants[${variantIndex}][price_adjustment]" class="form-control" step="0.01" value="0" placeholder="0.00">
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-sm btn-danger remove-variant">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            variantsContainer.insertAdjacentHTML('beforeend', variantHtml);
+            variantIndex++;
+        }
+
+        addVariantBtn.addEventListener('click', addVariant);
+
+        // Remove variant
+        variantsContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-variant') || e.target.closest('.remove-variant')) {
+                e.target.closest('.variant-row').remove();
+            }
+        });
+    }
+});
+
+// Global function for handling multiple images
+let selectedMultipleImages = [];
+
+function handleMultipleImages(input) {
+    console.log('handleMultipleImages called, files:', input.files.length);
+    const files = Array.from(input.files);
+    const container = document.getElementById('image-previews');
+    
+    if (!container) {
+        console.error('image-previews container not found');
+        return;
+    }
+
+    // Clear existing previews
+    container.innerHTML = '';
+    selectedMultipleImages = [];
+
+    files.forEach((file, index) => {
+        if (file.type.startsWith('image/')) {
+            selectedMultipleImages.push(file);
             const reader = new FileReader();
+            
             reader.onload = function(e) {
-                imagePreview.src = e.target.result;
-                imagePreview.style.display = 'block';
-                uploadArea.style.display = 'none';
+                const imageDiv = document.createElement('div');
+                imageDiv.className = 'image-preview-item';
+                imageDiv.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview ${index + 1}">
+                    <button type="button" class="remove-image" onclick="removeMultipleImage(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                container.appendChild(imageDiv);
             };
+            
             reader.readAsDataURL(file);
         }
     });
+}
 
-    // Drag and drop functionality
-    uploadArea.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        uploadArea.classList.add('dragover');
+function removeMultipleImage(indexToRemove) {
+    console.log('Removing image at index:', indexToRemove);
+    
+    // Remove from selectedMultipleImages array
+    selectedMultipleImages.splice(indexToRemove, 1);
+    
+    // Update the file input
+    const input = document.getElementById('images');
+    const dt = new DataTransfer();
+    
+    selectedMultipleImages.forEach(file => {
+        dt.items.add(file);
     });
-
-    uploadArea.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        uploadArea.classList.remove('dragover');
-    });
-
-    uploadArea.addEventListener('drop', function(e) {
-        e.preventDefault();
-        uploadArea.classList.remove('dragover');
-        
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            imageInput.files = files;
-            imageInput.dispatchEvent(new Event('change'));
-        }
-    });
-
-    // Form submission handling
-    form.addEventListener('submit', function(e) {
-        submitBtn.disabled = true;
-        submitText.style.display = 'none';
-        submitSpinner.style.display = 'inline';
-    });
-
-    // Reset image preview if clicked again
-    imagePreview.addEventListener('click', function() {
-        imageInput.value = '';
-        imagePreview.style.display = 'none';
-        uploadArea.style.display = 'block';
-    });
-});
+    
+    input.files = dt.files;
+    
+    // Refresh the preview
+    handleMultipleImages(input);
+}
 </script>
 
 @endsection

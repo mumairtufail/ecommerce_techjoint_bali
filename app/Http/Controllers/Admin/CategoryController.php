@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
@@ -34,16 +35,26 @@ class CategoryController extends Controller
             $validated = $request->validate([
                 'name' => 'required|string|max:255|unique:categories,name',
                 'description' => 'nullable|string|max:1000',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'status' => 'boolean',
             ], [
                 'name.required' => 'Category name is required.',
                 'name.max' => 'Category name cannot exceed 255 characters.',
                 'name.unique' => 'This category name already exists.',
                 'description.max' => 'Description cannot exceed 1000 characters.',
+                'image.image' => 'The file must be an image.',
+                'image.mimes' => 'The image must be a file of type: jpeg, png, jpg, gif.',
+                'image.max' => 'The image must not be greater than 2MB.',
             ]);
 
             // Handle checkbox field (status)
             $validated['status'] = $request->has('status') ? 1 : 0;
+
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('categories', 'public');
+                $validated['image'] = $imagePath;
+            }
 
             $category = Category::create($validated);
 
@@ -55,6 +66,7 @@ class CategoryController extends Controller
                         'id' => $category->id,
                         'name' => $category->name,
                         'description' => $category->description,
+                        'image' => $category->image,
                         'status' => $category->status,
                         'products_count' => 0,
                         'created_at' => $category->created_at->format('M d, Y'),
@@ -105,16 +117,31 @@ class CategoryController extends Controller
                     Rule::unique('categories')->ignore($category->id)
                 ],
                 'description' => 'nullable|string|max:1000',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'status' => 'boolean',
             ], [
                 'name.required' => 'Category name is required.',
                 'name.max' => 'Category name cannot exceed 255 characters.',
                 'name.unique' => 'This category name already exists.',
                 'description.max' => 'Description cannot exceed 1000 characters.',
+                'image.image' => 'The file must be an image.',
+                'image.mimes' => 'The image must be a file of type: jpeg, png, jpg, gif.',
+                'image.max' => 'The image must not be greater than 2MB.',
             ]);
 
             // Handle checkbox field (status)
             $validated['status'] = $request->has('status') ? 1 : 0;
+
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                // Delete old image if it exists
+                if ($category->image && Storage::disk('public')->exists($category->image)) {
+                    Storage::disk('public')->delete($category->image);
+                }
+                
+                $imagePath = $request->file('image')->store('categories', 'public');
+                $validated['image'] = $imagePath;
+            }
 
             $category->update($validated);
 
@@ -126,6 +153,7 @@ class CategoryController extends Controller
                         'id' => $category->id,
                         'name' => $category->name,
                         'description' => $category->description,
+                        'image' => $category->image,
                         'status' => $category->status,
                         'products_count' => $category->products_count,
                         'created_at' => $category->created_at->format('M d, Y'),
@@ -184,6 +212,12 @@ class CategoryController extends Controller
             }
 
             $categoryName = $category->name;
+            
+            // Delete image if it exists
+            if ($category->image && Storage::disk('public')->exists($category->image)) {
+                Storage::disk('public')->delete($category->image);
+            }
+            
             $category->delete();
 
             if (request()->expectsJson()) {
@@ -222,6 +256,7 @@ class CategoryController extends Controller
                     'id' => $category->id,
                     'name' => $category->name,
                     'description' => $category->description,
+                    'image' => $category->image,
                     'status' => $category->status,
                 ]
             ]);

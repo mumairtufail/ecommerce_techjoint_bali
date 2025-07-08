@@ -503,7 +503,7 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="createCategoryForm" action="{{ route('admin.categories.store') }}" method="POST">
+            <form id="createCategoryForm" action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
@@ -525,6 +525,20 @@
                                   rows="3" 
                                   placeholder="Enter category description (optional)"></textarea>
                         <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="create_image" class="form-label">Category Image</label>
+                        <input type="file" 
+                               class="form-control" 
+                               id="create_image" 
+                               name="image" 
+                               accept="image/*">
+                        <div class="invalid-feedback"></div>
+                        <small class="text-muted">Upload an image for the category (optional). Max size: 2MB</small>
+                        <div id="create_image_preview" class="mt-2" style="display: none;">
+                            <img id="create_preview_img" src="" alt="Preview" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -573,7 +587,7 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="editCategoryForm" method="POST">
+            <form id="editCategoryForm" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-body">
@@ -596,6 +610,29 @@
                                   rows="3" 
                                   placeholder="Enter category description (optional)"></textarea>
                         <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit_image" class="form-label">Category Image</label>
+                        <input type="file" 
+                               class="form-control" 
+                               id="edit_image" 
+                               name="image" 
+                               accept="image/*">
+                        <div class="invalid-feedback"></div>
+                        <small class="text-muted">Upload a new image to replace the current one (optional). Max size: 2MB</small>
+                        <div id="edit_current_image" class="mt-2" style="display: none;">
+                            <label class="form-label">Current Image:</label>
+                            <div>
+                                <img id="edit_current_img" src="" alt="Current image" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
+                            </div>
+                        </div>
+                        <div id="edit_image_preview" class="mt-2" style="display: none;">
+                            <label class="form-label">New Image Preview:</label>
+                            <div>
+                                <img id="edit_preview_img" src="" alt="Preview" class="img-thumbnail" style="max-width: 200px; max-height: 150px;">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -718,35 +755,93 @@ $(document).ready(function() {
         // Edit Category Modal
         $(document).on('click', '.edit-category', function() {
             const categoryId = $(this).data('id');
-            const categoryName = $(this).data('name');
-            const categoryDescription = $(this).data('description') || '';
-            const categoryStatus = $(this).data('status');
             
-            console.log('Edit category clicked:', categoryId, categoryName);
+            console.log('Edit category clicked:', categoryId);
             
-            // Set form action
-            $('#editCategoryForm').attr('action', `/admin/categories/${categoryId}`);
-            
-            // Fill form fields
-            $('#edit_name').val(categoryName);
-            $('#edit_description').val(categoryDescription);
-            $('#edit_status').prop('checked', categoryStatus == 1);
-            
-            // Clear previous errors
-            $('.form-control').removeClass('is-invalid');
-            $('.invalid-feedback').text('');
-            
-            // Show modal
-            try {
-                if (editModal.show) {
-                    editModal.show();
-                } else {
-                    editModal.modal('show');
+            // Fetch category data via AJAX
+            $.ajax({
+                url: `/admin/categories/${categoryId}/edit`,
+                method: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        const category = response.category;
+                        
+                        // Set form action
+                        $('#editCategoryForm').attr('action', `/admin/categories/${categoryId}`);
+                        
+                        // Fill form fields
+                        $('#edit_name').val(category.name);
+                        $('#edit_description').val(category.description || '');
+                        $('#edit_status').prop('checked', category.status == 1);
+                        
+                        // Handle current image
+                        if (category.image) {
+                            $('#edit_current_img').attr('src', `/storage/${category.image}`);
+                            $('#edit_current_image').show();
+                        } else {
+                            $('#edit_current_image').hide();
+                        }
+                        
+                        // Clear previous image preview
+                        $('#edit_image_preview').hide();
+                        $('#edit_image').val('');
+                        
+                        // Clear previous errors
+                        $('.form-control').removeClass('is-invalid');
+                        $('.invalid-feedback').text('');
+                        
+                        // Show modal
+                        try {
+                            if (editModal.show) {
+                                editModal.show();
+                            } else {
+                                editModal.modal('show');
+                            }
+                        } catch (e) {
+                            console.error('Error showing edit modal:', e);
+                            // Fallback
+                            $('#editCategoryModal').show();
+                        }
+                    }
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Failed to fetch category data.',
+                        confirmButtonColor: '#FC5F49'
+                    });
                 }
-            } catch (e) {
-                console.error('Error showing edit modal:', e);
-                // Fallback
-                $('#editCategoryModal').show();
+            });
+        });
+
+        // Image preview functionality for create modal
+        $('#create_image').on('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#create_preview_img').attr('src', e.target.result);
+                    $('#create_image_preview').show();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                $('#create_image_preview').hide();
+            }
+        });
+
+        // Image preview functionality for edit modal
+        $('#edit_image').on('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#edit_preview_img').attr('src', e.target.result);
+                    $('#edit_image_preview').show();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                $('#edit_image_preview').hide();
             }
         });
 
@@ -766,10 +861,15 @@ $(document).ready(function() {
             $('.form-control').removeClass('is-invalid');
             $('.invalid-feedback').text('');
             
+            // Create FormData for file upload
+            const formData = new FormData(this);
+            
             $.ajax({
                 url: $(this).attr('action'),
                 method: 'POST',
-                data: $(this).serialize(),
+                data: formData,
+                processData: false,
+                contentType: false,
                 success: function(response) {
                     try {
                         if (createModal.hide) {
@@ -795,7 +895,8 @@ $(document).ready(function() {
                         const errors = xhr.responseJSON.errors;
                         Object.keys(errors).forEach(key => {
                             const field = key === 'name' ? 'create_name' : 
-                                         key === 'description' ? 'create_description' : key;
+                                         key === 'description' ? 'create_description' : 
+                                         key === 'image' ? 'create_image' : key;
                             $(`#${field}`).addClass('is-invalid');
                             $(`#${field}`).siblings('.invalid-feedback').text(errors[key][0]);
                         });
@@ -832,10 +933,15 @@ $(document).ready(function() {
             $('.form-control').removeClass('is-invalid');
             $('.invalid-feedback').text('');
             
+            // Create FormData for file upload
+            const formData = new FormData(this);
+            
             $.ajax({
                 url: $(this).attr('action'),
                 method: 'POST',
-                data: $(this).serialize(),
+                data: formData,
+                processData: false,
+                contentType: false,
                 success: function(response) {
                     try {
                         if (editModal.hide) {
@@ -861,7 +967,8 @@ $(document).ready(function() {
                         const errors = xhr.responseJSON.errors;
                         Object.keys(errors).forEach(key => {
                             const field = key === 'name' ? 'edit_name' : 
-                                         key === 'description' ? 'edit_description' : key;
+                                         key === 'description' ? 'edit_description' : 
+                                         key === 'image' ? 'edit_image' : key;
                             $(`#${field}`).addClass('is-invalid');
                             $(`#${field}`).siblings('.invalid-feedback').text(errors[key][0]);
                         });
@@ -964,12 +1071,15 @@ $(document).ready(function() {
             $('#createCategoryForm')[0].reset();
             $('.form-control').removeClass('is-invalid');
             $('.invalid-feedback').text('');
+            $('#create_image_preview').hide();
         });
 
         $('#editCategoryModal').on('hidden.bs.modal', function() {
             $('#editCategoryForm')[0].reset();
             $('.form-control').removeClass('is-invalid');
             $('.invalid-feedback').text('');
+            $('#edit_current_image').hide();
+            $('#edit_image_preview').hide();
         });
 
         // Manual close buttons for modals

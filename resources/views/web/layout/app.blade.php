@@ -8,6 +8,16 @@
 
 <body>
 @include('toast')
+<!-- Include cart components -->
+@include('web.shop.partials.cart-sidebar')
+@include('web.shop.partials.floating-cart')
+@include('web.shop.partials.toast')
+
+<!-- Cart Styles -->
+<link rel="stylesheet" href="{{ asset('assets/css/cart.css') }}">
+
+<!-- Cart Functionality -->
+<script src="{{ asset('assets/js/cart.js') }}"></script>
     <!-- start page-wrapper -->
     <div class="page-wrapper">
         <!-- start preloader -->

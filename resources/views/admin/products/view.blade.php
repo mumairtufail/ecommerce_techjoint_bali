@@ -376,7 +376,7 @@
                         <th>Product</th>
                         <th>Category</th>
                         <th>Price</th>
-                        <th>Stock</th>
+                        <th>Stock & Variants</th>
                         <th>Status</th>
                         <th>Flag</th>
                         <th>Actions</th>
@@ -407,10 +407,29 @@
                             <div class="price-text">PKR {{ number_format($product->price, 2) }}</div>
                         </td>
                         <td>
-                            <span class="stock-badge 
-                                {{ $product->stock == 0 ? 'stock-out' : ($product->stock <= 10 ? 'stock-low' : 'stock-normal') }}">
-                                {{ $product->stock }} units
-                            </span>
+                            @if($product->variants->count() > 0)
+                                <div class="variants-info">
+                                    <small class="text-muted d-block">{{ $product->variants->count() }} variants</small>
+                                    <div class="variant-summary">
+                                        @if($product->sizes->count() > 0)
+                                        <span class="badge bg-light text-dark me-1" style="font-size: 0.7rem;">
+                                            Sizes: {{ $product->sizes->pluck('name')->join(', ') }}
+                                        </span>
+                                        @endif
+                                        @if($product->colors->count() > 0)
+                                        <span class="badge bg-light text-dark" style="font-size: 0.7rem;">
+                                            Colors: {{ $product->colors->pluck('name')->join(', ') }}
+                                        </span>
+                                        @endif
+                                    </div>
+                                    <small class="text-success">Total Stock: {{ $product->variants->sum('stock') }}</small>
+                                </div>
+                            @else
+                                <span class="stock-badge 
+                                    {{ $product->stock == 0 ? 'stock-out' : ($product->stock <= 10 ? 'stock-low' : 'stock-normal') }}">
+                                    {{ $product->stock }} units
+                                </span>
+                            @endif
                         </td>
                         <td>
                             <span class="status-badge {{ $product->status ? 'status-active' : 'status-inactive' }}">

@@ -13,11 +13,28 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb cs_white_color justify-content-center mb-3">
                     <li class="breadcrumb-item"><a href="{{ url('/') }}" class="cs_white_color">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Shop</li>
+                    @if(isset($selectedCategory))
+                        <li class="breadcrumb-item"><a href="{{ route('web.view.shop') }}" class="cs_white_color">Shop</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ $selectedCategory->name }}</li>
+                    @else
+                        <li class="breadcrumb-item active" aria-current="page">Shop</li>
+                    @endif
                 </ol>
             </nav>
-            <h2 class="cs_fs_50 cs_bold cs_white_color mb-0">Shop</h2>
-            <p class="cs_white_color mb-0 mt-3">Discover our premium collection of products</p>
+            <h2 class="cs_fs_50 cs_bold cs_white_color mb-0">
+                @if(isset($selectedCategory))
+                    {{ $selectedCategory->name }}
+                @else
+                    Shop
+                @endif
+            </h2>
+            <p class="cs_white_color mb-0 mt-3">
+                @if(isset($selectedCategory))
+                    {{ $selectedCategory->description ?: 'Browse products in ' . $selectedCategory->name . ' category' }}
+                @else
+                    Discover our premium collection of products
+                @endif
+            </p>
         </div>
     </div>
 </section>
@@ -80,17 +97,29 @@
                             <!-- Categories Filter -->
                             <div class="cs_filter_widget">
                                 <h3 class="cs_filter_widget_title cs_medium cs_fs_18">Categories</h3>
+                                @if(isset($selectedCategory))
+                                <div class="cs_selected_category_info mb-3 p-3" style="background: #f8f9fa; border-radius: 8px; border-left: 4px solid #FC5F49;">
+                                    <small class="text-muted">Filtered by:</small>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="fw-semibold" style="color: #FC5F49;">{{ $selectedCategory->name }}</span>
+                                        <a href="{{ route('web.view.shop') }}" class="btn btn-sm text-muted" title="Clear filter">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                @endif
                                 <ul class="cs_filter_category cs_mp0">
                                     <li>
                                         <div class="cs_custom_check">
-                                            <input type="radio" name="category" value="all" id="cat_all" checked>
+                                            <input type="radio" name="category" value="all" id="cat_all" {{ !isset($selectedCategoryId) ? 'checked' : '' }}>
                                             <label for="cat_all">All Categories</label>
                                         </div>
                                     </li>
                                     @foreach($categories as $category)
                                     <li>
                                         <div class="cs_custom_check">
-                                            <input type="radio" name="category" value="{{ $category->id }}" id="cat_{{ $category->id }}">
+                                            <input type="radio" name="category" value="{{ $category->id }}" id="cat_{{ $category->id }}" 
+                                                {{ isset($selectedCategoryId) && $selectedCategoryId == $category->id ? 'checked' : '' }}>
                                             <label for="cat_{{ $category->id }}">{{ $category->name }}</label>
                                         </div>
                                     </li>
@@ -284,10 +313,9 @@
                                             <button class="cs_cart_icon cs_accent_bg cs_white_color">
                                                 <i class="fa-regular fa-heart"></i>
                                             </button>
-                                            <button class="cs_cart_icon cs_accent_bg cs_white_color cs_quick_view_btn" 
-                                                    data-product='@json($product)'>
+                                            <a href="{{ route('web.product.details', $product->id) }}" class="cs_cart_icon cs_accent_bg cs_white_color">
                                                 <i class="fa-regular fa-eye"></i>
-                                            </button>
+                                            </a>
                                         </div>
                                         
                                         <button class="cs_cart_btn cs_accent_bg cs_fs_16 cs_white_color cs_medium position-absolute ecommerce-add-to-cart-btn"
@@ -301,7 +329,7 @@
                                     
                                     <div class="cs_product_info text-center">
                                         <h3 class="cs_product_title cs_fs_21 cs_medium">
-                                            <a href="#" class="ts-product-title">{{ $product->name }}</a>
+                                            <a href="{{ route('web.product.details', $product->id) }}" class="ts-product-title">{{ $product->name }}</a>
                                         </h3>
                                         
                                         <div class="cs_single_product_review">
@@ -357,16 +385,7 @@
     <div class="cs_height_140 cs_height_lg_80"></div>
 </section>
 <!-- End Shop -->
-<!-- Include cart components -->
-@include('web.shop.partials.cart-sidebar')
-@include('web.shop.partials.floating-cart')
-@include('web.shop.partials.toast')
 
-<!-- Cart Styles -->
-<link rel="stylesheet" href="{{ asset('assets/css/cart.css') }}">
-
-<!-- Cart Functionality -->
-<script src="{{ asset('assets/js/cart.js') }}"></script>
 
 <script>
 // Filter and sort functionality
@@ -488,7 +507,22 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Category filter
     document.querySelectorAll('input[name="category"]').forEach(radio => {
-        radio.addEventListener('change', updateFilters);
+        radio.addEventListener('change', function() {
+            // Update URL to reflect category selection
+            const currentUrl = new URL(window.location);
+            
+            if (this.value === 'all') {
+                currentUrl.searchParams.delete('category');
+            } else {
+                currentUrl.searchParams.set('category', this.value);
+            }
+            
+            // Update the URL without page reload
+            window.history.pushState({}, '', currentUrl);
+            
+            // Update filters to show/hide products
+            updateFilters();
+        });
     });
     
     // Rating filter

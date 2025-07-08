@@ -248,33 +248,52 @@
   <!-- Start category -->
   <div class="container-fluid">
     <div class="cs_grid_list">
-      <div class="cs_category cs_style_1">
-        <a href="shop.html" class="cs_category_thumb position-relative">
-          <img src="web/assets/img/men.jpg" alt="Category Image" class="w-100">
-          <span class="cs_category_btn">
-            <span>Men</span>
-            <span><i class="fa-solid fa-arrow-right"></i></span>
-          </span>
-        </a>
-      </div>
-      <div class="cs_category cs_style_1">
-        <a href="shop.html" class="cs_category_thumb position-relative">
-          <img src="web/assets/img/women.jpg" alt="Category Image" class="w-100">
-          <span class="cs_category_btn">
-            <span>Women</span>
-            <span><i class="fa-solid fa-arrow-right"></i></span>
-          </span>
-        </a>
-      </div>
-      <div class="cs_category cs_style_1">
-        <a href="shop.html" class="cs_category_thumb position-relative">
-          <img src="web/assets/img/children.jpg" alt="Category Image" class="w-100">
-          <span class="cs_category_btn">
-            <span>Children</span>
-            <span><i class="fa-solid fa-arrow-right"></i></span>
-          </span>
-        </a>
-      </div>
+      @if(isset($categories) && $categories->count() > 0)
+        @foreach($categories->where('status', 1)->take(6) as $category)
+          <div class="cs_category cs_style_1">
+            <a href="{{ route('web.view.shop', ['category' => $category->id]) }}" class="cs_category_thumb position-relative">
+              @if($category->image && file_exists(public_path('storage/' . $category->image)))
+                <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-100">
+              @else
+                <img src="{{ asset('web/assets/img/default-category.jpg') }}" alt="{{ $category->name }}" class="w-100">
+              @endif
+              <span class="cs_category_btn">
+                <span>{{ $category->name }}</span>
+                <span><i class="fa-solid fa-arrow-right"></i></span>
+              </span>
+            </a>
+          </div>
+        @endforeach
+      @else
+        <!-- Default categories if no categories exist -->
+        <div class="cs_category cs_style_1">
+          <a href="{{ route('web.view.shop') }}" class="cs_category_thumb position-relative">
+            <img src="{{ asset('web/assets/img/men.jpg') }}" alt="Men" class="w-100">
+            <span class="cs_category_btn">
+              <span>Men</span>
+              <span><i class="fa-solid fa-arrow-right"></i></span>
+            </span>
+          </a>
+        </div>
+        <div class="cs_category cs_style_1">
+          <a href="{{ route('web.view.shop') }}" class="cs_category_thumb position-relative">
+            <img src="{{ asset('web/assets/img/women.jpg') }}" alt="Women" class="w-100">
+            <span class="cs_category_btn">
+              <span>Women</span>
+              <span><i class="fa-solid fa-arrow-right"></i></span>
+            </span>
+          </a>
+        </div>
+        <div class="cs_category cs_style_1">
+          <a href="{{ route('web.view.shop') }}" class="cs_category_thumb position-relative">
+            <img src="{{ asset('web/assets/img/children.jpg') }}" alt="Children" class="w-100">
+            <span class="cs_category_btn">
+              <span>Children</span>
+              <span><i class="fa-solid fa-arrow-right"></i></span>
+            </span>
+          </a>
+        </div>
+      @endif
     </div>
   </div>
   <!-- End category -->
@@ -308,7 +327,13 @@
                     <i class="fa-regular fa-eye"></i>
                   </a>
                 </div>
-                <a href="#" class="cs_cart_btn cs_accent_bg cs_fs_16 cs_white_color cs_medium position-absolute">Add To Cart</a>
+                <button class="cs_cart_btn cs_accent_bg cs_fs_16 cs_white_color cs_medium position-absolute ecommerce-add-to-cart-btn"
+                        data-product-id="{{ $product->id }}"
+                        data-product-name="{{ $product->name }}"
+                        data-product-price="{{ $product->price }}"
+                        data-product-image="{{ asset('storage/' . $product->image) }}">
+                  Add To Cart
+                </button>
               </div>
               <div class="cs_product_info text-center">
                 <h3 class="cs_product_title cs_fs_21 cs_medium">
@@ -455,15 +480,21 @@
                     <a href="#" class="cs_cart_icon cs_accent_bg cs_white_color">
                       <i class="fa-regular fa-heart"></i>
                     </a>
-                    <a href="#" class="cs_cart_icon cs_accent_bg cs_white_color">
+                    <a href="{{ route('web.product.details', $product->id) }}" class="cs_cart_icon cs_accent_bg cs_white_color">
                       <i class="fa-regular fa-eye"></i>
                     </a>
                   </div>
-                  <a href="#" class="cs_cart_btn cs_accent_bg cs_fs_16 cs_white_color cs_medium position-absolute">Add To Cart</a>
+                  <button class="cs_cart_btn cs_accent_bg cs_fs_16 cs_white_color cs_medium position-absolute ecommerce-add-to-cart-btn"
+                          data-product-id="{{ $product->id }}"
+                          data-product-name="{{ $product->name }}"
+                          data-product-price="{{ $product->price }}"
+                          data-product-image="{{ asset('storage/' . $product->image) }}">
+                    Add To Cart
+                  </button>
                 </div>
                 <div class="cs_product_info text-center">
                   <h3 class="cs_product_title cs_fs_21 cs_medium">
-                    <a href="#">{{ $product->name }}</a>
+                    <a href="{{ route('web.product.details', $product->id) }}">{{ $product->name }}</a>
                   </h3>
                   <p class="cs_product_category cs_fs_14 cs_medium cs_accent_color mb-0">F
                     {{ $product->category->name ?? 'Uncategorized' }}
@@ -646,6 +677,17 @@
     <div class="cs_height_120 cs_height_lg_70"></div>
   </section>
   <!-- End collection 2 -->
+
+<!-- Include cart components -->
+@include('web.shop.partials.cart-sidebar')
+@include('web.shop.partials.floating-cart')
+@include('web.shop.partials.toast')
+
+<!-- Cart Styles -->
+<link rel="stylesheet" href="{{ asset('assets/css/cart.css') }}">
+
+<!-- Cart Functionality -->
+<script src="{{ asset('assets/js/cart.js') }}"></script>
  
 
   @endsection

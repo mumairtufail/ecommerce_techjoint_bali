@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\ProductSize;
+use App\Models\ProductColor;
+use App\Models\ProductVariant;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +18,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('category')->latest()->get();
+        $products = Product::with(['category', 'sizes', 'colors', 'variants', 'images'])->latest()->get();
         $categories = Category::all();
         
         return view('admin.products.view', compact('products', 'categories'));
@@ -29,7 +33,14 @@ class ProductController extends Controller
         'price' => 'required|numeric|min:0',
         'stock' => 'required|integer|min:0',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-        'flag' => 'nullable|string|in:All Items,New Arrivals,Featured,On Sale'
+        'images' => 'nullable|array',
+        'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048',
+        'flag' => 'nullable|string|in:All Items,New Arrivals,Featured,On Sale',
+        'variants' => 'nullable|array',
+        'variants.*.size_id' => 'nullable|exists:product_sizes,id',
+        'variants.*.color_id' => 'nullable|exists:product_colors,id',
+        'variants.*.stock' => 'required|integer|min:0',
+        'variants.*.price_adjustment' => 'nullable|numeric',
     ]);
     
     try {
@@ -53,13 +64,45 @@ class ProductController extends Controller
         }
         
         $product = Product::create($validated);
+
+        // Handle multiple images
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $index => $image) {
+                $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                $extension = $image->getClientOriginalExtension();
+                $timestamp = now()->format('Ymd_His');
+                $cleanName = preg_replace('/[^A-Za-z0-9\-_]/', '', $originalName);
+                $cleanName = substr($cleanName, 0, 50);
+                
+                $newFileName = $timestamp . '_' . ($index + 1) . '_' . $cleanName . '.' . $extension;
+                $imagePath = $image->storeAs('products', $newFileName, 'public');
+                
+                $product->images()->create([
+                    'image_path' => $imagePath,
+                    'alt_text' => $product->name . ' - Image ' . ($index + 1),
+                    'sort_order' => $index,
+                    'is_primary' => $index === 0, // First image is primary
+                ]);
+            }
+        }
+
+        // Create variants if provided
+        if (!empty($validated['variants'])) {
+            foreach ($validated['variants'] as $variantData) {
+                $variantData['product_id'] = $product->id;
+                $variantData['price_adjustment'] = $variantData['price_adjustment'] ?? 0;
+                ProductVariant::create($variantData);
+            }
+        }
+        
         DB::commit();
 
         Log::info('Product created successfully', [
             'product_id' => $product->id,
             'name' => $product->name,
             'user_id' => auth()->id(),
-            'image_path' => $validated['image'] ?? null
+            'image_path' => $validated['image'] ?? null,
+            'images_count' => $request->hasFile('images') ? count($request->file('images')) : 0
         ]);
         
         return redirect()->route('admin.products.index')
@@ -71,7 +114,7 @@ class ProductController extends Controller
         Log::error('Failed to create product', [
             'error' => $e->getMessage(),
             'user_id' => auth()->id(),
-            'request_data' => $request->except(['image'])
+            'request_data' => $request->except(['image', 'images'])
         ]);
         
         return redirect()->route('admin.products.index')
@@ -88,7 +131,16 @@ class ProductController extends Controller
         'price' => 'required|numeric|min:0',
         'stock' => 'required|integer|min:0',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-        'flag' => 'nullable|string|in:All Items,New Arrivals,Featured,On Sale'
+        'images' => 'nullable|array',
+        'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048',
+        'flag' => 'nullable|string|in:All Items,New Arrivals,Featured,On Sale',
+        'variants' => 'nullable|array',
+        'variants.*.size_id' => 'nullable|exists:product_sizes,id',
+        'variants.*.color_id' => 'nullable|exists:product_colors,id',
+        'variants.*.stock' => 'required|integer|min:0',
+        'variants.*.price_adjustment' => 'nullable|numeric',
+        'remove_images' => 'nullable|array',
+        'remove_images.*' => 'integer|exists:product_images,id',
     ]);
 
     try {
@@ -115,6 +167,50 @@ class ProductController extends Controller
         }
 
         $product->update($validated);
+
+        // Handle removing existing images
+        if (!empty($validated['remove_images'])) {
+            $imagesToRemove = $product->images()->whereIn('id', $validated['remove_images'])->get();
+            foreach ($imagesToRemove as $imageToRemove) {
+                Storage::disk('public')->delete($imageToRemove->image_path);
+                $imageToRemove->delete();
+            }
+        }
+
+        // Handle new multiple images
+        if ($request->hasFile('images')) {
+            $currentMaxSortOrder = $product->images()->max('sort_order') ?? -1;
+            
+            foreach ($request->file('images') as $index => $image) {
+                $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                $extension = $image->getClientOriginalExtension();
+                $timestamp = now()->format('Ymd_His');
+                $cleanName = preg_replace('/[^A-Za-z0-9\-_]/', '', $originalName);
+                $cleanName = substr($cleanName, 0, 50);
+                
+                $newFileName = $timestamp . '_' . ($index + 1) . '_' . $cleanName . '.' . $extension;
+                $imagePath = $image->storeAs('products', $newFileName, 'public');
+                
+                $product->images()->create([
+                    'image_path' => $imagePath,
+                    'alt_text' => $product->name . ' - Image ' . ($currentMaxSortOrder + $index + 2),
+                    'sort_order' => $currentMaxSortOrder + $index + 1,
+                    'is_primary' => $product->images()->count() === 0 && $index === 0, // First image is primary if no images exist
+                ]);
+            }
+        }
+
+        // Update variants
+        $product->variants()->delete(); // Remove existing variants
+        
+        if (!empty($validated['variants'])) {
+            foreach ($validated['variants'] as $variantData) {
+                $variantData['product_id'] = $product->id;
+                $variantData['price_adjustment'] = $variantData['price_adjustment'] ?? 0;
+                ProductVariant::create($variantData);
+            }
+        }
+
         DB::commit();
 
         return redirect()->route('admin.products.index')
@@ -170,11 +266,13 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $product->load('category');
+        $product->load(['category', 'sizes', 'colors', 'variants.size', 'variants.color', 'images']);
         
         return view('admin.products.edit', [
             'product' => $product,
-            'categories' => Category::all()
+            'categories' => Category::all(),
+            'allSizes' => ProductSize::active()->ordered()->get(),
+            'allColors' => ProductColor::active()->ordered()->get(),
         ]);
     }
 
@@ -238,8 +336,11 @@ class ProductController extends Controller
         ]);
     }
     public function create()
-{
-    $categories = Category::all();
-    return view('admin.products.create', compact('categories'));
-}
+    {
+        $categories = Category::all();
+        $sizes = ProductSize::active()->ordered()->get();
+        $colors = ProductColor::active()->ordered()->get();
+        
+        return view('admin.products.create', compact('categories', 'sizes', 'colors'));
+    }
 }
