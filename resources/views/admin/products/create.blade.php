@@ -486,7 +486,7 @@
                 </div>
 
                 <!-- Product Variants -->
-                <div class="mb-3">
+                {{-- <div class="mb-3">
                     <label class="form-label">Product Variants</label>
                     <div class="border rounded p-3 bg-light">
                         <p class="text-muted mb-3">Create specific size-color combinations with individual stock and pricing. Variants are required for products with size/color options.</p>
@@ -499,7 +499,7 @@
                             <i class="fas fa-plus"></i> Add Variant
                         </button>
                     </div>
-                </div>
+                </div> --}}
 
                 <!-- Status -->
                 <div class="mb-3">

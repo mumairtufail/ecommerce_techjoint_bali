@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Models\Customer;
 
 class OrderController extends BaseController
 {
@@ -34,6 +35,11 @@ class OrderController extends BaseController
             ]);
 
             DB::beginTransaction();
+
+              $customer = Customer::where('email', $validated['email'])->first();
+    if (!$customer || !$customer->is_validated) {
+        return back()->with('error', 'Please verify your email before placing the order.')->withInput();
+    }
 
             // Parse and validate order items
             $orderItems = json_decode($validated['order_items'], true);

@@ -1,4 +1,4 @@
-  @extends('web.layout.app')
+@extends('web.layout.app')
 
 @section('content')
 
@@ -310,9 +310,9 @@
                                         @endif
                                         
                                         <div class="cs_cart_badge position-absolute">
-                                            <button class="cs_cart_icon cs_accent_bg cs_white_color">
+                                            {{-- <button class="cs_cart_icon cs_accent_bg cs_white_color">
                                                 <i class="fa-regular fa-heart"></i>
-                                            </button>
+                                            </button> --}}
                                             <a href="{{ route('web.product.details', $product->id) }}" class="cs_cart_icon cs_accent_bg cs_white_color">
                                                 <i class="fa-regular fa-eye"></i>
                                             </a>
@@ -389,6 +389,55 @@
 
 <script>
 // Filter and sort functionality
+let currentPage = 1;
+const productsPerPage = 9; // Change as needed
+
+function getVisibleProducts() {
+    const products = Array.from(document.querySelectorAll('.ts-product-card'));
+    return products.filter(product => product.style.display !== 'none');
+}
+
+function showPage(page) {
+    const visibleProducts = getVisibleProducts();
+    const totalPages = Math.ceil(visibleProducts.length / productsPerPage);
+    currentPage = Math.max(1, Math.min(page, totalPages));
+    visibleProducts.forEach((product, idx) => {
+        if (idx >= (currentPage - 1) * productsPerPage && idx < currentPage * productsPerPage) {
+            product.style.display = 'block';
+        } else {
+            product.style.display = 'none';
+        }
+    });
+    updatePaginationControls(totalPages);
+    document.getElementById('productCount').textContent = visibleProducts.length;
+}
+
+function updatePaginationControls(totalPages) {
+    const paginationWrap = document.querySelector('.cs_pagination_wrap ul');
+    if (!paginationWrap) return;
+    let html = '';
+    html += `<li class="cs_page_item"><a class="cs_page_link" href="#" aria-label="Previous" data-page="prev"><i class="fa-solid fa-arrow-left"></i></a></li>`;
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<li class="cs_page_item${i === currentPage ? ' active' : ''}"><a class="cs_page_link" href="#" data-page="${i}">${i}</a></li>`;
+    }
+    html += `<li class="cs_page_item"><a class="cs_page_link" href="#" aria-label="Next" data-page="next"><i class="fa-solid fa-arrow-right"></i></a></li>`;
+    paginationWrap.innerHTML = html;
+    // Add event listeners
+    paginationWrap.querySelectorAll('a.cs_page_link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            let page = this.getAttribute('data-page');
+            if (page === 'prev') {
+                showPage(currentPage - 1);
+            } else if (page === 'next') {
+                showPage(currentPage + 1);
+            } else {
+                showPage(parseInt(page));
+            }
+        });
+    });
+}
+
 function resetFilters() {
     // Reset search
     document.getElementById('searchInput').value = '';
@@ -425,29 +474,21 @@ function updateFilters() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const priceLimit = document.getElementById('priceRange').value;
     const selectedCategory = document.querySelector('input[name="category"]:checked').value;
-    
     const products = document.querySelectorAll('.ts-product-card');
-    let visibleCount = 0;
-    
     products.forEach(product => {
         const price = parseFloat(product.dataset.price);
         const category = product.dataset.category;
         const name = product.dataset.name;
-        
         const matchesSearch = name.includes(searchTerm);
         const matchesPrice = price <= priceLimit;
         const matchesCategory = selectedCategory === 'all' || category === selectedCategory;
-        
         if (matchesSearch && matchesPrice && matchesCategory) {
             product.style.display = 'block';
-            visibleCount++;
         } else {
             product.style.display = 'none';
         }
     });
-    
-    // Update product count
-    document.getElementById('productCount').textContent = visibleCount;
+    showPage(1); // Reset to first page after filter
 }
 
 function sortProducts() {
@@ -560,7 +601,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('.cs_grid_btn').addEventListener('click', () => toggleView('grid'));
     document.querySelector('.cs_list_btn').addEventListener('click', () => toggleView('list'));
     
-    // Initialize filters
+    // Initialize filters and pagination
     updateFilters();
 });
 </script>

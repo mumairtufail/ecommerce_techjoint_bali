@@ -716,7 +716,7 @@
 
                         <!-- Logo -->
                         <a href="#" class="ts-logo">
-                            <img src="logo.png" alt="ecommerce & Co" class="ts-logo__img">
+                            <img src="{{  asset('web/assets/img/logo.png') }}" alt="ecommerce & Co" class="ts-logo__img">
                         </a>
 
                         <!-- Welcome Text -->

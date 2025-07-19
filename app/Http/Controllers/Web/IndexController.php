@@ -20,7 +20,7 @@ class IndexController extends BaseController
         
         // Separate products by flags for better performance (matching the create form values)
         $featuredProducts = $products->where('flag', 'Featured')->take(8);
-        $newProducts = $products->where('flag', 'new')->take(8);
+        $newProducts = Product::with('category')->where('status', 1)->get();
         
         return view('web.index', $this->withBanners([
             'products' => $products,

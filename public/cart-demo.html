@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taysan Cart - Usage Example</title>
+    <title>ecommmerce Cart - Usage Example</title>
     
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- Taysan Cart CSS -->
+    <!-- ecommmerce Cart CSS -->
     <link rel="stylesheet" href="/assets/css/cart.css">
     
     <style>
@@ -109,7 +109,7 @@
     <div class="demo-container">
         <!-- Header -->
         <div class="demo-header">
-            <h1>🛒 Taysan Cart System</h1>
+            <h1>🛒 ecommmerce Cart System</h1>
             <p>Independent cart functionality that can be used on any page</p>
         </div>
         
@@ -118,33 +118,33 @@
             <h2>📋 How to Use</h2>
             
             <h3>1. Include the CSS and JS files:</h3>
-            <pre><code>&lt;!-- Taysan Cart CSS --&gt;
+            <pre><code>&lt;!-- ecommmerce Cart CSS --&gt;
 &lt;link rel="stylesheet" href="/assets/css/cart.css"&gt;
 
-&lt;!-- Taysan Cart JavaScript --&gt;
+&lt;!-- ecommmerce Cart JavaScript --&gt;
 &lt;script src="/assets/js/cart.js"&gt;&lt;/script&gt;</code></pre>
 
             <h3>2. Add the cart sidebar to your page:</h3>
             <pre><code>&lt;!-- Cart Sidebar (include once per page) --&gt;
-&lt;div class="taysan-cart-sidebar" id="taysanCartSidebar"&gt;
-    &lt;div class="taysan-cart-header"&gt;
+&lt;div class="ecommmerce-cart-sidebar" id="ecommmerceCartSidebar"&gt;
+    &lt;div class="ecommmerce-cart-header"&gt;
         &lt;h3&gt;Shopping Cart&lt;/h3&gt;
-        &lt;button class="taysan-cart-close"&gt;
+        &lt;button class="ecommmerce-cart-close"&gt;
             &lt;i class="fas fa-times"&gt;&lt;/i&gt;
         &lt;/button&gt;
     &lt;/div&gt;
-    &lt;div class="taysan-cart-items"&gt;
+    &lt;div class="ecommmerce-cart-items"&gt;
         &lt;!-- Cart items will be dynamically added here --&gt;
     &lt;/div&gt;
-    &lt;div class="taysan-cart-footer"&gt;
-        &lt;div class="taysan-cart-total"&gt;
+    &lt;div class="ecommmerce-cart-footer"&gt;
+        &lt;div class="ecommmerce-cart-total"&gt;
             &lt;span&gt;Total:&lt;/span&gt;
-            &lt;span class="taysan-cart-total-amount"&gt;$0.00&lt;/span&gt;
+            &lt;span class="ecommmerce-cart-total-amount"&gt;$0.00&lt;/span&gt;
         &lt;/div&gt;
-        &lt;button class="taysan-checkout-btn"&gt;
+        &lt;button class="ecommmerce-checkout-btn"&gt;
             Proceed to Checkout
         &lt;/button&gt;
-        &lt;button class="taysan-clear-cart-btn"&gt;
+        &lt;button class="ecommmerce-clear-cart-btn"&gt;
             &lt;i class="fas fa-trash-alt"&gt;&lt;/i&gt;
             Clear Cart
         &lt;/button&gt;
@@ -152,7 +152,7 @@
 &lt;/div&gt;</code></pre>
 
             <h3>3. Add the "Add to Cart" buttons to your products:</h3>
-            <pre><code>&lt;button class="taysan-add-to-cart-btn"
+            <pre><code>&lt;button class="ecommmerce-add-to-cart-btn"
         data-product-id="1"
         data-product-name="Sample Product"
         data-product-price="29.99"
@@ -176,7 +176,7 @@
         <div class="feature-list">
             <div class="feature-item">
                 <h4>🎨 Independent Styling</h4>
-                <p>Uses unique class names (taysan-*) to avoid conflicts with other CSS frameworks.</p>
+                <p>Uses unique class names (ecommmerce-*) to avoid conflicts with other CSS frameworks.</p>
             </div>
             
             <div class="feature-item">
@@ -212,7 +212,7 @@
                 <img src="https://via.placeholder.com/300x200/FC5F49/white?text=Product+1" alt="Demo Product 1">
                 <h3>Premium Headphones</h3>
                 <div class="price">$99.99</div>
-                <button class="taysan-add-to-cart-btn"
+                <button class="ecommmerce-add-to-cart-btn"
                         data-product-id="demo1"
                         data-product-name="Premium Headphones"
                         data-product-price="99.99"
@@ -226,7 +226,7 @@
                 <img src="https://via.placeholder.com/300x200/4CAF50/white?text=Product+2" alt="Demo Product 2">
                 <h3>Wireless Mouse</h3>
                 <div class="price">$29.99</div>
-                <button class="taysan-add-to-cart-btn"
+                <button class="ecommmerce-add-to-cart-btn"
                         data-product-id="demo2"
                         data-product-name="Wireless Mouse"
                         data-product-price="29.99"
@@ -240,7 +240,7 @@
                 <img src="https://via.placeholder.com/300x200/2196F3/white?text=Product+3" alt="Demo Product 3">
                 <h3>Gaming Keyboard</h3>
                 <div class="price">$79.99</div>
-                <button class="taysan-add-to-cart-btn"
+                <button class="ecommmerce-add-to-cart-btn"
                         data-product-id="demo3"
                         data-product-name="Gaming Keyboard"
                         data-product-price="79.99"
@@ -254,7 +254,7 @@
                 <img src="https://via.placeholder.com/300x200/9C27B0/white?text=Product+4" alt="Demo Product 4">
                 <h3>USB Cable</h3>
                 <div class="price">$12.99</div>
-                <button class="taysan-add-to-cart-btn"
+                <button class="ecommmerce-add-to-cart-btn"
                         data-product-id="demo4"
                         data-product-name="USB Cable"
                         data-product-price="12.99"
@@ -272,7 +272,7 @@
             
             <h3>Access the cart manager:</h3>
             <pre><code>// Global cart manager instance
-const cart = window.taysanCartManager;</code></pre>
+const cart = window.ecommmerceCartManager;</code></pre>
 
             <h3>Add items programmatically:</h3>
             <pre><code>cart.addItem({
@@ -309,40 +309,40 @@ cart.updateQuantity('product123', 5);</code></pre>
     </div>
 
     <!-- Cart Sidebar (will be auto-created, but you can include it manually) -->
-    <div class="taysan-cart-sidebar" id="taysanCartSidebar">
-        <div class="taysan-cart-header">
+    <div class="ecommmerce-cart-sidebar" id="ecommmerceCartSidebar">
+        <div class="ecommmerce-cart-header">
             <h3>Shopping Cart</h3>
-            <button class="taysan-cart-close">
+            <button class="ecommmerce-cart-close">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <div class="taysan-cart-items">
+        <div class="ecommmerce-cart-items">
             <!-- Cart items will be dynamically added here -->
         </div>
-        <div class="taysan-cart-footer">
-            <div class="taysan-cart-total">
+        <div class="ecommmerce-cart-footer">
+            <div class="ecommmerce-cart-total">
                 <span>Total:</span>
-                <span class="taysan-cart-total-amount">$0.00</span>
+                <span class="ecommmerce-cart-total-amount">$0.00</span>
             </div>
-            <button class="taysan-checkout-btn">
+            <button class="ecommmerce-checkout-btn">
                 Proceed to Checkout
             </button>
-            <button class="taysan-clear-cart-btn">
+            <button class="ecommmerce-clear-cart-btn">
                 <i class="fas fa-trash-alt"></i>
                 Clear Cart
             </button>
         </div>
     </div>
 
-    <!-- Taysan Cart JavaScript -->
+    <!-- ecommmerce Cart JavaScript -->
     <script src="/assets/js/cart.js"></script>
     
     <script>
         // Demo: Customize checkout behavior
         document.addEventListener('DOMContentLoaded', function() {
             // Override checkout behavior for demo
-            const originalCheckout = window.taysanCartManager.handleCheckout;
-            window.taysanCartManager.handleCheckout = function() {
+            const originalCheckout = window.ecommmerceCartManager.handleCheckout;
+            window.ecommmerceCartManager.handleCheckout = function() {
                 const cart = this.getCart();
                 if (cart.length === 0) {
                     this.showToast('Your cart is empty', 'warning');

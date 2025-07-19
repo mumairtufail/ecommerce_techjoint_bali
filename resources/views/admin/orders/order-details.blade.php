@@ -475,13 +475,13 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <strong style="color: var(--text-dark);">PKR {{ number_format($item->product_price, 2) }}</strong>
+                                    <strong style="color: var(--text-dark);">${{ number_format($item->product_price, 2) }}</strong>
                                 </td>
                                 <td>
                                     <span class="quantity-badge">{{ $item->quantity }}</span>
                                 </td>
                                 <td style="text-align: right;">
-                                    <strong style="color: var(--text-dark);">PKR {{ number_format($item->subtotal, 2) }}</strong>
+                                    <strong style="color: var(--text-dark);">${{ number_format($item->subtotal, 2) }}</strong>
                                 </td>
                             </tr>
                             @empty
@@ -502,7 +502,7 @@
                                 </td>
                                 <td style="text-align: right; padding: 1.5rem 1rem;">
                                     <div class="total-amount">
-                                        PKR {{ number_format($order->total, 2) }}
+                                        ${{ number_format($order->total, 2) }}
                                     </div>
                                 </td>
                             </tr>

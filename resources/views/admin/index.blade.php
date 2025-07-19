@@ -592,7 +592,7 @@
                 <div class="stat-icon">
                     <i class="fas fa-rupee-sign"></i>
                 </div>
-                <div class="stat-number">PKR {{ number_format($totalRevenue ?? 0, 0) }}</div>
+                <div class="stat-number">${{ number_format($totalRevenue ?? 0, 0) }}</div>
                 <div class="stat-label">Total Revenue</div>
                 <div class="stat-trend trend-up">
                     <i class="fas fa-arrow-up"></i>
@@ -652,19 +652,19 @@
                 <div class="revenue-stats">
                     <div class="revenue-stat">
                         <div class="revenue-stat-label">This Month</div>
-                        <div class="revenue-stat-value">PKR {{ number_format($monthlyRevenue ?? 0, 0) }}</div>
+                        <div class="revenue-stat-value">${{ number_format($monthlyRevenue ?? 0, 0) }}</div>
                         <div class="revenue-stat-change trend-up">
                             <i class="fas fa-arrow-up"></i> +15%
                         </div>
                     </div>
                     <div class="revenue-stat">
                         <div class="revenue-stat-label">Last Month</div>
-                        <div class="revenue-stat-value">PKR {{ number_format($lastMonthRevenue ?? 0, 0) }}</div>
+                        <div class="revenue-stat-value">${{ number_format($lastMonthRevenue ?? 0, 0) }}</div>
                         <div class="revenue-stat-change trend-neutral">Previous period</div>
                     </div>
                     <div class="revenue-stat">
                         <div class="revenue-stat-label">Average Order</div>
-                        <div class="revenue-stat-value">PKR {{ number_format($averageOrderValue ?? 0, 0) }}</div>
+                        <div class="revenue-stat-value">${{ number_format($averageOrderValue ?? 0, 0) }}</div>
                         <div class="revenue-stat-change trend-up">
                             <i class="fas fa-arrow-up"></i> +3%
                         </div>
@@ -740,7 +740,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <strong class="text-dark">PKR {{ number_format($order->total, 2) }}</strong>
+                                        <strong class="text-dark">${{ number_format($order->total, 2) }}</strong>
                                     </td>
                                     <td>
                                         <span class="status-badge status-{{ $order->status }}">
@@ -845,7 +845,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ticks: {
                             color: '#718096',
                             callback: function(value) {
-                                return 'PKR ' + value.toLocaleString();
+                                return '$' + value.toLocaleString();
                             }
                         }
                     }

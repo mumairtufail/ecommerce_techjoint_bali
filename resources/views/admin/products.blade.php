@@ -54,9 +54,11 @@
                                 </thead>
                                 <tbody>
                                     @foreach($products as $product)
+
                                     <tr>
                                         <td>
-                                            <img src="{{ asset('storage/' . $product->image) }}" 
+                                            
+                                            <img src="{{ asset('storage/app/public/' . $product->image) }}" 
                                                  alt="{{ $product->name }}" 
                                                  class="img-fluid" 
                                                  style="max-width: 50px;">

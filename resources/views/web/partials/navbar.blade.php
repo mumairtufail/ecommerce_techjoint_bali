@@ -1,5 +1,5 @@
 <!-- Start header -->
-  <header class="cs_site_header cs_style_1 cs_color_1 cs_primary_bg cs_site_header_full_width cs_sticky_header">
+  <header class="cs_site_header cs_style_1 cs_color_1 cs_primary_bg cs_site_header_full_width cs_sticky_header" style="background:#371502;">
     <div class="cs_top_header cs_primary_color">
       <div class="container-fluid">
         <div class="cs_top_header_in">
@@ -41,7 +41,7 @@
         <div class="cs_main_header_in">
           <div class="cs_main_header_left">
             <a class="cs_site_branding" href="{{ route('web.view.index') }}">
-              <img src="web/assets/img/logo.svg" alt="Logo">
+              <img src="{{  asset('web/assets/img/logo.png') }}" alt="Logo" style="height:60px; width:auto; max-width:180px; object-fit:contain; display:block; background:#9C7541; border-radius:8px; padding:4px;" />
             </a>
           </div>
           <div class="cs_main_header_center">

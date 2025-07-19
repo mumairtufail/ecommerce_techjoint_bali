@@ -1,10 +1,10 @@
-# 🛒 Taysan Cart System
+# 🛒 ecommmerce Cart System
 
 A standalone, reusable shopping cart system that can be integrated into any website or Laravel application.
 
 ## ✨ Features
 
-- **🎨 Independent Styling**: Uses unique class names (`taysan-*`) to avoid conflicts
+- **🎨 Independent Styling**: Uses unique class names (`ecommmerce-*`) to avoid conflicts
 - **💾 Persistent Storage**: Cart data persists in localStorage between sessions
 - **📱 Responsive Design**: Works on desktop, tablet, and mobile devices
 - **🔄 Real-time Updates**: Instant cart count and total updates
@@ -26,35 +26,35 @@ A standalone, reusable shopping cart system that can be integrated into any webs
 <!-- Include Font Awesome for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-<!-- Taysan Cart CSS -->
+<!-- ecommmerce Cart CSS -->
 <link rel="stylesheet" href="/assets/css/cart.css">
 
-<!-- Taysan Cart JavaScript -->
+<!-- ecommmerce Cart JavaScript -->
 <script src="/assets/js/cart.js"></script>
 ```
 
 ### 2. Add Cart Sidebar HTML
 
 ```html
-<div class="taysan-cart-sidebar" id="taysanCartSidebar">
-    <div class="taysan-cart-header">
+<div class="ecommmerce-cart-sidebar" id="ecommmerceCartSidebar">
+    <div class="ecommmerce-cart-header">
         <h3>Shopping Cart</h3>
-        <button class="taysan-cart-close">
+        <button class="ecommmerce-cart-close">
             <i class="fas fa-times"></i>
         </button>
     </div>
-    <div class="taysan-cart-items">
+    <div class="ecommmerce-cart-items">
         <!-- Cart items will be dynamically added here -->
     </div>
-    <div class="taysan-cart-footer">
-        <div class="taysan-cart-total">
+    <div class="ecommmerce-cart-footer">
+        <div class="ecommmerce-cart-total">
             <span>Total:</span>
-            <span class="taysan-cart-total-amount">$0.00</span>
+            <span class="ecommmerce-cart-total-amount">$0.00</span>
         </div>
-        <button class="taysan-checkout-btn">
+        <button class="ecommmerce-checkout-btn">
             Proceed to Checkout
         </button>
-        <button class="taysan-clear-cart-btn">
+        <button class="ecommmerce-clear-cart-btn">
             <i class="fas fa-trash-alt"></i>
             Clear Cart
         </button>
@@ -65,7 +65,7 @@ A standalone, reusable shopping cart system that can be integrated into any webs
 ### 3. Add "Add to Cart" Buttons
 
 ```html
-<button class="taysan-add-to-cart-btn"
+<button class="ecommmerce-add-to-cart-btn"
         data-product-id="unique-product-id"
         data-product-name="Product Name"
         data-product-price="29.99"
@@ -97,7 +97,7 @@ The cart system will automatically:
 ### Access the Cart Manager
 
 ```javascript
-const cart = window.taysanCartManager;
+const cart = window.ecommmerceCartManager;
 ```
 
 ### Core Methods
@@ -159,16 +159,16 @@ The cart uses CSS custom properties for easy theming:
 
 ```css
 :root {
-    --taysan-primary: #FC5F49;        /* Brand color */
-    --taysan-primary-light: #ff7b65;  /* Hover states */
-    --taysan-primary-dark: #d14436;   /* Active states */
-    --taysan-white: #ffffff;
-    --taysan-black: #070707;
-    --taysan-gray: #666666;
-    --taysan-light-gray: #f5f5f5;
-    --taysan-border-color: #e0e0e0;
-    --taysan-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-    --taysan-shadow-hover: 0 5px 25px rgba(0, 0, 0, 0.15);
+    --ecommmerce-primary: #FC5F49;        /* Brand color */
+    --ecommmerce-primary-light: #ff7b65;  /* Hover states */
+    --ecommmerce-primary-dark: #d14436;   /* Active states */
+    --ecommmerce-white: #ffffff;
+    --ecommmerce-black: #070707;
+    --ecommmerce-gray: #666666;
+    --ecommmerce-light-gray: #f5f5f5;
+    --ecommmerce-border-color: #e0e0e0;
+    --ecommmerce-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    --ecommmerce-shadow-hover: 0 5px 25px rgba(0, 0, 0, 0.15);
 }
 ```
 
@@ -176,12 +176,12 @@ The cart uses CSS custom properties for easy theming:
 
 ```css
 /* Change primary color */
-.taysan-floating-cart-btn {
+.ecommmerce-floating-cart-btn {
     background: #your-color !important;
 }
 
 /* Customize cart sidebar */
-.taysan-cart-sidebar {
+.ecommmerce-cart-sidebar {
     width: 500px; /* Make wider */
 }
 ```
@@ -191,7 +191,7 @@ The cart uses CSS custom properties for easy theming:
 ```javascript
 document.addEventListener('DOMContentLoaded', function() {
     // Override default checkout
-    window.taysanCartManager.handleCheckout = function() {
+    window.ecommmerceCartManager.handleCheckout = function() {
         const cart = this.getCart();
         if (cart.length === 0) {
             this.showToast('Your cart is empty', 'warning');
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- Product loop -->
 @foreach($products as $product)
-    <button class="taysan-add-to-cart-btn"
+    <button class="ecommmerce-add-to-cart-btn"
             data-product-id="{{ $product->id }}"
             data-product-name="{{ $product->name }}"
             data-product-price="{{ $product->price }}"
@@ -266,7 +266,7 @@ public function process(Request $request)
 
 ### Styling Issues?
 
-1. **CSS Conflicts**: Our classes use `taysan-` prefix to avoid conflicts
+1. **CSS Conflicts**: Our classes use `ecommmerce-` prefix to avoid conflicts
 2. **Load Order**: Load cart.css after other stylesheets
 3. **Specificity**: Use `!important` if needed to override existing styles
 
@@ -276,7 +276,7 @@ Open `public/cart-demo.html` in your browser to see a live demo with usage examp
 
 ## 📄 License
 
-This cart system is part of the Taysan project and follows the same licensing terms.
+This cart system is part of the ecommmerce project and follows the same licensing terms.
 
 ## 🤝 Contributing
 

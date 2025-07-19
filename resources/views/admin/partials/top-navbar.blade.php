@@ -1,25 +1,32 @@
 <!-- filepath: d:\ecommerce\resources\views\admin\partials\top-navbar.blade.php -->
+<!-- filepath: d:\ecommerce\resources\views\admin\partials\top-navbar.blade.php -->
 <style>
-    /* Theme Colors */
+    /* Theme Colors - Updated to match logo */
     :root {
-        --primary: #FC5F49;
-        --primary-hover: #E04732;
-        --primary-active: #D03B28;
-        --primary-light: #FFF0EE;
-        --text-primary: #333333;
-        --text-secondary: #666666;
-        --text-muted: #888888;
-        --bg-light: #f8f9fa;
-        --bg-lighter: #f1f1f1;
-        --border-color: #dee2e6;
-        --border-light: #eee;
+        --primary: #9C7541;
+        --primary-hover: #8A6639;
+        --primary-active: #775730;
+        --primary-light: #F5F2ED;
+        --primary-dark: #371502;
+        --text-primary: #371502;
+        --text-secondary: #5A4A3A;
+        --text-muted: #8A7A6A;
+        --bg-light: #FAFAF9;
+        --bg-lighter: #F5F2ED;
+        --border-color: #E8E2D8;
+        --border-light: #F0EAE0;
         --danger: #dc3545;
+        --success: #28a745;
+        --warning: #ffc107;
+        --info: #17a2b8;
     }
 
     /* Base Navbar Styles */
     .navbar {
         padding: 0.5rem 1rem;
         z-index: 1040;
+        background-color: #fff;
+        border-bottom: 1px solid var(--border-color);
     }
 
     .navbar-brand {
@@ -44,8 +51,13 @@
     .nav-link {
         position: relative;
         padding: 0.5rem 1rem;
-        color: #555;
+        color: var(--text-secondary);
         transition: color 0.3s ease;
+        font-weight: 500;
+    }
+
+    .nav-link:hover {
+        color: var(--primary);
     }
 
     .nav-item.active .nav-link {
@@ -61,40 +73,42 @@
         width: 95%;
         height: 3px;
         margin-left: 2px;
-        background: var(--primary);
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
         border-radius: 2px;
     }
 
     /* Button Styles */
     .btn-primary, .custom-btn-primary {
-        background-color: var(--primary) !important;
+        background: linear-gradient(135deg, var(--primary), var(--primary-hover)) !important;
         border-color: var(--primary) !important;
         color: white !important;
         transition: all 0.3s ease;
+        font-weight: 500;
     }
 
     .btn-primary:hover, .custom-btn-primary:hover {
-        background-color: var(--primary-hover) !important;
+        background: linear-gradient(135deg, var(--primary-hover), var(--primary-active)) !important;
         border-color: var(--primary-hover) !important;
         transform: translateY(-1px);
-        box-shadow: 0 2px 5px rgba(245, 59, 49, 0.2);
+        box-shadow: 0 4px 12px rgba(156, 117, 65, 0.3);
     }
 
     .btn-primary:active, .btn-primary:focus,
     .custom-btn-primary:active, .custom-btn-primary:focus {
-        background-color: var(--primary-active) !important;
+        background: linear-gradient(135deg, var(--primary-active), var(--primary-dark)) !important;
         border-color: var(--primary-active) !important;
-        box-shadow: 0 0 0 0.2rem rgba(245, 59, 49, 0.25) !important;
+        box-shadow: 0 0 0 0.2rem rgba(156, 117, 65, 0.25) !important;
     }
 
     /* Dropdown Styles */
     .dropdown-menu {
-        border: none;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 20px rgba(55, 21, 2, 0.1);
         border-radius: 8px;
         padding: 0.5rem 0;
         min-width: 200px;
         z-index: 1045;
+        background-color: #fff;
     }
 
     .dropdown-item {
@@ -103,6 +117,7 @@
         color: var(--text-primary);
         display: flex;
         align-items: center;
+        font-weight: 500;
     }
 
     .dropdown-item:hover {
@@ -114,6 +129,11 @@
     .dropdown-item i {
         margin-right: 10px;
         font-size: 18px;
+        color: var(--text-muted);
+    }
+
+    .dropdown-item:hover i {
+        color: var(--primary);
     }
 
     /* Avatar Styles */
@@ -121,6 +141,9 @@
         width: 40px;
         height: 40px;
         position: relative;
+        border: 2px solid var(--border-color);
+        border-radius: 50%;
+        overflow: hidden;
     }
 
     .avatar-img {
@@ -132,8 +155,8 @@
     .avatar-initial {
         width: 100%;
         height: 100%;
-        background: linear-gradient(45deg, #e3e7fc, #d1d7fb);
-        color: #5b6be8;
+        background: linear-gradient(135deg, var(--primary-light), var(--primary));
+        color: var(--primary-dark);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -152,22 +175,25 @@
         right: 0;
         margin-top: 15px;
         z-index: 1050;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(55, 21, 2, 0.15);
         border-radius: 8px;
         padding: 0;
+        border: 1px solid var(--border-color);
+        background-color: #fff;
     }
 
     .notification-badge {
         position: absolute;
         top: -5px;
         right: -5px;
-        padding: 1px 3px;
+        padding: 2px 6px;
         font-size: 10px;
-        background: var(--primary);
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
         color: white;
         border-radius: 10px;
-        min-width: 15px;
+        min-width: 16px;
         text-align: center;
+        font-weight: 600;
     }
 
     .notification-header {
@@ -189,6 +215,12 @@
         color: var(--primary);
         font-size: 12px;
         text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    .notification-header .mark-all-read:hover {
+        color: var(--primary-hover);
     }
 
     .notification-body {
@@ -212,7 +244,8 @@
     }
 
     .notification-item.unread {
-        background-color: #fff8f8;
+        background-color: var(--primary-light);
+        border-left: 3px solid var(--primary);
     }
 
     .notification-avatar {
@@ -221,6 +254,7 @@
         margin-right: 12px;
         border-radius: 50%;
         overflow: hidden;
+        border: 2px solid var(--border-color);
     }
 
     .notification-avatar img {
@@ -258,7 +292,7 @@
     }
 
     .delete-notification {
-        color: #999;
+        color: var(--text-muted);
         padding: 4px;
         background: none;
         border: none;
@@ -266,6 +300,16 @@
     }
 
     .delete-notification:hover {
+        color: var(--danger);
+    }
+
+    /* Bell icon styling */
+    .bi-bell {
+        color: var(--text-secondary);
+        transition: color 0.3s ease;
+    }
+
+    .nav-link:hover .bi-bell {
         color: var(--primary);
     }
 
@@ -283,10 +327,16 @@
         align-items: center;
         justify-content: center;
         margin-left: 10px;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .navbar-toggle-btn:hover {
+        background-color: var(--primary-light);
     }
 
     .feather-icon i {
-        color: #333;
+        color: var(--text-secondary);
         font-size: 24px;
         transition: color 0.3s ease;
     }
@@ -305,12 +355,7 @@
         .navbar-toggle-btn {
             width: 40px;
             height: 40px;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-
-        .navbar-toggle-btn:hover {
-            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 6px;
         }
 
         .navbar-brand {
@@ -338,6 +383,11 @@
             display: flex;
             align-items: center;
             color: var(--text-primary);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .navbar-nav .nav-link:hover {
+            background-color: var(--primary-light);
         }
 
         .navbar-nav .nav-link i {
@@ -345,6 +395,16 @@
             font-size: 18px;
             margin-right: 12px;
             text-align: center;
+            color: var(--text-muted);
+        }
+
+        .navbar-nav .nav-item.active .nav-link {
+            background-color: var(--primary-light);
+            border-left: 3px solid var(--primary);
+        }
+
+        .navbar-nav .nav-item.active .nav-link i {
+            color: var(--primary);
         }
 
         .navbar-nav .dropdown-menu {
@@ -367,6 +427,7 @@
             background-color: var(--bg-light);
             cursor: pointer;
             transition: background-color 0.2s ease;
+            border-bottom: 1px solid var(--border-light);
         }
 
         .mobile-profile-header:hover {
@@ -386,6 +447,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 200px;
+            font-weight: 600;
         }
 
         .mobile-profile-header .user-info small {
@@ -420,12 +482,17 @@
 
         /* Mobile Logout */
         .mobile-logout {
-            border-top: 1px solid var(--border-light);
+            border-top: 2px solid var(--border-color);
             margin-top: 10px;
         }
 
         .mobile-logout .nav-link {
             color: var(--danger) !important;
+            font-weight: 600;
+        }
+
+        .mobile-logout .nav-link:hover {
+            background-color: #ffebee;
         }
     }
 
@@ -497,6 +564,42 @@
             display: none;
         }
     }
+
+    /* Additional enhancements for better visual hierarchy */
+    .dropdown-divider {
+        border-top: 1px solid var(--border-light);
+        margin: 0.5rem 0;
+    }
+
+    /* Chevron icon styling */
+    .zmdi-chevron-down {
+        color: var(--text-muted);
+        transition: color 0.3s ease;
+        margin-left: 8px;
+    }
+
+    .dropdown-toggle:hover .zmdi-chevron-down {
+        color: var(--primary);
+    }
+
+    /* Media body styling for desktop profile */
+    .media-body span {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    /* View all notifications link */
+    .dropdown-item.text-center.text-primary {
+        color: var(--primary) !important;
+        font-weight: 600;
+        border-top: 1px solid var(--border-light);
+        margin-top: 0.5rem;
+    }
+
+    .dropdown-item.text-center.text-primary:hover {
+        background-color: var(--primary-light);
+        transform: none;
+    }
 </style>
 
 <nav class="navbar navbar-expand-xl navbar-light fixed-top hk-navbar hk-navbar-alt">
@@ -509,7 +612,7 @@
             <!-- Mobile Profile Header -->
             <li class="nav-item d-xl-none mobile-profile-section">
                 <div class="dropdown-header d-flex align-items-center mobile-profile-header"
-                    onclick="window.location.href='{{ route('settings.index') }}'">
+                    onclick="window.location.href=''">
                     <div class="avatar mr-3">
                         @if (Auth::user()->profile_picture)
                             <img src="https://limostorage.s3.ap-southeast-2.amazonaws.com/{{ Auth::user()->profile_picture }}"
@@ -549,7 +652,7 @@
                 </a>
             </li>
 
-            <li class="nav-item {{ request()->routeIs('admin.sizes.index') ? 'active' : '' }}">
+            {{-- <li class="nav-item {{ request()->routeIs('admin.sizes.index') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.sizes.index') }}">
                     <i class="fa fa-expand-arrows-alt d-xl-none"></i>
                     <span>Sizes</span>
@@ -561,7 +664,7 @@
                     <i class="fa fa-palette d-xl-none"></i>
                     <span>Colors</span>
                 </a>
-            </li>
+            </li> --}}
 
             <li class="nav-item {{ request()->routeIs('admin.orders.index') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.orders.index') }}">
@@ -577,12 +680,12 @@
                 </a>
             </li>
 
-            <li class="nav-item {{ request()->routeIs('settings.index') ? 'active' : '' }}">
+            {{-- <li class="nav-item {{ request()->routeIs('settings.index') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('settings.index') }}">
                     <i class="fa fa-cog d-xl-none"></i>
                     <span>Settings</span>
                 </a>
-            </li>
+            </li> --}}
 
             <!-- Mobile Logout -->
             <li class="nav-item d-xl-none">
@@ -640,7 +743,7 @@
                 </div>
             </a>
             <div class="dropdown-menu dropdown-menu-right" data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
-                <a class="dropdown-item" href="{{ route('settings.index') }}">
+                <a class="dropdown-item" href="">
                     <i class="dropdown-icon zmdi zmdi-account"></i><span>Profile</span>
                 </a>
                 <div class="dropdown-divider"></div>

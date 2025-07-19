@@ -29,7 +29,7 @@ class CategoryController extends Controller
     /**
      * Store a newly created category in storage.
      */
-    public function store(Request $request)
+  public function store(Request $request)
     {
         try {
             $validated = $request->validate([
@@ -52,7 +52,9 @@ class CategoryController extends Controller
 
             // Handle image upload
             if ($request->hasFile('image')) {
-                $imagePath = $request->file('image')->store('categories', 'public');
+                $image = $request->file('image');
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $imagePath = $image->storeAs('categories', $imageName, 'public');
                 $validated['image'] = $imagePath;
             }
 
@@ -103,10 +105,12 @@ class CategoryController extends Controller
         }
     }
 
+
+
     /**
      * Update the specified category in storage.
      */
-    public function update(Request $request, Category $category)
+   public function update(Request $request, Category $category)
     {
         try {
             $validated = $request->validate([
@@ -139,7 +143,9 @@ class CategoryController extends Controller
                     Storage::disk('public')->delete($category->image);
                 }
                 
-                $imagePath = $request->file('image')->store('categories', 'public');
+                $image = $request->file('image');
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $imagePath = $image->storeAs('categories', $imageName, 'public');
                 $validated['image'] = $imagePath;
             }
 
@@ -189,6 +195,7 @@ class CategoryController extends Controller
                            ->with('error', 'Failed to update category. Please try again.');
         }
     }
+
 
     /**
      * Remove the specified category from storage.

@@ -245,14 +245,13 @@
     </div>
   </section>
   <!-- End icon boxes -->
-  <!-- Start category -->
-  <div class="container-fluid">
+<div class="container-fluid">
     <div class="cs_grid_list">
       @if(isset($categories) && $categories->count() > 0)
         @foreach($categories->where('status', 1)->take(6) as $category)
           <div class="cs_category cs_style_1">
             <a href="{{ route('web.view.shop', ['category' => $category->id]) }}" class="cs_category_thumb position-relative">
-              @if($category->image && file_exists(public_path('storage/' . $category->image)))
+              @if($category->image && Storage::disk('public')->exists($category->image))
                 <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-100">
               @else
                 <img src="{{ asset('web/assets/img/default-category.jpg') }}" alt="{{ $category->name }}" class="w-100">
@@ -296,7 +295,24 @@
       @endif
     </div>
   </div>
-  <!-- End category -->
+
+<style>
+.cs_grid_list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.cs_category {
+    height: 350px; /* Fixed height for consistency */
+}
+
+.cs_category_thumb img {
+    height: 350px; /* Fixed height for all images */
+    object-fit: cover; /* Maintains aspect ratio while covering the area */
+}
+</style>
   <!-- Start featured Items -->
   <section>
     <div class="cs_height_120 cs_height_lg_70"></div>
@@ -306,6 +322,7 @@
     </div>
     <div class="container-fluid">
       <div class="row cs_gap_y_30">
+        
         @if(isset($featuredProducts) && $featuredProducts->count() > 0)
           @foreach($featuredProducts as $product)
           <div class="col-xl-3 col-lg-4 col-md-6">
@@ -469,7 +486,7 @@
               <div class="cs_product cs_style_1">
                 <div class="cs_product_thumb position-relative">
                   @if($product->image)
-                    <img src="{{ asset('storage/products/' . $product->image) }}" alt="{{ $product->name }}">
+                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
                   @else
                     <img src="web/assets/img/product1.png" alt="{{ $product->name }}">
                   @endif

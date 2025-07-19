@@ -263,7 +263,7 @@
                             <span class="items-badge">{{ $itemCount }} items</span>
                         </td>
                         <td>
-                            <div class="total-amount">PKR {{ number_format($order->total, 2) }}</div>
+                            <div class="total-amount">${{ number_format($order->total, 2) }}</div>
                         </td>
                         <td>
                             <div class="order-date">{{ \Carbon\Carbon::parse($order->created_at)->format('M d, Y') }}</div>

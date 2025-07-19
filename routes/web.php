@@ -7,6 +7,7 @@ use App\Http\Controllers\Web\{
     AboutController,
     ContactController,
     OrderController as WebOrderController,
+    
 };
 use App\Http\Controllers\Admin\{
     IndexController as AdminIndexController,
@@ -18,6 +19,7 @@ use App\Http\Controllers\Admin\{
     ProductSizeController,
     ProductColorController,
 };
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,15 +32,20 @@ Route::get('/shop', [ShopController::class, 'view'])->name('web.view.shop');
 Route::get('/about-us', [AboutController::class, 'view'])->name('web.view.about');
 Route::get('/contact', [ContactController::class, 'view'])->name('web.view.contact');
 Route::post('/contact', [ContactController::class, 'submitContact'])->name('web.contact.submit');
-Route::get('/orders-web', [WebOrderController::class, 'view'])->name('web.orders.index');
+Route::get('/orders-web', [WebOrderController::class, 'view'])->name('web.order');
 
 // Product Details Route
-Route::get('/product/{id}', [ShopController::class, 'productDetails'])->name('web.product.details');
+Route::get('/product/{id}', [ShopController::class, 'show'])->name('web.product.details');
 // Route::get('/products/{id}', [ShopController::class, 'viewtest'])->name('web.products.view');
 
 // New route to store the order
-Route::post('/orders', [WebOrderController::class, 'storeWebOrders'])->name('web.orders.store');
 
+Route::get('/checkout', [OrderController::class, 'view'])->name('web.orders.checkout');
+Route::post('/orders/store', [WebOrderController::class, 'storeWebOrders'])->name('web.orders.store');
+
+// OTP validation endpoints
+Route::post('/customer/send-otp', [CustomerController::class, 'sendOtp'])->name('customer.send-otp');
+Route::post('/customer/verify-otp', [CustomerController::class, 'verifyOtp'])->name('customer.verify-otp');
 
 /*
 |--------------------------------------------------------------------------

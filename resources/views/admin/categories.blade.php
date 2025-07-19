@@ -7,7 +7,6 @@
 @endpush
 
 @section('content')
-
 <style>
     :root {
         --primary-color: #FC5F49;
@@ -95,6 +94,14 @@
         border-radius: 16px;
         padding: 1.5rem;
         box-shadow: 0 1px 3px rgba(252, 95, 73, 0.08);
+    }
+
+    .category-image {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid var(--border-light);
     }
 
     .category-name {
@@ -369,6 +376,11 @@
             padding: 0 1.5rem 1.5rem;
             flex-direction: column;
         }
+pro
+        .category-image {
+            width: 40px;
+            height: 40px;
+        }
     }
 </style>
 
@@ -435,6 +447,8 @@
             <table id="categoriesTable" class="table table-hover w-100">
                 <thead>
                     <tr>
+                                                <th>Image</th>
+
                         <th>Category</th>
                         <th>Description</th>
                         <th>Products Count</th>
@@ -446,6 +460,17 @@
                 <tbody>
                     @foreach($categories as $category)
                     <tr id="category-row-{{ $category->id }}">
+                          <td>
+                            @if($category->image)
+                                <img src="{{ asset('storage/' . $category->image) }}" 
+                                     alt="{{ $category->name }}" 
+                                     class="category-image">
+                            @else
+                                <div class="category-image bg-light d-flex align-items-center justify-content-center text-muted">
+                                    No Image
+                                </div>
+                            @endif
+                        </td>
                         <td>
                             <div class="category-name">{{ $category->name }}</div>
                             <div class="category-id">ID: #{{ $category->id }}</div>

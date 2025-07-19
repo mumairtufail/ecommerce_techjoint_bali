@@ -77,4 +77,41 @@ class ShopController extends BaseController
             'relatedProducts' => $relatedProducts
         ]));
     }
+
+
+
+
+// In your controller method that displays the product details
+public function show($id)
+{
+    $product = Product::with([
+        'category',
+        'sizes',
+        'colors',
+        'variants.size',
+        'variants.color',
+        'images'
+    ])->findOrFail($id);
+
+    $variantsArray = $product->variants->map(function($variant) use ($product) {
+        return [
+            'id' => $variant->id,
+            'size_id' => $variant->size_id,
+            'color_id' => $variant->color_id,
+            'stock' => $variant->stock,
+            'price_adjustment' => $variant->price_adjustment ?? 0,
+            'final_price' => $variant->price_adjustment ? ($variant->price_adjustment + $product->price) : $product->price,
+            'size_name' => optional($variant->size)->name,
+            'color_name' => optional($variant->color)->name,
+        ];
+    })->toArray();
+
+    $relatedProducts = Product::where('category_id', $product->category_id)
+        ->where('id', '!=', $product->id)
+        ->where('status', 1)
+        ->limit(8)
+        ->get();
+
+    return view('web.product-details', compact('product', 'relatedProducts', 'variantsArray'));
+}
 }
