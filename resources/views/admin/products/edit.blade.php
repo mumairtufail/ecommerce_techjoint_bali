@@ -5,6 +5,10 @@
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+<!-- Quill Rich Text Editor -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
 <style>
     :root {
         --primary-color: #FC5F49;
@@ -197,12 +201,12 @@
 
     .image-upload-area:hover {
         border-color: var(--primary-color);
-        background: rgba(252, 95, 73, 0.05);
+        background: var(--primary-lightest);
     }
 
     .image-upload-area.dragover {
         border-color: var(--primary-color);
-        background: rgba(252, 95, 73, 0.05);
+        background: var(--primary-lightest);
     }
 
     .upload-icon {
@@ -219,6 +223,168 @@
     .upload-hint {
         color: var(--text-light);
         font-size: 0.875rem;
+    }
+
+    .image-upload-container {
+        position: relative;
+    }
+
+    .image-previews-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .image-preview-item {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 3px solid var(--border-light);
+        background: var(--background);
+        cursor: move;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .image-preview-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .image-preview-item.dragging {
+        opacity: 0.5;
+        transform: rotate(5deg);
+    }
+
+    .image-preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .image-preview-item .image-controls {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        display: flex;
+        gap: 5px;
+        flex-direction: column;
+    }
+
+    .image-preview-item .control-btn {
+        background: rgba(0,0,0,0.7);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.2s;
+        backdrop-filter: blur(4px);
+    }
+
+    .image-preview-item .control-btn:hover {
+        background: rgba(0,0,0,0.9);
+        transform: scale(1.1);
+    }
+
+    .image-preview-item .remove-btn {
+        background: var(--danger);
+    }
+
+    .image-preview-item .remove-btn:hover {
+        background: #dc3545;
+    }
+
+    .image-preview-item .thumbnail-btn {
+        background: rgba(255,193,7,0.9);
+        color: #333;
+    }
+
+    .image-preview-item .thumbnail-btn.active {
+        background: #ffc107;
+        color: #000;
+    }
+
+    .image-preview-item .thumbnail-btn:hover {
+        background: #ffc107;
+        color: #000;
+    }
+
+    .image-preview-item.primary {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(252, 95, 73, 0.2);
+    }
+
+    .image-preview-item .primary-badge {
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+        background: var(--primary-color);
+        color: white;
+        font-size: 10px;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .image-preview-item .image-index {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .image-controls {
+        padding: 0.75rem;
+        background: var(--primary-lightest);
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .max-images-warning {
+        background: rgba(255, 193, 7, 0.1);
+        border: 1px solid #ffc107;
+        color: #856404;
+        padding: 0.75rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+        font-size: 0.875rem;
+    }
+
+    .existing-images-section {
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: var(--background);
+        border-radius: 12px;
+        border: 1px solid var(--border-light);
+    }
+
+    .new-images-section {
+        margin-top: 2rem;
+        padding: 1rem;
+        background: var(--white);
+        border-radius: 12px;
+        border: 1px solid var(--border-light);
     }
 
     .new-image-preview {
@@ -291,6 +457,80 @@
             width: 150px;
             height: 150px;
         }
+    }
+
+    /* Quill Rich Text Editor Styles */
+    .ql-editor {
+        min-height: 120px;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .ql-toolbar {
+        border-top: 1px solid var(--border-light);
+        border-left: 1px solid var(--border-light);
+        border-right: 1px solid var(--border-light);
+        border-radius: 8px 8px 0 0;
+        background: #f8f9fa;
+    }
+
+    .ql-container {
+        border-bottom: 1px solid var(--border-light);
+        border-left: 1px solid var(--border-light);
+        border-right: 1px solid var(--border-light);
+        border-radius: 0 0 8px 8px;
+        font-family: inherit;
+    }
+
+    .ql-toolbar .ql-picker-label {
+        color: var(--text-medium);
+    }
+
+    .ql-toolbar .ql-stroke {
+        stroke: var(--text-medium);
+    }
+
+    .ql-toolbar .ql-fill {
+        fill: var(--text-medium);
+    }
+
+    .ql-toolbar button:hover .ql-stroke,
+    .ql-toolbar button:focus .ql-stroke,
+    .ql-toolbar button.ql-active .ql-stroke {
+        stroke: var(--primary-color);
+    }
+
+    .ql-toolbar button:hover .ql-fill,
+    .ql-toolbar button:focus .ql-fill,
+    .ql-toolbar button.ql-active .ql-fill {
+        fill: var(--primary-color);
+    }
+
+    .ql-toolbar button:hover,
+    .ql-toolbar button:focus,
+    .ql-toolbar button.ql-active {
+        color: var(--primary-color);
+    }
+
+    .editor-container {
+        position: relative;
+    }
+
+    .editor-container.is-invalid .ql-toolbar,
+    .editor-container.is-invalid .ql-container {
+        border-color: var(--danger);
+    }
+
+    .editor-container.is-invalid + .invalid-feedback {
+        display: block;
+    }
+
+    #description-editor {
+        background: white;
+    }
+
+    .ql-snow .ql-tooltip {
+        z-index: 1050;
     }
 </style>
 
@@ -386,15 +626,14 @@
                 <!-- Description -->
                 <div class="mb-3">
                     <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
-                    <textarea class="form-control @error('description') is-invalid @enderror" 
-                              id="description" 
-                              name="description" 
-                              rows="4" 
-                              required 
-                              placeholder="Enter product description">{{ old('description', $product->description) }}</textarea>
+                    <div class="editor-container @error('description') is-invalid @enderror">
+                        <div id="description-editor" style="min-height: 150px;">{!! old('description', $product->description) !!}</div>
+                        <textarea name="description" id="description" class="d-none" required>{{ old('description', $product->description) }}</textarea>
+                    </div>
                     @error('description')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
+                    <small class="text-muted mt-1">Use the toolbar above to format your product description with bold text, colors, lists, and more.</small>
                 </div>
 
                 <div class="row">
@@ -432,49 +671,92 @@
                     </div>
                 </div>
 
-                <!-- Product Image -->
+                <!-- Product Images Upload (Max 4 Images) -->
                 <div class="mb-3">
-                    <label for="image" class="form-label">Product Image</label>
+                    <label for="images" class="form-label">Product Images <span class="text-danger">*</span></label>
                     
-                    @if($product->image)
-                        <!-- Current Image -->
-                        <div class="current-image-container" id="currentImageContainer">
-                            <img src="{{ asset('storage/' . $product->image) }}" 
-                                 alt="Current product image" 
-                                 class="current-image">
-                            <div class="change-image-overlay" onclick="document.getElementById('image').click()">
-                                <div>
-                                    <i class="fas fa-camera fa-2x mb-2"></i>
-                                    <div>Change Image</div>
-                                </div>
+                    <!-- Existing Images -->
+                    @if($product->images && $product->images->count() > 0)
+                        <div class="existing-images-section">
+                            <h6 class="text-muted mb-3">Current Images</h6>
+                            <div id="existing-images-container" class="image-previews-container">
+                                @foreach($product->images->sortBy('sort_order') as $index => $image)
+                                    <div class="image-preview-item existing-image-item {{ $image->is_primary ? 'primary' : '' }}" 
+                                         data-image-id="{{ $image->id }}" 
+                                         data-index="{{ $index }}">
+                                        <img src="{{ asset('storage/' . $image->image_path) }}" alt="{{ $image->alt_text }}">
+                                        <div class="image-controls">
+                                            <button type="button" class="control-btn remove-btn" onclick="removeExistingImage({{ $image->id }}, this)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            <button type="button" class="control-btn thumbnail-btn {{ $image->is_primary ? 'active' : '' }}" 
+                                                    onclick="setExistingThumbnail({{ $index }}, this)">
+                                                <i class="fas fa-star"></i>
+                                            </button>
+                                        </div>
+                                        @if($image->is_primary)
+                                            <div class="primary-badge">Primary</div>
+                                        @endif
+                                        <div class="image-index">{{ $index + 1 }}</div>
+                                    </div>
+                                @endforeach
                             </div>
-                        </div>
-                        <div class="text-muted mb-3">
-                            <small>Click on the image above to change it, or upload a new image below.</small>
+                            
+                            <!-- Hidden inputs for removed images -->
+                            <div id="removed-images-inputs"></div>
+                            
+                            <!-- Hidden input for existing thumbnail selection -->
+                            <input type="hidden" id="existing_thumbnail_index" name="existing_thumbnail_index" 
+                                   value="{{ $product->images->where('is_primary', true)->first() ? $product->images->sortBy('sort_order')->search(function($image) use ($product) { return $image->is_primary; }) : 0 }}">
                         </div>
                     @endif
-
-                    <!-- Upload Area -->
-                    <div class="image-upload-area" id="uploadArea" onclick="document.getElementById('image').click()">
-                        <div class="upload-icon">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                        </div>
-                        <div class="upload-text">
-                            {{ $product->image ? 'Upload New Image' : 'Click to upload or drag and drop' }}
-                        </div>
-                        <div class="upload-hint">PNG, JPG, JPEG up to 2MB</div>
-                        <input type="file" 
-                               class="form-control @error('image') is-invalid @enderror" 
-                               id="image" 
-                               name="image" 
-                               accept="image/*" 
-                               style="display: none;">
-                    </div>
                     
-                    <!-- New Image Preview -->
-                    <img id="newImagePreview" class="new-image-preview" alt="New image preview">
+                    @if(!$product->images || $product->images->count() < 4)
+                        <div class="new-images-section mt-4">
+                            <h6 class="text-muted mb-3">Add New Images ({{ 4 - ($product->images ? $product->images->count() : 0) }} slots remaining)</h6>
+                            <div class="image-upload-container">
+                                <div class="image-upload-area" onclick="document.getElementById('images').click()">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <div class="upload-text">Click to upload or drag and drop</div>
+                                    <div class="upload-hint">PNG, JPG, JPEG up to 2MB each (Maximum {{ 4 - ($product->images ? $product->images->count() : 0) }} more images)</div>
+                                    <input type="file" 
+                                           class="form-control @error('images.*') is-invalid @enderror" 
+                                           id="images" 
+                                           name="images[]" 
+                                           accept="image/*"
+                                           multiple
+                                           style="display: none;"
+                                           onchange="handleMultipleImages(this)">
+                                </div>
+                                
+                                <div id="image-previews" class="image-previews-container mt-3">
+                                    <!-- New image previews will be displayed here -->
+                                </div>
+                                
+                                <div id="image-controls" class="image-controls mt-3" style="display: none;">
+                                    <small class="text-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        Click on the star icon to set an image as thumbnail. Drag to reorder images.
+                                    </small>
+                                </div>
+                                
+                                <!-- Hidden input for new images thumbnail selection -->
+                                <input type="hidden" id="thumbnail_image_index" name="thumbnail_image_index" value="0">
+                            </div>
+                        </div>
+                    @else
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle"></i>
+                            Maximum of 4 images reached. Remove some images to add new ones.
+                        </div>
+                    @endif
                     
-                    @error('image')
+                    @error('images.*')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                    @error('images')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
@@ -543,74 +825,372 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const imageInput = document.getElementById('image');
-    const newImagePreview = document.getElementById('newImagePreview');
-    const uploadArea = document.getElementById('uploadArea');
-    const currentImageContainer = document.getElementById('currentImageContainer');
+    const imagesInput = document.getElementById('images');
+    const container = document.getElementById('image-previews');
+    const uploadArea = document.querySelector('.image-upload-area');
     const form = document.getElementById('editProductForm');
     const submitBtn = document.getElementById('submitBtn');
     const submitText = document.getElementById('submitText');
     const submitSpinner = document.getElementById('submitSpinner');
+    const thumbnailIndexInput = document.getElementById('thumbnail_image_index');
+    const existingThumbnailIndexInput = document.getElementById('existing_thumbnail_index');
+    const imageControlsDiv = document.getElementById('image-controls');
+    const removedImagesContainer = document.getElementById('removed-images-inputs');
 
-    // Image preview functionality
-    imageInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                newImagePreview.src = e.target.result;
-                newImagePreview.style.display = 'block';
-                uploadArea.style.display = 'none';
-                
-                // Hide current image if it exists
-                if (currentImageContainer) {
-                    currentImageContainer.style.opacity = '0.5';
-                }
-            };
-            reader.readAsDataURL(file);
+    console.log('Enhanced product edit form initialized');
+
+    // Initialize Quill Rich Text Editor
+    let quill = null;
+    const descriptionEditor = document.getElementById('description-editor');
+    const descriptionInput = document.getElementById('description');
+    
+    if (descriptionEditor) {
+        quill = new Quill(descriptionEditor, {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    [{ 'font': [] }],
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    [{ 'direction': 'rtl' }],
+                    [{ 'align': [] }],
+                    ['blockquote', 'code-block'],
+                    ['link', 'image', 'video'],
+                    ['clean']
+                ]
+            },
+            placeholder: 'Enter detailed product description with formatting...'
+        });
+
+        // Update hidden textarea on content change
+        quill.on('text-change', function() {
+            const content = quill.root.innerHTML;
+            descriptionInput.value = content;
+            
+            // Validation feedback
+            const editorContainer = document.querySelector('.editor-container');
+            if (quill.getText().trim().length === 0) {
+                editorContainer.classList.add('is-invalid');
+            } else {
+                editorContainer.classList.remove('is-invalid');
+            }
+        });
+
+        // Initial validation check
+        if (quill.getText().trim().length === 0) {
+            document.querySelector('.editor-container').classList.add('is-invalid');
         }
-    });
+    }
 
-    // Drag and drop functionality
-    uploadArea.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        uploadArea.classList.add('dragover');
-    });
+    let selectedImages = [];
+    let thumbnailIndex = 0;
+    let removedImageIds = [];
+    const MAX_IMAGES = 4;
+    const existingImagesCount = {{ $product->images ? $product->images->count() : 0 }};
 
-    uploadArea.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        uploadArea.classList.remove('dragover');
-    });
+    // Drag and drop functionality for upload area
+    if (uploadArea) {
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
 
-    uploadArea.addEventListener('drop', function(e) {
-        e.preventDefault();
-        uploadArea.classList.remove('dragover');
-        
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            imageInput.files = files;
-            imageInput.dispatchEvent(new Event('change'));
-        }
-    });
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+            handleNewImages(files);
+        });
+    }
 
     // Form submission handling
-    form.addEventListener('submit', function(e) {
-        submitBtn.disabled = true;
-        submitText.style.display = 'none';
-        submitSpinner.style.display = 'inline';
-    });
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            console.log('Form submitting...');
+            
+            // Update description from Quill editor
+            if (quill) {
+                const content = quill.root.innerHTML;
+                descriptionInput.value = content;
+                
+                // Validate description content
+                if (quill.getText().trim().length === 0) {
+                    e.preventDefault();
+                    alert('Please enter a product description.');
+                    document.querySelector('.editor-container').classList.add('is-invalid');
+                    return false;
+                }
+            }
+            
+            // Update the file input with current images
+            updateFileInput();
+            
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                if (submitText) submitText.style.display = 'none';
+                if (submitSpinner) submitSpinner.style.display = 'inline';
+            }
+        });
+    }
 
-    // Reset image preview if clicked again
-    newImagePreview.addEventListener('click', function() {
-        imageInput.value = '';
-        newImagePreview.style.display = 'none';
-        uploadArea.style.display = 'block';
+    // Global functions for existing image management
+    window.removeExistingImage = function(imageId, buttonElement) {
+        console.log('Removing existing image:', imageId);
         
-        // Restore current image opacity
-        if (currentImageContainer) {
-            currentImageContainer.style.opacity = '1';
+        // Add to removed images array
+        if (!removedImageIds.includes(imageId)) {
+            removedImageIds.push(imageId);
+            
+            // Add hidden input for this removed image
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'remove_images[]';
+            hiddenInput.value = imageId;
+            removedImagesContainer.appendChild(hiddenInput);
         }
-    });
+        
+        // Remove the image item from DOM
+        const imageItem = buttonElement.closest('.image-preview-item');
+        imageItem.style.animation = 'fadeOutScale 0.3s ease-out forwards';
+        setTimeout(() => {
+            imageItem.remove();
+            updateExistingImageIndices();
+        }, 300);
+    };
+
+    window.setExistingThumbnail = function(index, buttonElement) {
+        console.log('Setting existing thumbnail:', index);
+        
+        // Update hidden input
+        if (existingThumbnailIndexInput) {
+            existingThumbnailIndexInput.value = index;
+        }
+        
+        // Update visual indicators
+        document.querySelectorAll('.existing-image-item').forEach((item, i) => {
+            const thumbnailBtn = item.querySelector('.thumbnail-btn');
+            const primaryBadge = item.querySelector('.primary-badge');
+            
+            if (i === index) {
+                item.classList.add('primary');
+                if (thumbnailBtn) thumbnailBtn.classList.add('active');
+                if (!primaryBadge) {
+                    const badge = document.createElement('div');
+                    badge.className = 'primary-badge';
+                    badge.textContent = 'Primary';
+                    item.appendChild(badge);
+                }
+            } else {
+                item.classList.remove('primary');
+                if (thumbnailBtn) thumbnailBtn.classList.remove('active');
+                if (primaryBadge) primaryBadge.remove();
+            }
+        });
+    };
+
+    function updateExistingImageIndices() {
+        document.querySelectorAll('.existing-image-item').forEach((item, index) => {
+            const indexElement = item.querySelector('.image-index');
+            if (indexElement) {
+                indexElement.textContent = index + 1;
+            }
+            item.setAttribute('data-index', index);
+            
+            // Update thumbnail button onclick
+            const thumbnailBtn = item.querySelector('.thumbnail-btn');
+            if (thumbnailBtn) {
+                thumbnailBtn.setAttribute('onclick', `setExistingThumbnail(${index}, this)`);
+            }
+        });
+    }
+
+    function handleNewImages(files) {
+        if (!files || files.length === 0) return;
+
+        const remainingSlots = MAX_IMAGES - existingImagesCount - selectedImages.length;
+        if (remainingSlots <= 0) {
+            showMaxImagesWarning();
+            return;
+        }
+
+        const filesToAdd = Array.from(files).slice(0, remainingSlots);
+        
+        filesToAdd.forEach(file => {
+            if (file.size > 2 * 1024 * 1024) {
+                console.warn('File too large:', file.name);
+                return;
+            }
+            selectedImages.push(file);
+        });
+
+        if (files.length > remainingSlots) {
+            showMaxImagesWarning();
+        }
+
+        renderImagePreviews();
+    }
+
+    function renderImagePreviews() {
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        if (selectedImages.length === 0) {
+            if (imageControlsDiv) imageControlsDiv.style.display = 'none';
+            return;
+        }
+
+        if (imageControlsDiv) imageControlsDiv.style.display = 'block';
+
+        selectedImages.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageItem = createImagePreviewItem(e.target.result, index, file.name);
+                container.appendChild(imageItem);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function createImagePreviewItem(src, index, fileName) {
+        const div = document.createElement('div');
+        div.className = `image-preview-item ${index === thumbnailIndex ? 'primary' : ''}`;
+        div.draggable = true;
+        div.dataset.index = index;
+
+        div.innerHTML = `
+            <img src="${src}" alt="${fileName}">
+            <div class="image-controls">
+                <button type="button" class="control-btn remove-btn" onclick="removeImage(${index})">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <button type="button" class="control-btn thumbnail-btn ${index === thumbnailIndex ? 'active' : ''}" onclick="setThumbnail(${index})">
+                    <i class="fas fa-star"></i>
+                </button>
+            </div>
+            ${index === thumbnailIndex ? '<div class="primary-badge">Primary</div>' : ''}
+            <div class="image-index">${index + 1}</div>
+        `;
+
+        // Add drag and drop event listeners
+        div.addEventListener('dragstart', handleDragStart);
+        div.addEventListener('dragover', handleDragOver);
+        div.addEventListener('drop', handleDrop);
+        div.addEventListener('dragend', handleDragEnd);
+
+        return div;
+    }
+
+    // Global functions for new image management
+    window.removeImage = function(index) {
+        console.log('Removing image at index:', index);
+        selectedImages.splice(index, 1);
+        
+        // Adjust thumbnail index if necessary
+        if (thumbnailIndex >= selectedImages.length && selectedImages.length > 0) {
+            thumbnailIndex = selectedImages.length - 1;
+        } else if (selectedImages.length === 0) {
+            thumbnailIndex = 0;
+        }
+        
+        renderImagePreviews();
+        updateThumbnailInput();
+    };
+
+    window.setThumbnail = function(index) {
+        console.log('Setting thumbnail to index:', index);
+        thumbnailIndex = index;
+        renderImagePreviews();
+        updateThumbnailInput();
+    };
+
+    function updateThumbnailInput() {
+        if (thumbnailIndexInput) {
+            thumbnailIndexInput.value = thumbnailIndex;
+        }
+    }
+
+    function updateFileInput() {
+        if (!imagesInput || selectedImages.length === 0) return;
+
+        const dt = new DataTransfer();
+        selectedImages.forEach(file => dt.items.add(file));
+        imagesInput.files = dt.files;
+    }
+
+    function showMaxImagesWarning() {
+        if (document.querySelector('.max-images-warning')) return;
+        
+        const warning = document.createElement('div');
+        warning.className = 'max-images-warning';
+        warning.innerHTML = `
+            <i class="fas fa-exclamation-triangle"></i>
+            You can only upload a maximum of ${MAX_IMAGES} images total. Remove some existing images first.
+        `;
+        
+        container.parentNode.insertBefore(warning, container.nextSibling);
+        
+        setTimeout(() => warning.remove(), 5000);
+    }
+
+    // Drag and drop for reordering
+    let draggedIndex = null;
+
+    function handleDragStart(e) {
+        draggedIndex = parseInt(e.target.closest('.image-preview-item').dataset.index);
+        e.target.closest('.image-preview-item').classList.add('dragging');
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+    }
+
+    function handleDrop(e) {
+        e.preventDefault();
+        const targetIndex = parseInt(e.target.closest('.image-preview-item').dataset.index);
+        
+        if (draggedIndex !== null && draggedIndex !== targetIndex) {
+            // Reorder the images array
+            const draggedItem = selectedImages[draggedIndex];
+            selectedImages.splice(draggedIndex, 1);
+            selectedImages.splice(targetIndex, 0, draggedItem);
+            
+            // Update thumbnail index if needed
+            if (thumbnailIndex === draggedIndex) {
+                thumbnailIndex = targetIndex;
+            } else if (draggedIndex < thumbnailIndex && targetIndex >= thumbnailIndex) {
+                thumbnailIndex--;
+            } else if (draggedIndex > thumbnailIndex && targetIndex <= thumbnailIndex) {
+                thumbnailIndex++;
+            }
+            
+            renderImagePreviews();
+            updateThumbnailInput();
+        }
+    }
+
+    function handleDragEnd(e) {
+        e.target.closest('.image-preview-item').classList.remove('dragging');
+        draggedIndex = null;
+    }
+
+    // Initialize the form
+    window.handleMultipleImages = function(input) {
+        handleNewImages(input.files);
+    };
+
+    console.log('Product edit form ready');
 });
 </script>
 

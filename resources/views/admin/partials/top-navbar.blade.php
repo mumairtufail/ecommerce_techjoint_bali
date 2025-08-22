@@ -652,7 +652,7 @@
                 </a>
             </li>
 
-            {{-- <li class="nav-item {{ request()->routeIs('admin.sizes.index') ? 'active' : '' }}">
+           <li class="nav-item {{ request()->routeIs('admin.sizes.index') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.sizes.index') }}">
                     <i class="fa fa-expand-arrows-alt d-xl-none"></i>
                     <span>Sizes</span>
@@ -664,7 +664,7 @@
                     <i class="fa fa-palette d-xl-none"></i>
                     <span>Colors</span>
                 </a>
-            </li> --}}
+            </li> 
 
             <li class="nav-item {{ request()->routeIs('admin.orders.index') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.orders.index') }}">

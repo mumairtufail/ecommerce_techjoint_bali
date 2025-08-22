@@ -409,12 +409,10 @@
                     </div>
                     <div class="order-card-body">
                         <table class="info-table">
-                            @if(isset($order->address))
-                            <tr>
+                             <tr>
                                 <td>Address:</td>
                                 <td>{{ $order->address }}</td>
                             </tr>
-                            @endif
                             <tr>
                                 <td>City:</td>
                                 <td>{{ $order->city }}</td>

@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\{
 };
 use App\Http\Controllers\CustomerController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Frontend Routes
@@ -40,7 +41,7 @@ Route::get('/product/{id}', [ShopController::class, 'show'])->name('web.product.
 
 // New route to store the order
 
-Route::get('/checkout', [OrderController::class, 'view'])->name('web.orders.checkout');
+Route::get('/checkout', [WebOrderController::class, 'view'])->name('web.orders.checkout');
 Route::post('/orders/store', [WebOrderController::class, 'storeWebOrders'])->name('web.orders.store');
 
 // OTP validation endpoints
@@ -108,6 +109,85 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/login', function () {
     return view('Auth.login');
 })->name('login');
+
+Route::get('/create-storage-link', function () {
+    $target = storage_path('app/public');
+    $link = public_path('storage');
+
+    if (file_exists($link)) {
+        return 'The storage link already exists at <code>public/storage</code>.';
+    }
+
+    // Try to create the symlink
+    try {
+        symlink($target, $link);
+        return 'Symlink created successfully! <br> public/storage → storage/app/public';
+    } catch (\Exception $e) {
+        return 'Failed to create symlink.<br>Error: ' . $e->getMessage();
+    }
+});
+Route::get('/remove-storage-link', function () {
+    $link = public_path('storage');
+
+    if (file_exists($link)) {
+        if (is_link($link)) {
+            // It's a symlink
+            unlink($link);
+            return 'Symlink public/storage removed successfully!';
+        } elseif (is_dir($link)) {
+            // It's a directory
+            $files = scandir($link);
+            if (count($files) <= 2) {
+                // Directory is empty (only . and ..)
+                rmdir($link);
+                return 'Directory public/storage (was not a symlink) and is now removed as it was empty.';
+            } else {
+                return 'public/storage is a directory and not empty. Not removing to prevent data loss.<br>Please remove files inside manually if you want to delete the folder.';
+            }
+        } else {
+            return 'public/storage exists but is not a directory or symlink!';
+        }
+    } else {
+        return 'public/storage does not exist.';
+    }
+});
+
+Route::get('/force-reset-storage-link', function () {
+    $link = public_path('storage');
+    $target = storage_path('app/public');
+
+    // Helper to recursively delete directory
+    function rrmdir($dir) {
+        if (!file_exists($dir)) return;
+        foreach (scandir($dir) as $item) {
+            if ($item == '.' || $item == '..') continue;
+            $path = $dir . DIRECTORY_SEPARATOR . $item;
+            if (is_dir($path)) {
+                rrmdir($path);
+            } else {
+                unlink($path);
+            }
+        }
+        rmdir($dir);
+    }
+
+    // Remove existing link or directory
+    if (file_exists($link)) {
+        if (is_link($link) || is_file($link)) {
+            unlink($link);
+        } elseif (is_dir($link)) {
+            rrmdir($link); // Fully recursive delete!
+        }
+    }
+
+    // Try to create the symlink
+    try {
+        symlink($target, $link);
+        return 'Symlink recreated successfully! <br> public/storage → storage/app/public';
+    } catch (\Exception $e) {
+        return 'Failed to create symlink.<br>Error: ' . $e->getMessage();
+    }
+});
 
 
 Route::post('/login', [AuthController::class, 'login'])->name('admin.login');

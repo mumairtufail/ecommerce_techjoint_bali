@@ -6,7 +6,7 @@
   
 
   <!-- Start Page Heading -->
-  <section class="cs_page_heading text-center position-relative cs_bg_filed" data-src="web/assets/img/shop_bg.jpg">
+  <section class="cs_page_heading text-center position-relative cs_bg_filed" data-src="assets/1720300.png">
     <div class="cs_hero_overlay position-absolute"></div>
     <div class="container position-relative">
       <h2 class="cs_fs_50 cs_bold cs_white_color mb-0">Contact Us</h2>

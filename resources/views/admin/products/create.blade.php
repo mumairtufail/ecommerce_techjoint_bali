@@ -5,6 +5,10 @@
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+<!-- Quill Rich Text Editor -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
 <style>
     :root {
         --primary-color: #FC5F49;
@@ -186,35 +190,38 @@
         font-size: 0.875rem;
     }
 
-    .image-preview {
-        max-width: 200px;
-        max-height: 200px;
-        border-radius: 8px;
-        border: 1px solid var(--border-light);
-        margin: 1rem auto;
-        display: none;
-    }
-
-    .multiple-image-upload {
+    .image-upload-container {
         position: relative;
     }
 
     .image-previews-container {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 1rem;
         margin-top: 1rem;
     }
 
     .image-preview-item {
         position: relative;
-        width: 120px;
-        height: 120px;
-        border-radius: 8px;
+        width: 150px;
+        height: 150px;
+        border-radius: 12px;
         overflow: hidden;
-        border: 2px solid var(--border-light);
+        border: 3px solid var(--border-light);
         background: var(--background);
-        flex-shrink: 0;
+        cursor: move;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .image-preview-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .image-preview-item.dragging {
+        opacity: 0.5;
+        transform: rotate(5deg);
     }
 
     .image-preview-item img {
@@ -223,46 +230,110 @@
         object-fit: cover;
     }
 
-    .image-preview-item .remove-image {
+    .image-preview-item .image-controls {
         position: absolute;
-        top: 5px;
-        right: 5px;
-        background: var(--danger);
+        top: 8px;
+        right: 8px;
+        display: flex;
+        gap: 5px;
+        flex-direction: column;
+    }
+
+    .image-preview-item .control-btn {
+        background: rgba(0,0,0,0.7);
         color: white;
         border: none;
         border-radius: 50%;
-        width: 25px;
-        height: 25px;
+        width: 28px;
+        height: 28px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
         font-size: 12px;
-        opacity: 0.9;
-        transition: opacity 0.2s;
-        z-index: 10;
+        transition: all 0.2s;
+        backdrop-filter: blur(4px);
     }
 
-    .image-preview-item .remove-image:hover {
-        opacity: 1;
+    .image-preview-item .control-btn:hover {
+        background: rgba(0,0,0,0.9);
+        transform: scale(1.1);
+    }
+
+    .image-preview-item .remove-btn {
+        background: var(--danger);
+    }
+
+    .image-preview-item .remove-btn:hover {
         background: #dc3545;
+    }
+
+    .image-preview-item .thumbnail-btn {
+        background: rgba(255,193,7,0.9);
+        color: #333;
+    }
+
+    .image-preview-item .thumbnail-btn.active {
+        background: #ffc107;
+        color: #000;
+    }
+
+    .image-preview-item .thumbnail-btn:hover {
+        background: #ffc107;
+        color: #000;
     }
 
     .image-preview-item.primary {
         border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(252, 95, 73, 0.2);
     }
 
     .image-preview-item .primary-badge {
         position: absolute;
-        bottom: 5px;
-        left: 5px;
+        bottom: 8px;
+        left: 8px;
         background: var(--primary-color);
         color: white;
         font-size: 10px;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-weight: 500;
-        z-index: 10;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .image-preview-item .image-index {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .image-controls {
+        padding: 0.75rem;
+        background: var(--primary-lightest);
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .max-images-warning {
+        background: rgba(255, 193, 7, 0.1);
+        border: 1px solid #ffc107;
+        color: #856404;
+        padding: 0.75rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+        font-size: 0.875rem;
     }
 
     .alert-custom {
@@ -313,6 +384,80 @@
             padding: 1rem 1.5rem;
             flex-direction: column;
         }
+    }
+
+    /* Quill Rich Text Editor Styles */
+    .ql-editor {
+        min-height: 120px;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .ql-toolbar {
+        border-top: 1px solid var(--border-light);
+        border-left: 1px solid var(--border-light);
+        border-right: 1px solid var(--border-light);
+        border-radius: 8px 8px 0 0;
+        background: #f8f9fa;
+    }
+
+    .ql-container {
+        border-bottom: 1px solid var(--border-light);
+        border-left: 1px solid var(--border-light);
+        border-right: 1px solid var(--border-light);
+        border-radius: 0 0 8px 8px;
+        font-family: inherit;
+    }
+
+    .ql-toolbar .ql-picker-label {
+        color: var(--text-medium);
+    }
+
+    .ql-toolbar .ql-stroke {
+        stroke: var(--text-medium);
+    }
+
+    .ql-toolbar .ql-fill {
+        fill: var(--text-medium);
+    }
+
+    .ql-toolbar button:hover .ql-stroke,
+    .ql-toolbar button:focus .ql-stroke,
+    .ql-toolbar button.ql-active .ql-stroke {
+        stroke: var(--primary-color);
+    }
+
+    .ql-toolbar button:hover .ql-fill,
+    .ql-toolbar button:focus .ql-fill,
+    .ql-toolbar button.ql-active .ql-fill {
+        fill: var(--primary-color);
+    }
+
+    .ql-toolbar button:hover,
+    .ql-toolbar button:focus,
+    .ql-toolbar button.ql-active {
+        color: var(--primary-color);
+    }
+
+    .editor-container {
+        position: relative;
+    }
+
+    .editor-container.is-invalid .ql-toolbar,
+    .editor-container.is-invalid .ql-container {
+        border-color: var(--danger);
+    }
+
+    .editor-container.is-invalid + .invalid-feedback {
+        display: block;
+    }
+
+    #description-editor {
+        background: white;
+    }
+
+    .ql-snow .ql-tooltip {
+        z-index: 1050;
     }
 </style>
 
@@ -396,15 +541,14 @@
                 <!-- Description -->
                 <div class="mb-3">
                     <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
-                    <textarea class="form-control @error('description') is-invalid @enderror" 
-                              id="description" 
-                              name="description" 
-                              rows="4" 
-                              required 
-                              placeholder="Enter product description">{{ old('description') }}</textarea>
+                    <div class="editor-container @error('description') is-invalid @enderror">
+                        <div id="description-editor" style="min-height: 150px;">{!! old('description') !!}</div>
+                        <textarea name="description" id="description" class="d-none" required>{{ old('description') }}</textarea>
+                    </div>
                     @error('description')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
+                    <small class="text-muted mt-1">Use the toolbar above to format your product description with bold text, colors, lists, and more.</small>
                 </div>
 
                 <div class="row">
@@ -442,51 +586,50 @@
                     </div>
                 </div>
 
-                <!-- Product Image -->
+                <!-- Product Images Upload (Max 4 Images) -->
                 <div class="mb-3">
-                    <label for="image" class="form-label">Product Image</label>
-                    <div class="image-upload-area" onclick="document.getElementById('image').click()">
-                        <div class="upload-icon">
-                            <i class="fas fa-cloud-upload-alt"></i>
+                    <label for="images" class="form-label">Product Images <span class="text-danger">*</span></label>
+                    <div class="image-upload-container">
+                        <div class="image-upload-area" onclick="document.getElementById('images').click()">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="upload-text">Click to upload or drag and drop</div>
+                            <div class="upload-hint">PNG, JPG, JPEG up to 2MB each (Maximum 4 images)</div>
+                            <input type="file" 
+                                   class="form-control @error('images.*') is-invalid @enderror" 
+                                   id="images" 
+                                   name="images[]" 
+                                   accept="image/*"
+                                   multiple
+                                   style="display: none;"
+                                   onchange="handleMultipleImages(this)">
                         </div>
-                        <div class="upload-text">Click to upload or drag and drop</div>
-                        <div class="upload-hint">PNG, JPG, JPEG up to 2MB</div>
-                        <input type="file" 
-                               class="form-control @error('image') is-invalid @enderror" 
-                               id="image" 
-                               name="image" 
-                               accept="image/*" 
-                               style="display: none;">
-                    </div>
-                    <img id="imagePreview" class="image-preview" alt="Preview">
-                    @error('image')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Multiple Images Upload -->
-                <div class="mb-3">
-                    <label for="images" class="form-label">Additional Product Images</label>
-                    <div class="multiple-image-upload">
-                        <input type="file" 
-                               class="form-control @error('images.*') is-invalid @enderror" 
-                               id="images" 
-                               name="images[]" 
-                               accept="image/*"
-                               multiple
-                               onchange="handleMultipleImages(this)">
-                        <small class="text-muted">Upload multiple images. These will be additional images beyond the main product image above.</small>
+                        
                         <div id="image-previews" class="image-previews-container mt-3">
                             <!-- Image previews will be displayed here -->
                         </div>
+                        
+                        <div id="image-controls" class="image-controls mt-3" style="display: none;">
+                            <small class="text-info">
+                                <i class="fas fa-info-circle"></i>
+                                Click on the star icon to set an image as thumbnail. Drag to reorder images.
+                            </small>
+                        </div>
+                        
+                        <!-- Hidden input for thumbnail selection -->
+                        <input type="hidden" id="thumbnail_image_index" name="thumbnail_image_index" value="0">
                     </div>
                     @error('images.*')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                    @error('images')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <!-- Product Variants -->
-                {{-- <div class="mb-3">
+                <div class="mb-3">
                     <label class="form-label">Product Variants</label>
                     <div class="border rounded p-3 bg-light">
                         <p class="text-muted mb-3">Create specific size-color combinations with individual stock and pricing. Variants are required for products with size/color options.</p>
@@ -499,7 +642,7 @@
                             <i class="fas fa-plus"></i> Add Variant
                         </button>
                     </div>
-                </div> --}}
+                </div>
 
                 <!-- Status -->
                 <div class="mb-3">
@@ -561,40 +704,71 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const imageInput = document.getElementById('image');
-    const imagePreview = document.getElementById('imagePreview');
+    const imagesInput = document.getElementById('images');
+    const container = document.getElementById('image-previews');
     const uploadArea = document.querySelector('.image-upload-area');
     const form = document.getElementById('createProductForm');
     const submitBtn = document.getElementById('submitBtn');
     const submitText = document.getElementById('submitText');
     const submitSpinner = document.getElementById('submitSpinner');
+    const thumbnailIndexInput = document.getElementById('thumbnail_image_index');
+    const imageControlsDiv = document.getElementById('image-controls');
 
-    console.log('Product create form initialized');
+    console.log('Enhanced product create form initialized');
 
-    // Legacy single image preview functionality
-    if (imageInput) {
-        imageInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                    imagePreview.style.display = 'block';
-                    if (uploadArea) uploadArea.style.display = 'none';
-                };
-                reader.readAsDataURL(file);
+    // Initialize Quill Rich Text Editor
+    let quill = null;
+    const descriptionEditor = document.getElementById('description-editor');
+    const descriptionInput = document.getElementById('description');
+    
+    if (descriptionEditor) {
+        quill = new Quill(descriptionEditor, {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    [{ 'font': [] }],
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    [{ 'direction': 'rtl' }],
+                    [{ 'align': [] }],
+                    ['blockquote', 'code-block'],
+                    ['link', 'image', 'video'],
+                    ['clean']
+                ]
+            },
+            placeholder: 'Enter detailed product description with formatting...'
+        });
+
+        // Update hidden textarea on content change
+        quill.on('text-change', function() {
+            const content = quill.root.innerHTML;
+            descriptionInput.value = content;
+            
+            // Validation feedback
+            const editorContainer = document.querySelector('.editor-container');
+            if (quill.getText().trim().length === 0) {
+                editorContainer.classList.add('is-invalid');
+            } else {
+                editorContainer.classList.remove('is-invalid');
             }
         });
 
-        // Reset image preview if clicked again
-        imagePreview.addEventListener('click', function() {
-            imageInput.value = '';
-            imagePreview.style.display = 'none';
-            if (uploadArea) uploadArea.style.display = 'block';
-        });
+        // Initial validation check
+        if (quill.getText().trim().length === 0) {
+            document.querySelector('.editor-container').classList.add('is-invalid');
+        }
     }
 
-    // Drag and drop functionality for legacy single image
+    let selectedImages = [];
+    let thumbnailIndex = 0;
+    const MAX_IMAGES = 4;
+
+    // Drag and drop functionality for upload area
     if (uploadArea) {
         uploadArea.addEventListener('dragover', function(e) {
             e.preventDefault();
@@ -610,11 +784,8 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             uploadArea.classList.remove('dragover');
             
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                imageInput.files = files;
-                imageInput.dispatchEvent(new Event('change'));
-            }
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+            handleNewImages(files);
         });
     }
 
@@ -622,6 +793,33 @@ document.addEventListener('DOMContentLoaded', function() {
     if (form) {
         form.addEventListener('submit', function(e) {
             console.log('Form submitting...');
+            
+            // Update description from Quill editor
+            if (quill) {
+                const content = quill.root.innerHTML;
+                descriptionInput.value = content;
+                
+                // Validate description content
+                if (quill.getText().trim().length === 0) {
+                    e.preventDefault();
+                    alert('Please enter a product description.');
+                    document.querySelector('.editor-container').classList.add('is-invalid');
+                    return false;
+                }
+            }
+            
+            if (selectedImages.length === 0) {
+                e.preventDefault();
+                alert('Please select at least one product image.');
+                return false;
+            }
+            
+            // Update the file input with current images
+            updateFileInput();
+            
+            // Update thumbnail index
+            thumbnailIndexInput.value = thumbnailIndex;
+            
             if (submitBtn) {
                 submitBtn.disabled = true;
                 if (submitText) submitText.style.display = 'none';
@@ -630,7 +828,194 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Variants handling
+    function handleNewImages(files) {
+        if (!files || files.length === 0) return;
+
+        const remainingSlots = MAX_IMAGES - selectedImages.length;
+        if (remainingSlots <= 0) {
+            showMaxImagesWarning();
+            return;
+        }
+
+        const filesToAdd = Array.from(files).slice(0, remainingSlots);
+        
+        filesToAdd.forEach(file => {
+            if (file.type.startsWith('image/')) {
+                selectedImages.push(file);
+            }
+        });
+
+        if (files.length > remainingSlots) {
+            showMaxImagesWarning();
+        }
+
+        renderImagePreviews();
+    }
+
+    function renderImagePreviews() {
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        if (selectedImages.length === 0) {
+            imageControlsDiv.style.display = 'none';
+            return;
+        }
+
+        imageControlsDiv.style.display = 'block';
+
+        selectedImages.forEach((file, index) => {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const imageDiv = document.createElement('div');
+                imageDiv.className = `image-preview-item ${index === thumbnailIndex ? 'primary' : ''}`;
+                imageDiv.draggable = true;
+                imageDiv.dataset.index = index;
+                
+                imageDiv.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview ${index + 1}">
+                    <div class="image-index">${index + 1}</div>
+                    <div class="image-controls">
+                        <button type="button" class="control-btn thumbnail-btn ${index === thumbnailIndex ? 'active' : ''}" 
+                                onclick="setThumbnail(${index})" title="Set as thumbnail">
+                            <i class="fas fa-star"></i>
+                        </button>
+                        <button type="button" class="control-btn remove-btn" 
+                                onclick="removeImage(${index})" title="Remove image">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    ${index === thumbnailIndex ? '<div class="primary-badge">Thumbnail</div>' : ''}
+                `;
+
+                // Add drag and drop functionality
+                imageDiv.addEventListener('dragstart', handleDragStart);
+                imageDiv.addEventListener('dragover', handleDragOver);
+                imageDiv.addEventListener('drop', handleDrop);
+                imageDiv.addEventListener('dragend', handleDragEnd);
+
+                container.appendChild(imageDiv);
+            };
+            
+            reader.readAsDataURL(file);
+        });
+
+        // Hide upload area if max images reached
+        if (selectedImages.length >= MAX_IMAGES) {
+            uploadArea.style.display = 'none';
+        } else {
+            uploadArea.style.display = 'block';
+        }
+    }
+
+    function setThumbnail(index) {
+        thumbnailIndex = index;
+        renderImagePreviews();
+    }
+
+    function removeImage(index) {
+        selectedImages.splice(index, 1);
+        
+        // Adjust thumbnail index if necessary
+        if (thumbnailIndex >= selectedImages.length) {
+            thumbnailIndex = Math.max(0, selectedImages.length - 1);
+        }
+        
+        renderImagePreviews();
+        updateFileInput();
+    }
+
+    function updateFileInput() {
+        if (!imagesInput) return;
+        
+        const dt = new DataTransfer();
+        selectedImages.forEach(file => {
+            dt.items.add(file);
+        });
+        imagesInput.files = dt.files;
+    }
+
+    function showMaxImagesWarning() {
+        // Remove existing warning
+        const existingWarning = document.querySelector('.max-images-warning');
+        if (existingWarning) {
+            existingWarning.remove();
+        }
+
+        // Add new warning
+        const warning = document.createElement('div');
+        warning.className = 'max-images-warning';
+        warning.innerHTML = `
+            <i class="fas fa-exclamation-triangle"></i>
+            Maximum ${MAX_IMAGES} images allowed. Additional images were ignored.
+        `;
+        
+        container.parentNode.appendChild(warning);
+        
+        // Remove warning after 5 seconds
+        setTimeout(() => {
+            warning.remove();
+        }, 5000);
+    }
+
+    // Drag and drop for reordering
+    let draggedElement = null;
+
+    function handleDragStart(e) {
+        draggedElement = this;
+        this.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', this.outerHTML);
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    }
+
+    function handleDrop(e) {
+        e.preventDefault();
+        
+        if (this !== draggedElement) {
+            const draggedIndex = parseInt(draggedElement.dataset.index);
+            const targetIndex = parseInt(this.dataset.index);
+            
+            // Reorder the images array
+            const draggedImage = selectedImages[draggedIndex];
+            selectedImages.splice(draggedIndex, 1);
+            selectedImages.splice(targetIndex, 0, draggedImage);
+            
+            // Update thumbnail index if necessary
+            if (thumbnailIndex === draggedIndex) {
+                thumbnailIndex = targetIndex;
+            } else if (draggedIndex < thumbnailIndex && targetIndex >= thumbnailIndex) {
+                thumbnailIndex--;
+            } else if (draggedIndex > thumbnailIndex && targetIndex <= thumbnailIndex) {
+                thumbnailIndex++;
+            }
+            
+            renderImagePreviews();
+            updateFileInput();
+        }
+    }
+
+    function handleDragEnd(e) {
+        this.classList.remove('dragging');
+        draggedElement = null;
+    }
+
+    // Global functions for onclick handlers
+    window.setThumbnail = setThumbnail;
+    window.removeImage = removeImage;
+    window.handleMultipleImages = function(input) {
+        const files = Array.from(input.files);
+        selectedImages = [];
+        thumbnailIndex = 0;
+        handleNewImages(files);
+    };
+
+    // Variants handling (keeping existing functionality)
     let variantIndex = 0;
     const variantsContainer = document.getElementById('variants-container');
     const addVariantBtn = document.getElementById('add-variant');
@@ -644,7 +1029,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <label class="form-label">Size</label>
                             <select name="variants[${variantIndex}][size_id]" class="form-control size-select">
                                 <option value="">Select Size</option>
-                                @foreach($sizes as $size)
+                                @foreach($sizes ?? [] as $size)
                                 <option value="{{ $size->id }}">{{ $size->name }} @if($size->display_name)({{ $size->display_name }})@endif</option>
                                 @endforeach
                             </select>
@@ -653,7 +1038,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <label class="form-label">Color</label>
                             <select name="variants[${variantIndex}][color_id]" class="form-control color-select">
                                 <option value="">Select Color</option>
-                                @foreach($colors as $color)
+                                @foreach($colors ?? [] as $color)
                                 <option value="{{ $color->id }}">{{ $color->name }}</option>
                                 @endforeach
                             </select>
@@ -689,65 +1074,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-// Global function for handling multiple images
-let selectedMultipleImages = [];
-
-function handleMultipleImages(input) {
-    console.log('handleMultipleImages called, files:', input.files.length);
-    const files = Array.from(input.files);
-    const container = document.getElementById('image-previews');
-    
-    if (!container) {
-        console.error('image-previews container not found');
-        return;
-    }
-
-    // Clear existing previews
-    container.innerHTML = '';
-    selectedMultipleImages = [];
-
-    files.forEach((file, index) => {
-        if (file.type.startsWith('image/')) {
-            selectedMultipleImages.push(file);
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                const imageDiv = document.createElement('div');
-                imageDiv.className = 'image-preview-item';
-                imageDiv.innerHTML = `
-                    <img src="${e.target.result}" alt="Preview ${index + 1}">
-                    <button type="button" class="remove-image" onclick="removeMultipleImage(${index})">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-                container.appendChild(imageDiv);
-            };
-            
-            reader.readAsDataURL(file);
-        }
-    });
-}
-
-function removeMultipleImage(indexToRemove) {
-    console.log('Removing image at index:', indexToRemove);
-    
-    // Remove from selectedMultipleImages array
-    selectedMultipleImages.splice(indexToRemove, 1);
-    
-    // Update the file input
-    const input = document.getElementById('images');
-    const dt = new DataTransfer();
-    
-    selectedMultipleImages.forEach(file => {
-        dt.items.add(file);
-    });
-    
-    input.files = dt.files;
-    
-    // Refresh the preview
-    handleMultipleImages(input);
-}
 </script>
 
 @endsection

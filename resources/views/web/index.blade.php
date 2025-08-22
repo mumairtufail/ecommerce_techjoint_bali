@@ -38,24 +38,282 @@
   animation: pulse 2s ease-in-out infinite;
 }
 
-/* Product hover effects */
+/* Enhanced Product Card Styling */
 .cs_product {
   transition: all 0.3s ease;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Dynamic Hero Carousel Styles */
+.cs_hero_text h1 {
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+.cs_hero_text p {
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.cs_hero_thumb {
+  min-height: 400px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Responsive carousel adjustments */
+@media (max-width: 1199px) {
+  .cs_heto_title {
+    font-size: 3.5rem !important;
+  }
+  
+  .cs_hero_thumb {
+    min-height: 350px;
+  }
+}
+
+@media (max-width: 991px) {
+  .cs_heto_title {
+    font-size: 2.8rem !important;
+  }
+  
+  .cs_heto_subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .cs_hero_thumb {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 767px) {
+  .cs_heto_title {
+    font-size: 2.2rem !important;
+    line-height: 1.1;
+  }
+  
+  .cs_heto_subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 1.2rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .cs_hero_thumb {
+    min-height: 250px;
+  }
+  
+  .cs_hero_text {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .cs_heto_title {
+    font-size: 1.8rem !important;
+  }
+  
+  .cs_hero_thumb {
+    min-height: 200px;
+  }
 }
 
 .cs_product:hover {
   transform: translateY(-8px);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  border-color: #FC5F49;
+}
+
+.cs_product_thumb {
+  position: relative;
+  overflow: hidden;
+  height: 280px;
+  background: #f8f9fa;
+}
+
+.cs_product_thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.cs_product:hover .cs_product_thumb img {
+  transform: scale(1.05);
+}
+
+.cs_product_badge {
+  top: 12px;
+  left: 12px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+  z-index: 2;
+}
+
+.cs_cart_badge {
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 3;
+}
+
+.cs_product:hover .cs_cart_badge {
+  opacity: 1;
+}
+
+.cs_cart_icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cs_cart_icon:hover {
+  transform: scale(1.1);
+  color: #ffffff !important;
+}
+
+.cs_cart_btn {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  right: 15px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 25px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 13px;
+  transform: translateY(50px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(252, 95, 73, 0.4);
+  z-index: 2;
+}
+
+.cs_product:hover .cs_cart_btn {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.cs_cart_btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(252, 95, 73, 0.6);
+}
+
+.cs_product_info {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cs_product_title {
+  margin-bottom: 8px;
+  line-height: 1.4;
+  height: 2.8em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.cs_product_title a {
+  color: #2d3748;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.cs_product_title a:hover {
+  color: #FC5F49;
+}
+
+.cs_product_category {
+  margin-bottom: 12px;
+  color: #FC5F49 !important;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cs_product_price {
+  font-size: 20px !important;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 8px;
+}
+
+.cs_product_stock {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: inline-block;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .cs_product_stock.cs_green_color {
-  color: #48bb78;
-  font-weight: 600;
+  color: #38a169;
+  background: rgba(56, 161, 105, 0.1);
 }
 
 .cs_product_stock.cs_red_color {
-  color: #f56565;
-  font-weight: 600;
+  color: #e53e3e;
+  background: rgba(229, 62, 62, 0.1);
+}
+
+/* Responsive Grid */
+@media (max-width: 1199px) {
+  .cs_product_thumb {
+    height: 240px;
+  }
+}
+
+@media (max-width: 767px) {
+  .cs_product_thumb {
+    height: 200px;
+  }
+  
+  .cs_product_info {
+    padding: 15px;
+  }
+  
+  .cs_cart_btn {
+    font-size: 12px;
+    padding: 10px 16px;
+  }
 }
 
 @keyframes float {
@@ -108,37 +366,56 @@
   <section class="cs_slider position-relative">
     <div class="cs_slider_container" data-autoplay="0" data-loop="1" data-speed="800" data-center="0" data-slides-per-view="1" data-fade-slide="0">
       <div class="cs_slider_wrapper">
-        <div class="slick_slide_in">
-          <div class="cs_hero cs_style_1">
-            <div class="cs_hero_text">
-              <h1 class="cs_heto_title cs_fs_67 cs_bold">Winter Collection For Women</h1>
-              <p class="cs_heto_subtitle">we are more than just an online shopping destination; we're your personal gateway to a world of fashion, trendsetting styles, and unparalleled convenience. We believe that fashion is a reflection of your individuality, and our mission is to make every shopping experience with us.</p>
-              <a href="shop.html" class="cs_btn cs_style_1 cs_fs_16 cs_medium">Shop Now</a>
+        @if($categories && $categories->count() > 0)
+          @foreach($categories->take(3) as $index => $category)
+            <div class="slick_slide_in">
+              <div class="cs_hero cs_style_1">
+                <div class="cs_hero_text">
+                  <h1 class="cs_heto_title cs_fs_67 cs_bold">{{ $category->name }} Collection</h1>
+                  <p class="cs_heto_subtitle">
+                    {{ $category->description ?: 'Discover our amazing ' . $category->name . ' collection. We are more than just an online shopping destination; we\'re your personal gateway to a world of fashion, trendsetting styles, and unparalleled convenience.' }}
+                  </p>
+                  <a href="{{ route('web.view.shop', ['category' => $category->id]) }}" class="cs_btn cs_style_1 cs_fs_16 cs_medium">Shop {{ $category->name }}</a>
+                </div>
+                <div class="cs_hero_thumb cs_bg_filed" 
+                     data-src="{{ $category->image ? asset('storage/' . $category->image) : asset('web/assets/img/hero' . ($index + 1) . '.jpg') }}">
+                </div>
+              </div>
             </div>
-            <div class="cs_hero_thumb cs_bg_filed" data-src="web/assets/img/hero1.jpg"></div>
+          @endforeach
+        @else
+          <!-- Fallback slides if no categories -->
+          <div class="slick_slide_in">
+            <div class="cs_hero cs_style_1">
+              <div class="cs_hero_text">
+                <h1 class="cs_heto_title cs_fs_67 cs_bold">Fashion Collection</h1>
+                <p class="cs_heto_subtitle">We are more than just an online shopping destination; we're your personal gateway to a world of fashion, trendsetting styles, and unparalleled convenience. We believe that fashion is a reflection of your individuality, and our mission is to make every shopping experience with us.</p>
+                <a href="{{ route('web.view.shop') }}" class="cs_btn cs_style_1 cs_fs_16 cs_medium">Shop Now</a>
+              </div>
+              <div class="cs_hero_thumb cs_bg_filed" data-src="{{ asset('web/assets/img/hero1.jpg') }}"></div>
+            </div>
           </div>
-        </div>
-        <div class="slick_slide_in">
-          <div class="cs_hero cs_style_1">
-            <div class="cs_hero_text">
-              <h1 class="cs_heto_title cs_fs_67 cs_bold">T-Shirt Collection For Women</h1>
-              <p class="cs_heto_subtitle">we are more than just an online shopping destination; we're your personal gateway to a world of fashion, trendsetting styles, and unparalleled convenience. We believe that fashion is a reflection of your individuality, and our mission is to make every shopping experience with us.</p>
-              <a href="shop.html" class="cs_btn cs_style_1 cs_fs_16 cs_medium">Shop Now</a>
-            </div>
-            <div class="cs_hero_thumb cs_bg_filed" data-src="web/assets/img/hero3.jpg"></div>
-          </div>
-        </div>
-        <div class="slick_slide_in">
-          <div class="cs_hero cs_style_1">
-            <div class="cs_hero_text">
-              <h1 class="cs_heto_title cs_fs_67 cs_bold">Skirts Collection For Women</h1>
-              <p class="cs_heto_subtitle">we are more than just an online shopping destination; we're your personal gateway to a world of fashion, trendsetting styles, and unparalleled convenience. We believe that fashion is a reflection of your individuality, and our mission is to make every shopping experience with us.</p>
-              <a href="shop.html" class="cs_btn cs_style_1 cs_fs_16 cs_medium">Shop Now</a>
-            </div>
-            <div class="cs_hero_thumb cs_bg_filed" data-src="web/assets/img/hero4.jpg">
+          <div class="slick_slide_in">
+            <div class="cs_hero cs_style_1">
+              <div class="cs_hero_text">
+                <h1 class="cs_heto_title cs_fs_67 cs_bold">Premium Collection</h1>
+                <p class="cs_heto_subtitle">We are more than just an online shopping destination; we're your personal gateway to a world of fashion, trendsetting styles, and unparalleled convenience. We believe that fashion is a reflection of your individuality, and our mission is to make every shopping experience with us.</p>
+                <a href="{{ route('web.view.shop') }}" class="cs_btn cs_style_1 cs_fs_16 cs_medium">Shop Now</a>
+              </div>
+              <div class="cs_hero_thumb cs_bg_filed" data-src="{{ asset('web/assets/img/hero3.jpg') }}"></div>
             </div>
           </div>
-        </div>
+          <div class="slick_slide_in">
+            <div class="cs_hero cs_style_1">
+              <div class="cs_hero_text">
+                <h1 class="cs_heto_title cs_fs_67 cs_bold">New Arrivals</h1>
+                <p class="cs_heto_subtitle">We are more than just an online shopping destination; we're your personal gateway to a world of fashion, trendsetting styles, and unparalleled convenience. We believe that fashion is a reflection of your individuality, and our mission is to make every shopping experience with us.</p>
+                <a href="{{ route('web.view.shop') }}" class="cs_btn cs_style_1 cs_fs_16 cs_medium">Shop Now</a>
+              </div>
+              <div class="cs_hero_thumb cs_bg_filed" data-src="{{ asset('web/assets/img/hero4.jpg') }}"></div>
+            </div>
+          </div>
+        @endif
       </div>
       <div class="cs_pagination cs_style_1"></div>
     </div>
@@ -400,37 +677,37 @@
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0 13.468C0.0859599 13.4758 0.17192 13.4836 0.25788 13.4836C3.86038 13.4836 7.46288 13.4836 11.0732 13.4836C11.1513 13.4836 11.2295 13.4836 11.292 13.4836C8.61943 10.8103 5.94686 8.13705 3.2821 5.4716C4.04011 4.72121 4.73561 4.04117 5.44673 3.33768C8.08023 5.97186 10.7528 8.64513 13.4957 11.3887C13.4957 7.53517 13.4957 3.76759 13.4957 0C14.5116 0 15.4962 0 16.5043 0C16.5043 3.7754 16.5043 7.52736 16.5043 11.2715C19.1769 8.59823 21.8494 5.92496 24.4986 3.27514C25.2566 4.03335 25.9443 4.72121 26.6476 5.4247C24.0141 8.05889 21.3415 10.7322 18.6689 13.4054C18.6767 13.4289 18.6924 13.4523 18.7002 13.4758C22.459 13.4758 26.2256 13.4758 30 13.4758C30 14.4919 30 15.4768 30 16.493C26.2256 16.493 22.4668 16.493 18.6767 16.493C21.3806 19.1975 24.0453 21.863 26.7101 24.5284C25.9755 25.2475 25.2878 25.9276 24.5845 26.6232C21.951 23.9891 19.2785 21.3158 16.559 18.5878C16.5434 18.7363 16.5277 18.7989 16.5277 18.8614C16.5277 22.5039 16.5277 26.1464 16.5277 29.7968C16.5277 29.8671 16.5434 29.9297 16.5434 30C15.5275 30 14.5116 30 13.4957 30C13.5035 29.914 13.5113 29.828 13.5113 29.7421C13.5113 26.1386 13.5113 22.5352 13.5113 18.9317C13.5113 18.8536 13.4957 18.7676 13.4879 18.5956C10.745 21.3236 8.07242 23.9969 5.43892 26.6311C4.73561 25.9354 4.04011 25.2553 3.27429 24.505C5.93905 21.8395 8.6038 19.174 11.2764 16.5008C11.2217 16.5008 11.1435 16.5008 11.0654 16.5008C7.46288 16.5008 3.86038 16.5008 0.25788 16.5008C0.17192 16.5008 0.0859599 16.5164 0 16.5164C0 15.5003 0 14.4841 0 13.468Z" fill="#070707" />
         </svg>
-        35% Winter Offer Running
+        Premium Craftsmanship, Trusted Quality
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0 13.468C0.0859599 13.4758 0.17192 13.4836 0.25788 13.4836C3.86038 13.4836 7.46288 13.4836 11.0732 13.4836C11.1513 13.4836 11.2295 13.4836 11.292 13.4836C8.61943 10.8103 5.94686 8.13705 3.2821 5.4716C4.04011 4.72121 4.73561 4.04117 5.44673 3.33768C8.08023 5.97186 10.7528 8.64513 13.4957 11.3887C13.4957 7.53517 13.4957 3.76759 13.4957 0C14.5116 0 15.4962 0 16.5043 0C16.5043 3.7754 16.5043 7.52736 16.5043 11.2715C19.1769 8.59823 21.8494 5.92496 24.4986 3.27514C25.2566 4.03335 25.9443 4.72121 26.6476 5.4247C24.0141 8.05889 21.3415 10.7322 18.6689 13.4054C18.6767 13.4289 18.6924 13.4523 18.7002 13.4758C22.459 13.4758 26.2256 13.4758 30 13.4758C30 14.4919 30 15.4768 30 16.493C26.2256 16.493 22.4668 16.493 18.6767 16.493C21.3806 19.1975 24.0453 21.863 26.7101 24.5284C25.9755 25.2475 25.2878 25.9276 24.5845 26.6232C21.951 23.9891 19.2785 21.3158 16.559 18.5878C16.5434 18.7363 16.5277 18.7989 16.5277 18.8614C16.5277 22.5039 16.5277 26.1464 16.5277 29.7968C16.5277 29.8671 16.5434 29.9297 16.5434 30C15.5275 30 14.5116 30 13.4957 30C13.5035 29.914 13.5113 29.828 13.5113 29.7421C13.5113 26.1386 13.5113 22.5352 13.5113 18.9317C13.5113 18.8536 13.4957 18.7676 13.4879 18.5956C10.745 21.3236 8.07242 23.9969 5.43892 26.6311C4.73561 25.9354 4.04011 25.2553 3.27429 24.505C5.93905 21.8395 8.6038 19.174 11.2764 16.5008C11.2217 16.5008 11.1435 16.5008 11.0654 16.5008C7.46288 16.5008 3.86038 16.5008 0.25788 16.5008C0.17192 16.5008 0.0859599 16.5164 0 16.5164C0 15.5003 0 14.4841 0 13.468Z" fill="#070707" />
         </svg>
-        35% Winter Offer Running
+Where Tradition Meets Modern Elegance
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0 13.468C0.0859599 13.4758 0.17192 13.4836 0.25788 13.4836C3.86038 13.4836 7.46288 13.4836 11.0732 13.4836C11.1513 13.4836 11.2295 13.4836 11.292 13.4836C8.61943 10.8103 5.94686 8.13705 3.2821 5.4716C4.04011 4.72121 4.73561 4.04117 5.44673 3.33768C8.08023 5.97186 10.7528 8.64513 13.4957 11.3887C13.4957 7.53517 13.4957 3.76759 13.4957 0C14.5116 0 15.4962 0 16.5043 0C16.5043 3.7754 16.5043 7.52736 16.5043 11.2715C19.1769 8.59823 21.8494 5.92496 24.4986 3.27514C25.2566 4.03335 25.9443 4.72121 26.6476 5.4247C24.0141 8.05889 21.3415 10.7322 18.6689 13.4054C18.6767 13.4289 18.6924 13.4523 18.7002 13.4758C22.459 13.4758 26.2256 13.4758 30 13.4758C30 14.4919 30 15.4768 30 16.493C26.2256 16.493 22.4668 16.493 18.6767 16.493C21.3806 19.1975 24.0453 21.863 26.7101 24.5284C25.9755 25.2475 25.2878 25.9276 24.5845 26.6232C21.951 23.9891 19.2785 21.3158 16.559 18.5878C16.5434 18.7363 16.5277 18.7989 16.5277 18.8614C16.5277 22.5039 16.5277 26.1464 16.5277 29.7968C16.5277 29.8671 16.5434 29.9297 16.5434 30C15.5275 30 14.5116 30 13.4957 30C13.5035 29.914 13.5113 29.828 13.5113 29.7421C13.5113 26.1386 13.5113 22.5352 13.5113 18.9317C13.5113 18.8536 13.4957 18.7676 13.4879 18.5956C10.745 21.3236 8.07242 23.9969 5.43892 26.6311C4.73561 25.9354 4.04011 25.2553 3.27429 24.505C5.93905 21.8395 8.6038 19.174 11.2764 16.5008C11.2217 16.5008 11.1435 16.5008 11.0654 16.5008C7.46288 16.5008 3.86038 16.5008 0.25788 16.5008C0.17192 16.5008 0.0859599 16.5164 0 16.5164C0 15.5003 0 14.4841 0 13.468Z" fill="#070707" />
         </svg>
-        35% Winter Offer Running
+        
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0 13.468C0.0859599 13.4758 0.17192 13.4836 0.25788 13.4836C3.86038 13.4836 7.46288 13.4836 11.0732 13.4836C11.1513 13.4836 11.2295 13.4836 11.292 13.4836C8.61943 10.8103 5.94686 8.13705 3.2821 5.4716C4.04011 4.72121 4.73561 4.04117 5.44673 3.33768C8.08023 5.97186 10.7528 8.64513 13.4957 11.3887C13.4957 7.53517 13.4957 3.76759 13.4957 0C14.5116 0 15.4962 0 16.5043 0C16.5043 3.7754 16.5043 7.52736 16.5043 11.2715C19.1769 8.59823 21.8494 5.92496 24.4986 3.27514C25.2566 4.03335 25.9443 4.72121 26.6476 5.4247C24.0141 8.05889 21.3415 10.7322 18.6689 13.4054C18.6767 13.4289 18.6924 13.4523 18.7002 13.4758C22.459 13.4758 26.2256 13.4758 30 13.4758C30 14.4919 30 15.4768 30 16.493C26.2256 16.493 22.4668 16.493 18.6767 16.493C21.3806 19.1975 24.0453 21.863 26.7101 24.5284C25.9755 25.2475 25.2878 25.9276 24.5845 26.6232C21.951 23.9891 19.2785 21.3158 16.559 18.5878C16.5434 18.7363 16.5277 18.7989 16.5277 18.8614C16.5277 22.5039 16.5277 26.1464 16.5277 29.7968C16.5277 29.8671 16.5434 29.9297 16.5434 30C15.5275 30 14.5116 30 13.4957 30C13.5035 29.914 13.5113 29.828 13.5113 29.7421C13.5113 26.1386 13.5113 22.5352 13.5113 18.9317C13.5113 18.8536 13.4957 18.7676 13.4879 18.5956C10.745 21.3236 8.07242 23.9969 5.43892 26.6311C4.73561 25.9354 4.04011 25.2553 3.27429 24.505C5.93905 21.8395 8.6038 19.174 11.2764 16.5008C11.2217 16.5008 11.1435 16.5008 11.0654 16.5008C7.46288 16.5008 3.86038 16.5008 0.25788 16.5008C0.17192 16.5008 0.0859599 16.5164 0 16.5164C0 15.5003 0 14.4841 0 13.468Z" fill="#070707" />
         </svg>
-        35% Winter Offer Running
+    “Luxury You Can Wear Everyday
       </div>
       <div class="cs_moving_text">
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0 13.468C0.0859599 13.4758 0.17192 13.4836 0.25788 13.4836C3.86038 13.4836 7.46288 13.4836 11.0732 13.4836C11.1513 13.4836 11.2295 13.4836 11.292 13.4836C8.61943 10.8103 5.94686 8.13705 3.2821 5.4716C4.04011 4.72121 4.73561 4.04117 5.44673 3.33768C8.08023 5.97186 10.7528 8.64513 13.4957 11.3887C13.4957 7.53517 13.4957 3.76759 13.4957 0C14.5116 0 15.4962 0 16.5043 0C16.5043 3.7754 16.5043 7.52736 16.5043 11.2715C19.1769 8.59823 21.8494 5.92496 24.4986 3.27514C25.2566 4.03335 25.9443 4.72121 26.6476 5.4247C24.0141 8.05889 21.3415 10.7322 18.6689 13.4054C18.6767 13.4289 18.6924 13.4523 18.7002 13.4758C22.459 13.4758 26.2256 13.4758 30 13.4758C30 14.4919 30 15.4768 30 16.493C26.2256 16.493 22.4668 16.493 18.6767 16.493C21.3806 19.1975 24.0453 21.863 26.7101 24.5284C25.9755 25.2475 25.2878 25.9276 24.5845 26.6232C21.951 23.9891 19.2785 21.3158 16.559 18.5878C16.5434 18.7363 16.5277 18.7989 16.5277 18.8614C16.5277 22.5039 16.5277 26.1464 16.5277 29.7968C16.5277 29.8671 16.5434 29.9297 16.5434 30C15.5275 30 14.5116 30 13.4957 30C13.5035 29.914 13.5113 29.828 13.5113 29.7421C13.5113 26.1386 13.5113 22.5352 13.5113 18.9317C13.5113 18.8536 13.4957 18.7676 13.4879 18.5956C10.745 21.3236 8.07242 23.9969 5.43892 26.6311C4.73561 25.9354 4.04011 25.2553 3.27429 24.505C5.93905 21.8395 8.6038 19.174 11.2764 16.5008C11.2217 16.5008 11.1435 16.5008 11.0654 16.5008C7.46288 16.5008 3.86038 16.5008 0.25788 16.5008C0.17192 16.5008 0.0859599 16.5164 0 16.5164C0 15.5003 0 14.4841 0 13.468Z" fill="#070707" />
         </svg>
-        35% Winter Offer Running
+Premium Craftsmanship, Trusted Quality
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0 13.468C0.0859599 13.4758 0.17192 13.4836 0.25788 13.4836C3.86038 13.4836 7.46288 13.4836 11.0732 13.4836C11.1513 13.4836 11.2295 13.4836 11.292 13.4836C8.61943 10.8103 5.94686 8.13705 3.2821 5.4716C4.04011 4.72121 4.73561 4.04117 5.44673 3.33768C8.08023 5.97186 10.7528 8.64513 13.4957 11.3887C13.4957 7.53517 13.4957 3.76759 13.4957 0C14.5116 0 15.4962 0 16.5043 0C16.5043 3.7754 16.5043 7.52736 16.5043 11.2715C19.1769 8.59823 21.8494 5.92496 24.4986 3.27514C25.2566 4.03335 25.9443 4.72121 26.6476 5.4247C24.0141 8.05889 21.3415 10.7322 18.6689 13.4054C18.6767 13.4289 18.6924 13.4523 18.7002 13.4758C22.459 13.4758 26.2256 13.4758 30 13.4758C30 14.4919 30 15.4768 30 16.493C26.2256 16.493 22.4668 16.493 18.6767 16.493C21.3806 19.1975 24.0453 21.863 26.7101 24.5284C25.9755 25.2475 25.2878 25.9276 24.5845 26.6232C21.951 23.9891 19.2785 21.3158 16.559 18.5878C16.5434 18.7363 16.5277 18.7989 16.5277 18.8614C16.5277 22.5039 16.5277 26.1464 16.5277 29.7968C16.5277 29.8671 16.5434 29.9297 16.5434 30C15.5275 30 14.5116 30 13.4957 30C13.5035 29.914 13.5113 29.828 13.5113 29.7421C13.5113 26.1386 13.5113 22.5352 13.5113 18.9317C13.5113 18.8536 13.4957 18.7676 13.4879 18.5956C10.745 21.3236 8.07242 23.9969 5.43892 26.6311C4.73561 25.9354 4.04011 25.2553 3.27429 24.505C5.93905 21.8395 8.6038 19.174 11.2764 16.5008C11.2217 16.5008 11.1435 16.5008 11.0654 16.5008C7.46288 16.5008 3.86038 16.5008 0.25788 16.5008C0.17192 16.5008 0.0859599 16.5164 0 16.5164C0 15.5003 0 14.4841 0 13.468Z" fill="#070707" />
         </svg>
-        35% Winter Offer Running
+       “Luxury You Can Wear Everyday
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0 13.468C0.0859599 13.4758 0.17192 13.4836 0.25788 13.4836C3.86038 13.4836 7.46288 13.4836 11.0732 13.4836C11.1513 13.4836 11.2295 13.4836 11.292 13.4836C8.61943 10.8103 5.94686 8.13705 3.2821 5.4716C4.04011 4.72121 4.73561 4.04117 5.44673 3.33768C8.08023 5.97186 10.7528 8.64513 13.4957 11.3887C13.4957 7.53517 13.4957 3.76759 13.4957 0C14.5116 0 15.4962 0 16.5043 0C16.5043 3.7754 16.5043 7.52736 16.5043 11.2715C19.1769 8.59823 21.8494 5.92496 24.4986 3.27514C25.2566 4.03335 25.9443 4.72121 26.6476 5.4247C24.0141 8.05889 21.3415 10.7322 18.6689 13.4054C18.6767 13.4289 18.6924 13.4523 18.7002 13.4758C22.459 13.4758 26.2256 13.4758 30 13.4758C30 14.4919 30 15.4768 30 16.493C26.2256 16.493 22.4668 16.493 18.6767 16.493C21.3806 19.1975 24.0453 21.863 26.7101 24.5284C25.9755 25.2475 25.2878 25.9276 24.5845 26.6232C21.951 23.9891 19.2785 21.3158 16.559 18.5878C16.5434 18.7363 16.5277 18.7989 16.5277 18.8614C16.5277 22.5039 16.5277 26.1464 16.5277 29.7968C16.5277 29.8671 16.5434 29.9297 16.5434 30C15.5275 30 14.5116 30 13.4957 30C13.5035 29.914 13.5113 29.828 13.5113 29.7421C13.5113 26.1386 13.5113 22.5352 13.5113 18.9317C13.5113 18.8536 13.4957 18.7676 13.4879 18.5956C10.745 21.3236 8.07242 23.9969 5.43892 26.6311C4.73561 25.9354 4.04011 25.2553 3.27429 24.505C5.93905 21.8395 8.6038 19.174 11.2764 16.5008C11.2217 16.5008 11.1435 16.5008 11.0654 16.5008C7.46288 16.5008 3.86038 16.5008 0.25788 16.5008C0.17192 16.5008 0.0859599 16.5164 0 16.5164C0 15.5003 0 14.4841 0 13.468Z" fill="#070707" />
         </svg>
-        35% Winter Offer Running
+       Exquisite Designs, Timeless Appeal
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0 13.468C0.0859599 13.4758 0.17192 13.4836 0.25788 13.4836C3.86038 13.4836 7.46288 13.4836 11.0732 13.4836C11.1513 13.4836 11.2295 13.4836 11.292 13.4836C8.61943 10.8103 5.94686 8.13705 3.2821 5.4716C4.04011 4.72121 4.73561 4.04117 5.44673 3.33768C8.08023 5.97186 10.7528 8.64513 13.4957 11.3887C13.4957 7.53517 13.4957 3.76759 13.4957 0C14.5116 0 15.4962 0 16.5043 0C16.5043 3.7754 16.5043 7.52736 16.5043 11.2715C19.1769 8.59823 21.8494 5.92496 24.4986 3.27514C25.2566 4.03335 25.9443 4.72121 26.6476 5.4247C24.0141 8.05889 21.3415 10.7322 18.6689 13.4054C18.6767 13.4289 18.6924 13.4523 18.7002 13.4758C22.459 13.4758 26.2256 13.4758 30 13.4758C30 14.4919 30 15.4768 30 16.493C26.2256 16.493 22.4668 16.493 18.6767 16.493C21.3806 19.1975 24.0453 21.863 26.7101 24.5284C25.9755 25.2475 25.2878 25.9276 24.5845 26.6232C21.951 23.9891 19.2785 21.3158 16.559 18.5878C16.5434 18.7363 16.5277 18.7989 16.5277 18.8614C16.5277 22.5039 16.5277 26.1464 16.5277 29.7968C16.5277 29.8671 16.5434 29.9297 16.5434 30C15.5275 30 14.5116 30 13.4957 30C13.5035 29.914 13.5113 29.828 13.5113 29.7421C13.5113 26.1386 13.5113 22.5352 13.5113 18.9317C13.5113 18.8536 13.4957 18.7676 13.4879 18.5956C10.745 21.3236 8.07242 23.9969 5.43892 26.6311C4.73561 25.9354 4.04011 25.2553 3.27429 24.505C5.93905 21.8395 8.6038 19.174 11.2764 16.5008C11.2217 16.5008 11.1435 16.5008 11.0654 16.5008C7.46288 16.5008 3.86038 16.5008 0.25788 16.5008C0.17192 16.5008 0.0859599 16.5164 0 16.5164C0 15.5003 0 14.4841 0 13.468Z" fill="#070707" />
         </svg>
-        35% Winter Offer Running
+       Premium Craftsmanship, Trusted Quality
       </div>
     </div>
   </div>
@@ -443,13 +720,17 @@
         <div class="row cs_gap_y_30 align-items-center">
           <div class="col-lg-6">
             <div class="cs_card_thumb">
-              <img src="web/assets/img/card1.jpg" alt="Card Image" class="w-100">
+              <img src="assets/560650.png" alt="Card Image" class="w-100">
             </div>
           </div>
           <div class="col-lg-6">
             <div class="cs_card_info">
-              <h2 class="cs_card_title cs_fs_50 cs_bold">Explore our latest winter fashion collection</h2>
-              <p class="cs_card_subtitle">We believe that winter fashion should be both functional and fabulous. <br> Our Winter Fashion Collection reflects our commitment to quality, comfort <br> and style. Embrace the season with confidence.</p>
+              <h2 class="cs_card_title cs_fs_50 cs_bold">Explore our latest jewelry collection</h2>
+              <p class="cs_card_subtitle">
+We believe jewelry should be timeless and empowering.
+Our Bali Jewelers Collection reflects our commitment to elegance, craftsmanship, and beauty. Adorn yourself with pieces that shine as bright as you do.
+
+</p>
               <a href="shop.html" class="cs_btn cs_style_1 cs_fs_16 cs_medium">Shop Now</a>
             </div>
           </div>
@@ -673,26 +954,26 @@
   </section>
   <!-- End testimonial -->
   <!-- Start collection 2 -->
-  <section>
-    <div class="cs_height_140 cs_height_lg_80"></div>
-    <div class="cs_card cs_style_2">
-      <div class="container">
-        <div class="row cs_gap_y_30 align-items-center">
-          <div class="col-lg-6">
-            <div class="cs_card_info">
-              <h2 class="cs_card_title cs_fs_50 cs_bold">Explore latest handcraft exclusive collection</h2>
-              <p class="cs_card_subtitle">We believe that winter fashion should be both functional and fabulous. Our <br> Winter Fashion Collection reflects our commitment to quality, comfort, and <br> style. Embrace the season with confidence.</p>
-              <a href="shop.html" class="cs_btn cs_style_1 cs_fs_16 cs_medium">Shop Now</a>
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="cs_card_thumb cs_bg_filed" data-src="web/assets/img/card2.jpg"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="cs_height_120 cs_height_lg_70"></div>
-  </section>
+  <!--<section>-->
+  <!--  <div class="cs_height_140 cs_height_lg_80"></div>-->
+  <!--  <div class="cs_card cs_style_2">-->
+  <!--    <div class="container">-->
+  <!--      <div class="row cs_gap_y_30 align-items-center">-->
+  <!--        <div class="col-lg-6">-->
+  <!--          <div class="cs_card_info">-->
+  <!--            <h2 class="cs_card_title cs_fs_50 cs_bold">Explore latest handcraft exclusive collection</h2>-->
+  <!--            <p class="cs_card_subtitle">We believe that winter fashion should be both functional and fabulous. Our <br> Winter Fashion Collection reflects our commitment to quality, comfort, and <br> style. Embrace the season with confidence.</p>-->
+  <!--            <a href="shop.html" class="cs_btn cs_style_1 cs_fs_16 cs_medium">Shop Now</a>-->
+  <!--          </div>-->
+  <!--        </div>-->
+  <!--        <div class="col-lg-6">-->
+  <!--          <div class="cs_card_thumb cs_bg_filed" data-src="web/assets/img/card2.jpg"></div>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--    </div>-->
+  <!--  </div>-->
+  <!--  <div class="cs_height_120 cs_height_lg_70"></div>-->
+  <!--</section>-->
   <!-- End collection 2 -->
 
 <!-- Include cart components -->

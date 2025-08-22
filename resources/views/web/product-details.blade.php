@@ -78,9 +78,9 @@
                     <h4 class="cs_single_product_price cs_fs_21 cs_primary_color cs_semibold">Price: ${{ number_format($product->price, 2) }}</h4>
                     <div class="cs_stock_info cs_fs_14 cs_medium mt-2"></div>
                     <hr>
-                    <div class="cs_single_product_details_text">
-                        <p class="mb-0">{{ $product->description ?: 'No description available for this product.' }}</p>
-                    </div>
+                    <!--<div class="cs_single_product_details_text">-->
+                    <!--    <div class="mb-0">{!! $product->description ?: '<p>No description available for this product.</p>' !!}</div>-->
+                    <!--</div>-->
 
                     @if($product->sizes->count() > 0)
                         <div class="cs_single_product_size">
@@ -145,7 +145,7 @@
                             <b class="cs_medium">Categories: </b>{{ $product->category->name }}
                         </li>
                         <li class="cs_fs_16 cs_normal">
-                            <b class="cs_medium">Tags: </b>{{ $product->category->name }}, Fashion, Clothing
+                            <b class="cs_medium">Tags: </b>{{ $product->category->name }}
                         </li>
                     </ul>
                 </div>
@@ -156,14 +156,16 @@
         <hr>
         <div class="cs_product_meta_info">
             <ul class="cs_tab_links cs_style_2 cs_product_tab cs_fs_21 cs_primary_color cs_semibold cs_mp0">
-                <li><a href="#tab_1">Description</a></li>
+                <li class="active"><a href="#tab_1">Description</a></li>
                 <li><a href="#tab_2">Additional information</a></li>
                 <li><a href="#tab_3">Size Guide</a></li>
-                <li class="active"><a href="#tab_4">Review (1)</a></li>
+                <li><a href="#tab_4">Review (1)</a></li>
             </ul>
             <div class="cs_tabs">
-                <div class="cs_tab" id="tab_1">
-                    {{ $product->description ?: 'No detailed description available for this product.' }}
+                <div class="cs_tab active" id="tab_1">
+                    <div class="product-description-content">
+                        {!! $product->description ?: '<p>No detailed description available for this product.</p>' !!}
+                    </div>
                 </div>
                 <div class="cs_tab" id="tab_2">
                     <table class="m-0">
@@ -187,7 +189,7 @@
                     turpis pellentesque vulputate. Nam sed consequat tortor. Curabitur finibus sapien dolor. Ut eleifend tellus nec
                     erat pulvinar dignissim. Nam non arcu purus. Vivamus et massa massa.
                 </div>
-                <div class="cs_tab active" id="tab_4">
+                <div class="cs_tab" id="tab_4">
                     <ul class="cs_client_review_list cs_mp0">
                         <li>
                             <div class="cs_client_review">
@@ -587,6 +589,96 @@ document.addEventListener('DOMContentLoaded', function() {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
+}
+
+/* Rich Text Description Styling */
+.product-description-content {
+    line-height: 1.6;
+    color: #4a5568;
+}
+
+.product-description-content h1,
+.product-description-content h2,
+.product-description-content h3,
+.product-description-content h4,
+.product-description-content h5,
+.product-description-content h6 {
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.product-description-content h1 { font-size: 2em; }
+.product-description-content h2 { font-size: 1.5em; }
+.product-description-content h3 { font-size: 1.25em; }
+
+.product-description-content p {
+    margin-bottom: 1em;
+}
+
+.product-description-content ul,
+.product-description-content ol {
+    margin: 1em 0;
+    padding-left: 2em;
+}
+
+.product-description-content li {
+    margin-bottom: 0.5em;
+}
+
+.product-description-content strong,
+.product-description-content b {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.product-description-content em,
+.product-description-content i {
+    font-style: italic;
+}
+
+.product-description-content u {
+    text-decoration: underline;
+}
+
+.product-description-content s {
+    text-decoration: line-through;
+}
+
+.product-description-content blockquote {
+    border-left: 4px solid #FC5F49;
+    padding-left: 1em;
+    margin: 1em 0;
+    font-style: italic;
+    background: #f7fafc;
+    padding: 1em;
+    border-radius: 4px;
+}
+
+.product-description-content a {
+    color: #FC5F49;
+    text-decoration: underline;
+}
+
+.product-description-content a:hover {
+    color: #e04e38;
+}
+
+.product-description-content code {
+    background: #f1f5f9;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+.product-description-content pre {
+    background: #f1f5f9;
+    padding: 1em;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
 }
 </style>
 @endsection

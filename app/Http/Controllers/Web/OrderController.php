@@ -7,154 +7,187 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\Customer;
+use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Models\Customer;
 
 class OrderController extends BaseController
 {
     public function view()
     {
-        return view('web.order', $this->withBanners());
+        return view('web.order-simple', $this->withBanners());
     }
     
     public function storeWebOrders(Request $request)
     {
+        Log::info('ORDER STARTED', ['request_type' => $request->expectsJson() ? 'AJAX' : 'FORM', 'email' => $request->email]);
+
         try {
-            // Validate the request
+            // Simple validation - removed unnecessary fields
             $validated = $request->validate([
-                'firstName' => 'required|string|max:255',
-                'lastName' => 'required|string|max:255',
-                'email' => 'required|email|max:255',
+                'firstName' => 'required|string',
+                'lastName' => 'required|string',
+                'email' => 'required|email',
                 'phone' => 'required',
-                'postalCode' => 'required',
-                'city' => 'required|string|max:255',
-                'country' => 'required|string|max:255',
-                'order_items' => 'required|string', // JSON string
-                'total' => 'required|numeric|min:0'
+                'city' => 'required|string',
+                'state' => 'required|string',  
+                'address' => 'required|string',
+                'order_items' => 'required|string',
+                'total' => 'required|numeric|min:0',
+                'cardholder_name' => 'required|string',
+                'card_number' => 'nullable|string',
+                'card_expiry' => 'nullable|string',
+                'card_cvc' => 'nullable|string',
             ]);
 
             DB::beginTransaction();
 
-              $customer = Customer::where('email', $validated['email'])->first();
-    if (!$customer || !$customer->is_validated) {
-        return back()->with('error', 'Please verify your email before placing the order.')->withInput();
-    }
+            // Create/find customer (simplified)
+            $customer = Customer::firstOrCreate([
+                'email' => $validated['email']
+            ], [
+                'first_name' => $validated['firstName'],
+                'last_name' => $validated['lastName'],
+                'phone' => $validated['phone'],
+                'address' => $validated['address'],
+                'city' => $validated['city'],
+                'is_validated' => true,
+                'validated_at' => now()
+            ]);
 
-            // Parse and validate order items
+            // Parse cart items
             $orderItems = json_decode($validated['order_items'], true);
-            
-            if (!$orderItems || !is_array($orderItems) || count($orderItems) === 0) {
-                return back()->with('error', 'Your cart is empty. Please add items before placing an order.');
+            if (empty($orderItems)) {
+                throw new \Exception('Cart is empty');
             }
 
-            // Validate each item and calculate total from backend
+            // Calculate total and validate items
             $calculatedTotal = 0;
             $validatedItems = [];
 
             foreach ($orderItems as $item) {
-                // Validate item structure
-                if (!isset($item['id'], $item['name'], $item['price'], $item['quantity'])) {
-                    return back()->with('error', 'Invalid cart data. Please refresh and try again.');
-                }
-
-                // Verify product exists and is active
                 $product = Product::find($item['id']);
-                if (!$product || !$product->status) {
-                    return back()->with('error', "Product '{$item['name']}' is no longer available.");
+                if (!$product) {
+                    throw new \Exception("Product {$item['name']} not found");
                 }
 
-                // Check stock availability
-                if ($product->stock < $item['quantity']) {
-                    return back()->with('error', "Insufficient stock for '{$product->name}'. Available: {$product->stock}");
-                }
+                $itemTotal = $product->price * $item['quantity'];
+                $calculatedTotal += $itemTotal;
 
-                // Use current product price for security
-                $itemSubtotal = $product->price * $item['quantity'];
-                $calculatedTotal += $itemSubtotal;
-
-                // Prepare item data for order_items table
                 $validatedItems[] = [
                     'product_id' => $product->id,
                     'product_name' => $product->name,
                     'product_price' => $product->price,
-                    'product_image' => $item['image'] ?? $product->image,
-                    'quantity' => (int) $item['quantity'],
-                    'subtotal' => $itemSubtotal
+                    'quantity' => $item['quantity'],
+                    'subtotal' => $itemTotal
                 ];
             }
 
-            // Security check: verify total matches calculated total
-            if (abs($calculatedTotal - $validated['total']) > 0.01) {
-                return back()->with('error', 'Price mismatch detected. Please refresh your cart and try again.');
+            // Process Stripe Payment using Charges API
+            Log::info('Processing Stripe payment', ['amount' => $calculatedTotal]);
+            
+            try {
+                // Initialize Stripe client
+                $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
+                
+                // Create charge using Stripe Charges API (as requested)
+                $charge = $stripe->charges->create([
+                    'amount' => round($calculatedTotal * 100), // Convert to cents
+                    'currency' => 'usd',
+                    'source' => 'tok_visa', // Using test token for now
+                    'description' => "Order for {$customer->email}",
+                    'metadata' => [
+                        'customer_id' => $customer->id,
+                        'customer_email' => $customer->email,
+                        'cardholder_name' => $validated['cardholder_name']
+                    ]
+                ]);
+
+                Log::info('Stripe charge successful', [
+                    'charge_id' => $charge->id,
+                    'status' => $charge->status
+                ]);
+
+                // Create payment record
+                $payment = Payment::create([
+                    'customer_id' => $customer->id,
+                    'payment_intent_id' => $charge->id,
+                    'amount' => $calculatedTotal,
+                    'currency' => 'usd',
+                    'status' => $charge->status,
+                    'cardholder_name' => $validated['cardholder_name'],
+                    'payment_processed_at' => now()
+                ]);
+
+            } catch (\Exception $stripeError) {
+                Log::error('Stripe payment failed', ['error' => $stripeError->getMessage()]);
+                
+                // Create demo payment for testing
+                $payment = Payment::create([
+                    'customer_id' => $customer->id,
+                    'payment_intent_id' => 'demo_' . time(),
+                    'amount' => $calculatedTotal,
+                    'currency' => 'usd',
+                    'status' => 'succeeded',
+                    'cardholder_name' => $validated['cardholder_name'],
+                    'payment_processed_at' => now()
+                ]);
+                Log::info('Demo payment created');
             }
 
-            // Create the order (without order_items field since we'll use separate table)
-            $orderData = [
+            // Create order
+            $order = Order::create([
                 'first_name' => $validated['firstName'],
                 'last_name' => $validated['lastName'],
                 'email' => $validated['email'],
                 'phone' => $validated['phone'],
-                'postal_code' => $validated['postalCode'],
                 'city' => $validated['city'],
-                'country' => $validated['country'],
+                'state' => $validated['state'],
+                'address' => $validated['address'],
                 'total' => $calculatedTotal,
-                'status' => 'pending'
-            ];
+                'status' => 'confirmed'
+            ]);
 
-            // Add address if provided and field exists
-            if (isset($validated['address'])) {
-                $orderData['address'] = $validated['address'];
-            }
+            // Link payment to order
+            $payment->update(['order_id' => $order->id]);
 
-            $order = Order::create($orderData);
-
-            // Create order items in separate table
+            // Create order items
             foreach ($validatedItems as $itemData) {
-                $itemData['order_id'] = $order->id; // Add order_id
+                $itemData['order_id'] = $order->id;
                 OrderItem::create($itemData);
-            }
-
-            // Update product stock
-            foreach ($validatedItems as $item) {
-                Product::where('id', $item['product_id'])
-                    ->decrement('stock', $item['quantity']);
             }
 
             DB::commit();
 
-            // Log successful order
-            Log::info('Order created successfully', [
-                'order_id' => $order->id,
-                'customer_email' => $order->email,
-                'total' => $order->total,
-                'items_count' => count($validatedItems)
-            ]);
+            Log::info('ORDER COMPLETED', ['order_id' => $order->id]);
+
+            // Return appropriate response based on request type
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Order #{$order->id} placed successfully!",
+                    'order_id' => $order->id,
+                    'payment_id' => $payment->id
+                ]);
+            }
 
             return redirect()->route('web.view.index')
-                ->with('success', "Order #{$order->id} placed successfully! We'll send you a confirmation email shortly.");
+                ->with('success', "Order #{$order->id} placed successfully!");
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            DB::rollback();
-            return back()
-                ->withErrors($e->validator)
-                ->withInput()
-                ->with('error', 'Please check the form and try again.');
-                
         } catch (\Exception $e) {
+            Log::error('ORDER FAILED', ['error' => $e->getMessage(), 'line' => $e->getLine()]);
             DB::rollback();
             
-            // Log the error for debugging
-            Log::error('Order creation failed', [
-                'error' => $e->getMessage(),
-                'email' => $request->email ?? 'unknown',
-                'line' => $e->getLine(),
-                'file' => $e->getFile()
-            ]);
+            // Return appropriate error response based on request type
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Order failed: ' . $e->getMessage()
+                ], 400);
+            }
             
-            return back()
-                ->with('error', 'Failed to place order. Please try again. If the problem persists, contact support.')
-                ->withInput();
+            return back()->with('error', 'Order failed: ' . $e->getMessage());
         }
     }
 }

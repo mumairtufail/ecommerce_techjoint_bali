@@ -32,9 +32,9 @@ class ProductController extends Controller
         'description' => 'required|string',
         'price' => 'required|numeric|min:0',
         'stock' => 'required|integer|min:0',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-        'images' => 'nullable|array',
+        'images' => 'required|array|min:1|max:4', // Maximum 4 images, at least 1 required
         'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048',
+        'thumbnail_image_index' => 'nullable|integer|min:0', // Index of the thumbnail image
         'flag' => 'nullable|string|in:All Items,New Arrivals,Featured,On Sale',
         'variants' => 'nullable|array',
         'variants.*.size_id' => 'nullable|exists:product_sizes,id',
@@ -46,27 +46,15 @@ class ProductController extends Controller
     try {
         DB::beginTransaction();
         
-        if ($request->hasFile('image')) {
-            $originalName = pathinfo($request->file('image')->getClientOriginalName(), PATHINFO_FILENAME);
-            $extension = $request->file('image')->getClientOriginalExtension();
-            $timestamp = now()->format('Ymd_His');
-            
-            // Clean the original name (remove special characters)
-            $cleanName = preg_replace('/[^A-Za-z0-9\-_]/', '', $originalName);
-            $cleanName = substr($cleanName, 0, 50); // Limit length
-            
-            // Create custom filename: timestamp_cleanname.extension
-            $newFileName = $timestamp . '_' . $cleanName . '.' . $extension;
-            
-            // Store with custom filename
-            $imagePath = $request->file('image')->storeAs('products', $newFileName, 'public');
-            $validated['image'] = $imagePath;
-        }
-        
-        $product = Product::create($validated);
+        // Create product without image field initially
+        $productData = $validated;
+        unset($productData['images'], $productData['thumbnail_image_index']);
+        $product = Product::create($productData);
 
-        // Handle multiple images
+        // Handle multiple images with thumbnail selection
         if ($request->hasFile('images')) {
+            $thumbnailIndex = $request->input('thumbnail_image_index', 0); // Default to first image
+            
             foreach ($request->file('images') as $index => $image) {
                 $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
                 $extension = $image->getClientOriginalExtension();
@@ -81,8 +69,14 @@ class ProductController extends Controller
                     'image_path' => $imagePath,
                     'alt_text' => $product->name . ' - Image ' . ($index + 1),
                     'sort_order' => $index,
-                    'is_primary' => $index === 0, // First image is primary
+                    'is_primary' => $index == $thumbnailIndex, // Selected thumbnail is primary
                 ]);
+            }
+            
+            // Set the legacy image field to the primary image for backward compatibility
+            $primaryImage = $product->images()->where('is_primary', true)->first();
+            if ($primaryImage) {
+                $product->update(['image' => $primaryImage->image_path]);
             }
         }
 
@@ -101,7 +95,7 @@ class ProductController extends Controller
             'product_id' => $product->id,
             'name' => $product->name,
             'user_id' => auth()->id(),
-            'image_path' => $validated['image'] ?? null,
+            'primary_image_path' => $product->image ?? null,
             'images_count' => $request->hasFile('images') ? count($request->file('images')) : 0
         ]);
         
@@ -130,9 +124,9 @@ class ProductController extends Controller
         'description' => 'required|string',
         'price' => 'required|numeric|min:0',
         'stock' => 'required|integer|min:0',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-        'images' => 'nullable|array',
+        'images' => 'nullable|array|max:4',
         'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048',
+        'thumbnail_image_index' => 'nullable|integer|min:0', // Index of the thumbnail image
         'flag' => 'nullable|string|in:All Items,New Arrivals,Featured,On Sale',
         'variants' => 'nullable|array',
         'variants.*.size_id' => 'nullable|exists:product_sizes,id',
@@ -141,32 +135,21 @@ class ProductController extends Controller
         'variants.*.price_adjustment' => 'nullable|numeric',
         'remove_images' => 'nullable|array',
         'remove_images.*' => 'integer|exists:product_images,id',
+        'existing_thumbnail_index' => 'nullable|integer|min:0', // For selecting thumbnail from existing images
     ]);
 
     try {
         DB::beginTransaction();
 
-        $oldImagePath = $product->image;
-
-        if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($oldImagePath) {
-                Storage::disk('public')->delete($oldImagePath);
-            }
-            
-            // Create new custom filename
-            $originalName = pathinfo($request->file('image')->getClientOriginalName(), PATHINFO_FILENAME);
-            $extension = $request->file('image')->getClientOriginalExtension();
-            $timestamp = now()->format('Ymd_His');
-            $cleanName = preg_replace('/[^A-Za-z0-9\-_]/', '', $originalName);
-            $cleanName = substr($cleanName, 0, 50);
-            
-            $newFileName = $timestamp . '_' . $cleanName . '.' . $extension;
-            $imagePath = $request->file('image')->storeAs('products', $newFileName, 'public');
-            $validated['image'] = $imagePath;
-        }
-
-        $product->update($validated);
+        // Update basic product information
+        $product->update([
+            'name' => $validated['name'],
+            'category_id' => $validated['category_id'],
+            'description' => $validated['description'],
+            'price' => $validated['price'],
+            'stock' => $validated['stock'],
+            'flag' => $validated['flag'] ?? 'All Items',
+        ]);
 
         // Handle removing existing images
         if (!empty($validated['remove_images'])) {
@@ -180,6 +163,7 @@ class ProductController extends Controller
         // Handle new multiple images
         if ($request->hasFile('images')) {
             $currentMaxSortOrder = $product->images()->max('sort_order') ?? -1;
+            $thumbnailIndex = $request->input('thumbnail_image_index', 0); // For new images
             
             foreach ($request->file('images') as $index => $image) {
                 $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
@@ -191,13 +175,47 @@ class ProductController extends Controller
                 $newFileName = $timestamp . '_' . ($index + 1) . '_' . $cleanName . '.' . $extension;
                 $imagePath = $image->storeAs('products', $newFileName, 'public');
                 
+                // If this is the first image and no existing images, make it primary
+                $isPrimary = ($product->images()->count() === 0 && $index === 0) || 
+                           ($index == $thumbnailIndex);
+                
                 $product->images()->create([
                     'image_path' => $imagePath,
                     'alt_text' => $product->name . ' - Image ' . ($currentMaxSortOrder + $index + 2),
                     'sort_order' => $currentMaxSortOrder + $index + 1,
-                    'is_primary' => $product->images()->count() === 0 && $index === 0, // First image is primary if no images exist
+                    'is_primary' => $isPrimary,
                 ]);
             }
+        }
+
+        // Handle thumbnail selection from existing images
+        if ($request->has('existing_thumbnail_index') && $request->input('existing_thumbnail_index') !== null) {
+            // Reset all existing images to not primary
+            $product->images()->update(['is_primary' => false]);
+            
+            // Set the selected existing image as primary
+            $existingImages = $product->images()->orderBy('sort_order')->get();
+            $thumbnailIndex = $request->input('existing_thumbnail_index');
+            
+            if (isset($existingImages[$thumbnailIndex])) {
+                $existingImages[$thumbnailIndex]->update(['is_primary' => true]);
+            }
+        }
+
+        // Ensure we have a primary image and update the legacy image field
+        $primaryImage = $product->images()->where('is_primary', true)->first();
+        if (!$primaryImage && $product->images()->count() > 0) {
+            // If no primary image is set, make the first one primary
+            $firstImage = $product->images()->orderBy('sort_order')->first();
+            $firstImage->update(['is_primary' => true]);
+            $primaryImage = $firstImage;
+        }
+
+        // Update the legacy image field for backward compatibility
+        if ($primaryImage) {
+            $product->update(['image' => $primaryImage->image_path]);
+        } else {
+            $product->update(['image' => null]);
         }
 
         // Update variants
@@ -213,11 +231,26 @@ class ProductController extends Controller
 
         DB::commit();
 
+        Log::info('Product updated successfully', [
+            'product_id' => $product->id,
+            'name' => $product->name,
+            'user_id' => auth()->id(),
+            'primary_image_path' => $product->image ?? null,
+            'total_images' => $product->images()->count()
+        ]);
+
         return redirect()->route('admin.products.index')
             ->with('success', "Product '{$product->name}' updated successfully!");
             
     } catch (\Exception $e) {
         DB::rollBack();
+        
+        Log::error('Failed to update product', [
+            'product_id' => $product->id,
+            'error' => $e->getMessage(),
+            'user_id' => auth()->id()
+        ]);
+        
         return redirect()->route('admin.products.index')
             ->with('error', 'Failed to update product. Please try again.');
     }
@@ -231,12 +264,19 @@ class ProductController extends Controller
             $productName = $product->name;
             $imagePath = $product->image;
 
-            // Delete associated image
+            // Delete legacy single image if exists
             if ($imagePath) {
                 Storage::disk('public')->delete($imagePath);
             }
 
-            // Delete the product
+            // Delete all multiple images
+            $productImages = $product->images;
+            foreach ($productImages as $productImage) {
+                Storage::disk('public')->delete($productImage->image_path);
+                $productImage->delete();
+            }
+
+            // Delete the product (this will also cascade delete related records)
             $product->delete();
 
             DB::commit();
@@ -244,7 +284,8 @@ class ProductController extends Controller
             Log::info('Product deleted successfully', [
                 'product_id' => $product->id,
                 'name' => $productName,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
+                'images_deleted' => $productImages->count()
             ]);
 
             return redirect()->route('admin.products.index')

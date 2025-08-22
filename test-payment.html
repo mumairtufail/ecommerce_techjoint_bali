@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Flow Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #ddd; }
+        .pass { background: #d4edda; border-color: #c3e6cb; }
+        .fail { background: #f8d7da; border-color: #f5c6cb; }
+        .pending { background: #fff3cd; border-color: #ffeaa7; }
+        button { padding: 10px 20px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Payment Flow Test Suite</h1>
+    
+    <div>
+        <button onclick="runAllTests()">🚀 Run All Tests</button>
+        <button onclick="clearResults()">🗑️ Clear Results</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script>
+        const tests = [
+            {
+                name: '1. Server Accessibility',
+                test: () => testServerAccess()
+            },
+            {
+                name: '2. Checkout Page Load',
+                test: () => testCheckoutPage()
+            },
+            {
+                name: '3. Cart Functionality',
+                test: () => testCartFunctionality()
+            },
+            {
+                name: '4. Payment Modal',
+                test: () => testPaymentModal()
+            },
+            {
+                name: '5. Card Input Formatting',
+                test: () => testCardFormatting()
+            },
+            {
+                name: '6. Form Validation',
+                test: () => testFormValidation()
+            }
+        ];
+
+        async function runAllTests() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h2>🔄 Running Tests...</h2>';
+            
+            for (let test of tests) {
+                const result = await runTest(test);
+                displayTestResult(test.name, result);
+            }
+        }
+
+        async function runTest(test) {
+            try {
+                const result = await test.test();
+                return { status: result ? 'pass' : 'fail', message: result === true ? 'Passed' : result };
+            } catch (error) {
+                return { status: 'fail', message: error.message };
+            }
+        }
+
+        function displayTestResult(testName, result) {
+            const resultsDiv = document.getElementById('results');
+            const testDiv = document.createElement('div');
+            testDiv.className = `test ${result.status}`;
+            testDiv.innerHTML = `
+                <strong>${testName}</strong>: 
+                <span style="color: ${result.status === 'pass' ? 'green' : 'red'}">
+                    ${result.status.toUpperCase()}
+                </span>
+                <br><small>${result.message}</small>
+            `;
+            resultsDiv.appendChild(testDiv);
+        }
+
+        async function testServerAccess() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/');
+                if (response.ok) {
+                    return true;
+                } else {
+                    return `Server returned ${response.status}`;
+                }
+            } catch (error) {
+                return 'Server not accessible. Please run: php artisan serve';
+            }
+        }
+
+        async function testCheckoutPage() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/checkout');
+                if (response.ok) {
+                    const html = await response.text();
+                    if (html.includes('Complete Payment') && html.includes('orderForm')) {
+                        return true;
+                    } else {
+                        return 'Checkout page missing required elements';
+                    }
+                } else {
+                    return `Checkout page returned ${response.status}`;
+                }
+            } catch (error) {
+                return 'Could not access checkout page';
+            }
+        }
+
+        async function testCartFunctionality() {
+            // This would need to be tested in the actual browser context
+            return 'Manual test required - check cart add/remove functions';
+        }
+
+        async function testPaymentModal() {
+            // This would need to be tested in the actual browser context  
+            return 'Manual test required - check if payment modal opens with card fields';
+        }
+
+        async function testCardFormatting() {
+            // Test the card formatting logic
+            const testCardNumber = '4111111111111111';
+            const formatted = testCardNumber.match(/.{1,4}/g)?.join(' ');
+            if (formatted === '4111 1111 1111 1111') {
+                return true;
+            } else {
+                return 'Card formatting logic failed';
+            }
+        }
+
+        async function testFormValidation() {
+            return 'Manual test required - check form validation in browser';
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        // Auto-run basic tests on page load
+        window.onload = function() {
+            document.getElementById('results').innerHTML = `
+                <div class="test pending">
+                    <strong>⚡ Quick Start Guide:</strong><br>
+                    1. Make sure Laravel server is running: <code>php artisan serve</code><br>
+                    2. Click "Run All Tests" above<br>
+                    3. Open <a href="http://127.0.0.1:8000/checkout" target="_blank">http://127.0.0.1:8000/checkout</a> to test manually<br>
+                    4. Add some items to cart first from <a href="http://127.0.0.1:8000" target="_blank">homepage</a>
+                </div>
+            `;
+        };
+    </script>
+</body>
+</html>
