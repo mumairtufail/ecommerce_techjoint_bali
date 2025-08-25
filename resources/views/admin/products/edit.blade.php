@@ -761,6 +761,85 @@
                     @enderror
                 </div>
 
+                <!-- Product Variants -->
+                <div class="mb-3">
+                    <label class="form-label">Product Variants</label>
+                    <div class="border rounded p-3 bg-light">
+                        <p class="text-muted mb-3">Create specific color combinations with individual stock and pricing. These are product variants with color-based pricing.</p>
+                        
+                        <!-- Existing Variants -->
+                        @if($product->variants && $product->variants->count() > 0)
+                            <div class="mb-3">
+                                <h6 class="text-primary"><i class="fas fa-box"></i> Existing Variants</h6>
+                                <div id="existing-variants-container">
+                                    @foreach($product->variants as $index => $variant)
+                                        <div class="variant-row border rounded p-3 mb-3 bg-white existing-variant" data-variant-id="{{ $variant->id }}">
+                                            <div class="row align-items-end">
+                                                <div class="col-md-4">
+                                                    <label class="form-label">Color <span class="text-danger">*</span></label>
+                                                    <select name="existing_variants[{{ $variant->id }}][color_id]" class="form-control color-select" required>
+                                                        <option value="">Select Color</option>
+                                                        @foreach($allColors ?? [] as $color)
+                                                        <option value="{{ $color->id }}" {{ $variant->color_id == $color->id ? 'selected' : '' }}>{{ $color->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Stock <span class="text-danger">*</span></label>
+                                                    <input type="number" 
+                                                           name="existing_variants[{{ $variant->id }}][stock]" 
+                                                           class="form-control" 
+                                                           min="0" 
+                                                           value="{{ old('existing_variants.'.$variant->id.'.stock', $variant->stock) }}" 
+                                                           required>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Price Adjustment ($)</label>
+                                                    <input type="number" 
+                                                           name="existing_variants[{{ $variant->id }}][price_adjustment]" 
+                                                           class="form-control price-adjustment-input" 
+                                                           step="0.01" 
+                                                           value="{{ old('existing_variants.'.$variant->id.'.price_adjustment', $variant->price_adjustment) }}" 
+                                                           placeholder="0.00">
+                                                    <small class="text-muted">±Amount from base price</small>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Final Price</label>
+                                                    <div class="form-control-plaintext bg-light p-2 rounded text-center">
+                                                        <strong class="final-price-display text-success">${{ number_format($product->price + $variant->price_adjustment, 2) }}</strong>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="button" class="btn btn-sm btn-danger remove-existing-variant w-100" data-variant-id="{{ $variant->id }}">
+                                                        <i class="fas fa-trash"></i> Remove
+                                                    </button>
+                                                    <input type="hidden" name="existing_variants[{{ $variant->id }}][id]" value="{{ $variant->id }}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                        
+                        <!-- New Variants -->
+                        <div class="mb-3">
+                            <h6 class="text-success">
+                                {{-- <i class="fas fa-plus-circle"></i> Add New Variants</h6> --}}
+                            <div id="variants-container">
+                                <!-- New variants will be dynamically added here -->
+                            </div>
+                            
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="add-variant">
+                                <i class="fas fa-plus"></i> Add New Variant
+                            </button>
+                        </div>
+
+                        <!-- Hidden inputs for removed variants -->
+                        <div id="removed-variants-container"></div>
+                    </div>
+                </div>
+
                 <!-- Status -->
                 <div class="mb-3">
                     <div class="form-check form-switch">
@@ -1189,6 +1268,154 @@ document.addEventListener('DOMContentLoaded', function() {
     window.handleMultipleImages = function(input) {
         handleNewImages(input.files);
     };
+
+    // Variants handling with dynamic pricing
+    let variantIndex = 0;
+    const variantsContainer = document.getElementById('variants-container');
+    const addVariantBtn = document.getElementById('add-variant');
+    const productPriceInput = document.getElementById('price');
+    const removedVariantsContainer = document.getElementById('removed-variants-container');
+    let removedVariantIds = [];
+
+    if (addVariantBtn && variantsContainer) {
+        function getBasePrice() {
+            const priceValue = parseFloat(productPriceInput.value) || 0;
+            return priceValue;
+        }
+
+        function updateAllVariantPrices() {
+            const basePrice = getBasePrice();
+            
+            // Update existing variants
+            const existingVariantRows = document.querySelectorAll('.existing-variant');
+            existingVariantRows.forEach(row => {
+                const priceAdjustmentInput = row.querySelector('.price-adjustment-input');
+                const finalPriceDisplay = row.querySelector('.final-price-display');
+                const priceAdjustment = parseFloat(priceAdjustmentInput.value) || 0;
+                const finalPrice = basePrice + priceAdjustment;
+                
+                if (finalPriceDisplay) {
+                    finalPriceDisplay.textContent = `$${finalPrice.toFixed(2)}`;
+                }
+            });
+            
+            // Update new variants
+            const newVariantRows = variantsContainer.querySelectorAll('.variant-row');
+            newVariantRows.forEach(row => {
+                const priceAdjustmentInput = row.querySelector('.price-adjustment-input');
+                const finalPriceDisplay = row.querySelector('.final-price-display');
+                const priceAdjustment = parseFloat(priceAdjustmentInput.value) || 0;
+                const finalPrice = basePrice + priceAdjustment;
+                
+                if (finalPriceDisplay) {
+                    finalPriceDisplay.textContent = `$${finalPrice.toFixed(2)}`;
+                }
+            });
+        }
+
+        function addVariant() {
+            const basePrice = getBasePrice();
+            const variantHtml = `
+                <div class="variant-row border rounded p-3 mb-3 bg-white">
+                    <div class="row align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label">Color <span class="text-danger">*</span></label>
+                            <select name="variants[${variantIndex}][color_id]" class="form-control color-select" required>
+                                <option value="">Select Color</option>
+                                @foreach($allColors ?? [] as $color)
+                                <option value="{{ $color->id }}">{{ $color->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Stock <span class="text-danger">*</span></label>
+                            <input type="number" name="variants[${variantIndex}][stock]" class="form-control" min="0" value="0" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Price Adjustment ($)</label>
+                            <input type="number" 
+                                   name="variants[${variantIndex}][price_adjustment]" 
+                                   class="form-control price-adjustment-input" 
+                                   step="0.01" 
+                                   value="0" 
+                                   placeholder="0.00">
+                            <small class="text-muted">±Amount from base price</small>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Final Price</label>
+                            <div class="form-control-plaintext bg-light p-2 rounded text-center">
+                                <strong class="final-price-display text-success">$${basePrice.toFixed(2)}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-sm btn-danger remove-variant w-100">
+                                <i class="fas fa-trash"></i> Remove
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            variantsContainer.insertAdjacentHTML('beforeend', variantHtml);
+            variantIndex++;
+            
+            // Add event listener for price adjustment changes
+            const newRow = variantsContainer.lastElementChild;
+            const priceAdjustmentInput = newRow.querySelector('.price-adjustment-input');
+            priceAdjustmentInput.addEventListener('input', updateAllVariantPrices);
+        }
+
+        // Update variant prices when main product price changes
+        if (productPriceInput) {
+            productPriceInput.addEventListener('input', updateAllVariantPrices);
+        }
+
+        addVariantBtn.addEventListener('click', addVariant);
+
+        // Handle existing variant price adjustment changes
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('price-adjustment-input')) {
+                updateAllVariantPrices();
+            }
+        });
+
+        // Remove new variant
+        variantsContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-variant') || e.target.closest('.remove-variant')) {
+                e.target.closest('.variant-row').remove();
+            }
+        });
+
+        // Remove existing variant
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-existing-variant') || e.target.closest('.remove-existing-variant')) {
+                const button = e.target.closest('.remove-existing-variant');
+                const variantId = button.getAttribute('data-variant-id');
+                const variantRow = button.closest('.existing-variant');
+                
+                // Add to removed variants list
+                if (variantId && !removedVariantIds.includes(variantId)) {
+                    removedVariantIds.push(variantId);
+                    
+                    // Add hidden input to mark for deletion
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'remove_variants[]';
+                    hiddenInput.value = variantId;
+                    removedVariantsContainer.appendChild(hiddenInput);
+                }
+                
+                // Remove the variant row from DOM
+                variantRow.style.animation = 'fadeOutScale 0.3s ease-out forwards';
+                setTimeout(() => {
+                    variantRow.remove();
+                }, 300);
+            }
+        });
+
+        // Initial price update
+        updateAllVariantPrices();
+    }
 
     console.log('Product edit form ready');
 });

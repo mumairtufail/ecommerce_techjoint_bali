@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Frontend Payment Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .step { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .step h3 { margin: 0 0 10px 0; color: #333; }
+        button { padding: 12px 24px; margin: 10px 0; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: black; }
+        .log { background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace; }
+        .error { color: red; }
+        .success { color: green; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Frontend Payment Flow Test</h1>
+        <p>This page will help us debug the frontend payment flow step by step.</p>
+        
+        <div class="step">
+            <h3>Step 1: Test Server Connection</h3>
+            <button class="btn-primary" onclick="testServer()">Test Laravel Server</button>
+            <div id="serverResult" class="log"></div>
+        </div>
+        
+        <div class="step">
+            <h3>Step 2: Test Checkout Page</h3>
+            <button class="btn-primary" onclick="testCheckoutPage()">Open Checkout Page</button>
+            <p>Click this to open the checkout page in a new tab. Then check browser console for debug messages.</p>
+        </div>
+        
+        <div class="step">
+            <h3>Step 3: Manual Testing Steps</h3>
+            <ol>
+                <li>Add items to cart from homepage first</li>
+                <li>Go to checkout page</li>
+                <li>Fill in all required form fields</li>
+                <li>Open browser console (F12)</li>
+                <li>Click "Place Order" or "Proceed to Payment"</li>
+                <li>Check console for debug messages</li>
+                <li>Enter cardholder name in payment modal</li>
+                <li>Click "Complete Payment"</li>
+                <li>Check console for detailed logs</li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <h3>Step 4: Expected Console Messages</h3>
+            <div class="log">
+                <div class="info">🔍 Found submit buttons: X</div>
+                <div class="info">🚀 Submit button clicked: Place Order</div>
+                <div class="info">✅ Form validation passed</div>
+                <div class="info">🛒 Cart check: [array of items]</div>
+                <div class="info">✅ Cart validation passed, showing payment modal...</div>
+                <div class="info">=== PAYMENT PROCESSING STARTED ===</div>
+                <div class="info">Step 1: Validating cardholder name: John Doe</div>
+                <div class="info">Step 3: Form validation passed</div>
+                <div class="info">Step 8: Complete form data to be submitted: {object}</div>
+                <div class="info">Step 9: Submitting form to Laravel backend...</div>
+                <div class="success">=== FORM SUBMITTED TO LARAVEL BACKEND ===</div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3>Step 5: Check Laravel Logs</h3>
+            <p>After completing payment, check <code>storage/logs/laravel.log</code> for:</p>
+            <div class="log">
+                <div class="success">ORDER STARTED</div>
+                <div class="success">VALIDATION PASSED</div>
+                <div class="success">CUSTOMER CREATED/FOUND</div>
+                <div class="success">ORDER COMPLETED SUCCESSFULLY</div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3>Step 6: Common Issues to Check</h3>
+            <ul>
+                <li>❌ No submit buttons found → Check if buttons exist on page</li>
+                <li>❌ Cart is empty → Add products to cart first</li>
+                <li>❌ Form validation failed → Fill all required fields</li>
+                <li>❌ Payment modal not opening → Check JavaScript errors</li>
+                <li>❌ No logs in Laravel → Form not reaching backend</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function testServer() {
+            const result = document.getElementById('serverResult');
+            result.innerHTML = 'Testing server connection...';
+            
+            try {
+                const response = await fetch('http://127.0.0.1:8000/');
+                if (response.ok) {
+                    result.innerHTML = '<span class="success">✅ Server is running!</span>';
+                } else {
+                    result.innerHTML = '<span class="error">❌ Server returned: ' + response.status + '</span>';
+                }
+            } catch (error) {
+                result.innerHTML = '<span class="error">❌ Cannot connect to server. Please start: php artisan serve</span>';
+            }
+        }
+        
+        function testCheckoutPage() {
+            window.open('http://127.0.0.1:8000/checkout', '_blank');
+        }
+        
+        // Auto-test server on page load
+        window.onload = function() {
+            testServer();
+        };
+    </script>
+</body>
+</html>

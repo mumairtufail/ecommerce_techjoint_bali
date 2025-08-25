@@ -16,12 +16,17 @@ class OrderController extends BaseController
 {
     public function view()
     {
-        return view('web.order-simple', $this->withBanners());
+        return view('web.order', $this->withBanners());
+    }
+    
+    public function payment()
+    {
+        return view('web.payment', $this->withBanners());
     }
     
     public function storeWebOrders(Request $request)
     {
-        Log::info('ORDER STARTED', ['request_type' => $request->expectsJson() ? 'AJAX' : 'FORM', 'email' => $request->email]);
+        Log::info('ORDER STARTED', ['form_submission' => true, 'email' => $request->email]);
 
         try {
             // Simple validation - removed unnecessary fields
@@ -39,7 +44,10 @@ class OrderController extends BaseController
                 'card_number' => 'nullable|string',
                 'card_expiry' => 'nullable|string',
                 'card_cvc' => 'nullable|string',
+                'payment_method' => 'nullable|string',
             ]);
+
+            Log::info('VALIDATION PASSED', ['validated_data' => array_keys($validated)]);
 
             DB::beginTransaction();
 
@@ -56,33 +64,47 @@ class OrderController extends BaseController
                 'validated_at' => now()
             ]);
 
+            Log::info('CUSTOMER CREATED/FOUND', ['customer_id' => $customer->id]);
+
             // Parse cart items
             $orderItems = json_decode($validated['order_items'], true);
             if (empty($orderItems)) {
                 throw new \Exception('Cart is empty');
             }
 
+            Log::info('CART ITEMS PARSED', ['items_count' => count($orderItems)]);
+
             // Calculate total and validate items
             $calculatedTotal = 0;
             $validatedItems = [];
 
             foreach ($orderItems as $item) {
-                $product = Product::find($item['id']);
+                // Handle variant products vs regular products
+                $baseProductId = $item['base_product_id'] ?? $item['id'];
+                $product = Product::find($baseProductId);
+                
                 if (!$product) {
                     throw new \Exception("Product {$item['name']} not found");
                 }
 
-                $itemTotal = $product->price * $item['quantity'];
+                // Use the item price from cart (which includes variant pricing)
+                $itemPrice = $item['price'] ?? $product->price;
+                $itemTotal = $itemPrice * $item['quantity'];
                 $calculatedTotal += $itemTotal;
 
                 $validatedItems[] = [
                     'product_id' => $product->id,
-                    'product_name' => $product->name,
-                    'product_price' => $product->price,
+                    'product_name' => $item['name'], // Use cart name which includes variant info
+                    'product_price' => $itemPrice,
                     'quantity' => $item['quantity'],
-                    'subtotal' => $itemTotal
+                    'subtotal' => $itemTotal,
+                    'variant_id' => (!empty($item['variant_id']) && $item['variant_id'] !== '') ? $item['variant_id'] : null,
+                    'variant_color_id' => (!empty($item['variant_color_id']) && $item['variant_color_id'] !== '') ? $item['variant_color_id'] : null,
+                    'variant_color_name' => (!empty($item['variant_color_name']) && $item['variant_color_name'] !== '') ? $item['variant_color_name'] : null,
                 ];
             }
+
+            Log::info('TOTAL CALCULATED', ['calculated_total' => $calculatedTotal]);
 
             // Process Stripe Payment using Charges API
             Log::info('Processing Stripe payment', ['amount' => $calculatedTotal]);
@@ -133,7 +155,7 @@ class OrderController extends BaseController
                     'cardholder_name' => $validated['cardholder_name'],
                     'payment_processed_at' => now()
                 ]);
-                Log::info('Demo payment created');
+                Log::info('Demo payment created', ['payment_id' => $payment->id]);
             }
 
             // Create order
@@ -149,6 +171,8 @@ class OrderController extends BaseController
                 'status' => 'confirmed'
             ]);
 
+            Log::info('ORDER CREATED', ['order_id' => $order->id]);
+
             // Link payment to order
             $payment->update(['order_id' => $order->id]);
 
@@ -158,36 +182,46 @@ class OrderController extends BaseController
                 OrderItem::create($itemData);
             }
 
+            Log::info('ORDER ITEMS CREATED', ['items_count' => count($validatedItems)]);
+
             DB::commit();
 
-            Log::info('ORDER COMPLETED', ['order_id' => $order->id]);
+            Log::info('ORDER COMPLETED SUCCESSFULLY', ['order_id' => $order->id, 'payment_id' => $payment->id]);
 
-            // Return appropriate response based on request type
-            if ($request->expectsJson()) {
+            // Check if request is AJAX
+            if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => true,
-                    'message' => "Order #{$order->id} placed successfully!",
+                    'message' => "Order #{$order->id} placed successfully! Your payment has been processed.",
                     'order_id' => $order->id,
-                    'payment_id' => $payment->id
+                    'payment_id' => $payment->id,
+                    'redirect_url' => route('web.view.index')
                 ]);
             }
 
+            // Standard form submission redirect
             return redirect()->route('web.view.index')
-                ->with('success', "Order #{$order->id} placed successfully!");
+                ->with('success', "Order #{$order->id} placed successfully! Your payment has been processed.");
 
         } catch (\Exception $e) {
-            Log::error('ORDER FAILED', ['error' => $e->getMessage(), 'line' => $e->getLine()]);
+            Log::error('ORDER FAILED', [
+                'error' => $e->getMessage(), 
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ]);
             DB::rollback();
             
-            // Return appropriate error response based on request type
-            if ($request->expectsJson()) {
+            // Check if request is AJAX
+            if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Order failed: ' . $e->getMessage()
-                ], 400);
+                    'message' => 'Order failed: ' . $e->getMessage(),
+                    'error' => $e->getMessage()
+                ], 422);
             }
             
-            return back()->with('error', 'Order failed: ' . $e->getMessage());
+            // Standard form submission redirect
+            return back()->with('error', 'Order failed: ' . $e->getMessage())->withInput();
         }
     }
 }

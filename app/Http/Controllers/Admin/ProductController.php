@@ -18,7 +18,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with(['category', 'sizes', 'colors', 'variants', 'images'])->latest()->get();
+        $products = Product::with(['category', 'variants', 'images'])->latest()->get();
         $categories = Category::all();
         
         return view('admin.products.view', compact('products', 'categories'));
@@ -37,8 +37,7 @@ class ProductController extends Controller
         'thumbnail_image_index' => 'nullable|integer|min:0', // Index of the thumbnail image
         'flag' => 'nullable|string|in:All Items,New Arrivals,Featured,On Sale',
         'variants' => 'nullable|array',
-        'variants.*.size_id' => 'nullable|exists:product_sizes,id',
-        'variants.*.color_id' => 'nullable|exists:product_colors,id',
+        'variants.*.color_id' => 'required|exists:product_colors,id',
         'variants.*.stock' => 'required|integer|min:0',
         'variants.*.price_adjustment' => 'nullable|numeric',
     ]);
@@ -82,10 +81,30 @@ class ProductController extends Controller
 
         // Create variants if provided
         if (!empty($validated['variants'])) {
+            $colorIds = [];
+            $sizeIds = [];
+            
             foreach ($validated['variants'] as $variantData) {
                 $variantData['product_id'] = $product->id;
+                $variantData['size_id'] = null; // No sizes for now, only colors
                 $variantData['price_adjustment'] = $variantData['price_adjustment'] ?? 0;
-                ProductVariant::create($variantData);
+                $variant = ProductVariant::create($variantData);
+                
+                // Collect color and size IDs for syncing
+                if (!empty($variantData['color_id'])) {
+                    $colorIds[] = $variantData['color_id'];
+                }
+                if (!empty($variantData['size_id'])) {
+                    $sizeIds[] = $variantData['size_id'];
+                }
+            }
+            
+            // Sync colors and sizes to the product's many-to-many relationships
+            if (!empty($colorIds)) {
+                $product->colors()->sync(array_unique($colorIds));
+            }
+            if (!empty($sizeIds)) {
+                $product->sizes()->sync(array_unique($sizeIds));
             }
         }
         
@@ -129,10 +148,15 @@ class ProductController extends Controller
         'thumbnail_image_index' => 'nullable|integer|min:0', // Index of the thumbnail image
         'flag' => 'nullable|string|in:All Items,New Arrivals,Featured,On Sale',
         'variants' => 'nullable|array',
-        'variants.*.size_id' => 'nullable|exists:product_sizes,id',
-        'variants.*.color_id' => 'nullable|exists:product_colors,id',
+        'variants.*.color_id' => 'required|exists:product_colors,id',
         'variants.*.stock' => 'required|integer|min:0',
         'variants.*.price_adjustment' => 'nullable|numeric',
+        'existing_variants' => 'nullable|array',
+        'existing_variants.*.color_id' => 'required|exists:product_colors,id',
+        'existing_variants.*.stock' => 'required|integer|min:0',
+        'existing_variants.*.price_adjustment' => 'nullable|numeric',
+        'remove_variants' => 'nullable|array',
+        'remove_variants.*' => 'integer|exists:product_variants,id',
         'remove_images' => 'nullable|array',
         'remove_images.*' => 'integer|exists:product_images,id',
         'existing_thumbnail_index' => 'nullable|integer|min:0', // For selecting thumbnail from existing images
@@ -219,14 +243,77 @@ class ProductController extends Controller
         }
 
         // Update variants
-        $product->variants()->delete(); // Remove existing variants
-        
+        // Handle removal of existing variants
+        if (!empty($validated['remove_variants'])) {
+            $product->variants()->whereIn('id', $validated['remove_variants'])->delete();
+        }
+
+        $colorIds = [];
+        $sizeIds = [];
+
+        // Update existing variants
+        if (!empty($validated['existing_variants'])) {
+            foreach ($validated['existing_variants'] as $variantId => $variantData) {
+                $variant = $product->variants()->find($variantId);
+                if ($variant) {
+                    $variant->update([
+                        'color_id' => $variantData['color_id'],
+                        'size_id' => null, // No sizes for now, only colors
+                        'stock' => $variantData['stock'],
+                        'price_adjustment' => $variantData['price_adjustment'] ?? 0,
+                    ]);
+                    
+                    // Collect color and size IDs
+                    if (!empty($variantData['color_id'])) {
+                        $colorIds[] = $variantData['color_id'];
+                    }
+                    if (!empty($variantData['size_id'])) {
+                        $sizeIds[] = $variantData['size_id'];
+                    }
+                }
+            }
+        }
+
+        // Create new variants
         if (!empty($validated['variants'])) {
             foreach ($validated['variants'] as $variantData) {
                 $variantData['product_id'] = $product->id;
+                $variantData['size_id'] = null; // No sizes for now, only colors
                 $variantData['price_adjustment'] = $variantData['price_adjustment'] ?? 0;
-                ProductVariant::create($variantData);
+                $variant = ProductVariant::create($variantData);
+                
+                // Collect color and size IDs
+                if (!empty($variantData['color_id'])) {
+                    $colorIds[] = $variantData['color_id'];
+                }
+                if (!empty($variantData['size_id'])) {
+                    $sizeIds[] = $variantData['size_id'];
+                }
             }
+        }
+        
+        // Get all current variant colors and sizes and sync them
+        $allVariants = $product->variants()->get();
+        foreach ($allVariants as $variant) {
+            if ($variant->color_id) {
+                $colorIds[] = $variant->color_id;
+            }
+            if ($variant->size_id) {
+                $sizeIds[] = $variant->size_id;
+            }
+        }
+        
+        // Sync colors and sizes to the product's many-to-many relationships
+        if (!empty($colorIds)) {
+            $product->colors()->sync(array_unique($colorIds));
+        } else {
+            $product->colors()->sync([]);
+        }
+        
+        if (!empty($sizeIds)) {
+            $product->sizes()->sync(array_unique($sizeIds));
+        } else {
+            $product->sizes()->sync([]);
         }
 
         DB::commit();
@@ -307,7 +394,7 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $product->load(['category', 'sizes', 'colors', 'variants.size', 'variants.color', 'images']);
+        $product->load(['category',  'variants.size', 'variants.color', 'images']);
         
         return view('admin.products.edit', [
             'product' => $product,

@@ -4,6 +4,8 @@
 @include('web.partials.head')
 <!-- Required CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <body>
@@ -16,6 +18,8 @@
 <!-- Cart Styles -->
 <link rel="stylesheet" href="{{ asset('assets/css/cart.css') }}">
 
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- Cart Functionality -->
 <script src="{{ asset('assets/js/cart.js') }}"></script>
     <!-- start page-wrapper -->

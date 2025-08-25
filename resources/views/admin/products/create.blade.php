@@ -1015,28 +1015,42 @@ document.addEventListener('DOMContentLoaded', function() {
         handleNewImages(files);
     };
 
-    // Variants handling (keeping existing functionality)
+    // Variants handling with dynamic pricing
     let variantIndex = 0;
     const variantsContainer = document.getElementById('variants-container');
     const addVariantBtn = document.getElementById('add-variant');
+    const productPriceInput = document.getElementById('price');
 
     if (addVariantBtn && variantsContainer) {
+        function getBasePrice() {
+            const priceValue = parseFloat(productPriceInput.value) || 0;
+            return priceValue;
+        }
+
+        function updateVariantPrices() {
+            const basePrice = getBasePrice();
+            const variantRows = variantsContainer.querySelectorAll('.variant-row');
+            
+            variantRows.forEach(row => {
+                const priceAdjustmentInput = row.querySelector('.price-adjustment-input');
+                const finalPriceDisplay = row.querySelector('.final-price-display');
+                const priceAdjustment = parseFloat(priceAdjustmentInput.value) || 0;
+                const finalPrice = basePrice + priceAdjustment;
+                
+                if (finalPriceDisplay) {
+                    finalPriceDisplay.textContent = `$${finalPrice.toFixed(2)}`;
+                }
+            });
+        }
+
         function addVariant() {
+            const basePrice = getBasePrice();
             const variantHtml = `
                 <div class="variant-row border rounded p-3 mb-3 bg-white">
                     <div class="row align-items-end">
-                        <div class="col-md-3">
-                            <label class="form-label">Size</label>
-                            <select name="variants[${variantIndex}][size_id]" class="form-control size-select">
-                                <option value="">Select Size</option>
-                                @foreach($sizes ?? [] as $size)
-                                <option value="{{ $size->id }}">{{ $size->name }} @if($size->display_name)({{ $size->display_name }})@endif</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Color</label>
-                            <select name="variants[${variantIndex}][color_id]" class="form-control color-select">
+                        <div class="col-md-4">
+                            <label class="form-label">Color <span class="text-danger">*</span></label>
+                            <select name="variants[${variantIndex}][color_id]" class="form-control color-select" required>
                                 <option value="">Select Color</option>
                                 @foreach($colors ?? [] as $color)
                                 <option value="{{ $color->id }}">{{ $color->name }}</option>
@@ -1044,16 +1058,28 @@ document.addEventListener('DOMContentLoaded', function() {
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label class="form-label">Stock</label>
+                            <label class="form-label">Stock <span class="text-danger">*</span></label>
                             <input type="number" name="variants[${variantIndex}][stock]" class="form-control" min="0" value="0" required>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Price Adjustment (PKR)</label>
-                            <input type="number" name="variants[${variantIndex}][price_adjustment]" class="form-control" step="0.01" value="0" placeholder="0.00">
+                        <div class="col-md-2">
+                            <label class="form-label">Price Adjustment ($)</label>
+                            <input type="number" 
+                                   name="variants[${variantIndex}][price_adjustment]" 
+                                   class="form-control price-adjustment-input" 
+                                   step="0.01" 
+                                   value="0" 
+                                   placeholder="0.00">
+                            <small class="text-muted">±Amount from base price</small>
                         </div>
-                        <div class="col-md-1">
-                            <button type="button" class="btn btn-sm btn-danger remove-variant">
-                                <i class="fas fa-trash"></i>
+                        <div class="col-md-2">
+                            <label class="form-label">Final Price</label>
+                            <div class="form-control-plaintext bg-light p-2 rounded text-center">
+                                <strong class="final-price-display text-success">$${basePrice.toFixed(2)}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-sm btn-danger remove-variant w-100">
+                                <i class="fas fa-trash"></i> Remove
                             </button>
                         </div>
                     </div>
@@ -1062,14 +1088,31 @@ document.addEventListener('DOMContentLoaded', function() {
             
             variantsContainer.insertAdjacentHTML('beforeend', variantHtml);
             variantIndex++;
+            
+            // Add event listener for price adjustment changes
+            const newRow = variantsContainer.lastElementChild;
+            const priceAdjustmentInput = newRow.querySelector('.price-adjustment-input');
+            priceAdjustmentInput.addEventListener('input', updateVariantPrices);
+        }
+
+        // Update variant prices when main product price changes
+        if (productPriceInput) {
+            productPriceInput.addEventListener('input', updateVariantPrices);
         }
 
         addVariantBtn.addEventListener('click', addVariant);
 
-        // Remove variant
+        // Remove variant and handle price adjustment changes
         variantsContainer.addEventListener('click', function(e) {
             if (e.target.classList.contains('remove-variant') || e.target.closest('.remove-variant')) {
                 e.target.closest('.variant-row').remove();
+            }
+        });
+
+        // Handle existing price adjustment inputs (for form validation errors)
+        variantsContainer.addEventListener('input', function(e) {
+            if (e.target.classList.contains('price-adjustment-input')) {
+                updateVariantPrices();
             }
         });
     }

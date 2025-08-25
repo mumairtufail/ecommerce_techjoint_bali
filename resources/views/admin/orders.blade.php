@@ -24,9 +24,10 @@
                 <!-- Add Button -->
                 <div class="row mb-3">
                     <div class="col-sm">
-                        <button id="openOrderModal" class="btn custom-btn-primary" data-bs-toggle="modal" data-bs-target="#viewOrderModal">
-                            <i class="fa fa-plus me-2"></i>Create New Order
-                        </button>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">All Orders</h5>
+                            <small class="text-muted">Click on the eye icon to view order details</small>
+                        </div>
                     </div>
                 </div>
 
@@ -62,8 +63,7 @@
                                         </td>
                                         <td>
                                             @php
-                                                $items = json_decode($order->order_items, true) ?: [];
-                                                $itemCount = collect($items)->sum('quantity');
+                                                $itemCount = $order->orderItems->sum('quantity');
                                             @endphp
                                             <span class="badge badge-soft-info">{{ $itemCount }} items</span>
                                         </td>
@@ -72,13 +72,11 @@
                                         </td>
                                         <td>{{ \Carbon\Carbon::parse($order->created_at)->format('M d, Y') }}</td>
                                         <td>
-                                            <button type="button" 
-                                                    class="action-btn view-order" 
-                                                    data-bs-toggle="modal" 
-                                                    data-bs-target="#viewOrderModal"
-                                                    data-order="{{ json_encode($order) }}">
+                                            <a href="{{ route('admin.orders.show', $order->id) }}" 
+                                               class="action-btn"
+                                               title="View Order Details">
                                                 <i class="fa fa-eye text-primary"></i>
-                                            </button>
+                                            </a>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -88,85 +86,6 @@
                     </div>
                 </div>
             </section>
-        </div>
-    </div>
-</div>
-
-<!-- View Order Modal -->
-<div class="modal fade" id="viewOrderModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Order Details</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <h6 class="text-muted mb-3">Customer Information</h6>
-                        <table class="table table-sm table-borderless">
-                            <tr>
-                                <td width="35%"><strong>Name:</strong></td>
-                                <td id="customer-name"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Email:</strong></td>
-                                <td id="customer-email"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Phone:</strong></td>
-                                <td id="customer-phone"></td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="col-md-6">
-                        <h6 class="text-muted mb-3">Shipping Information</h6>
-                        <table class="table table-sm table-borderless">
-                            <tr>
-                                <td width="35%"><strong>City:</strong></td>
-                                <td id="shipping-city"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Country:</strong></td>
-                                <td id="shipping-country"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Postal Code:</strong></td>
-                                <td id="shipping-postal"></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-
-                <h6 class="text-muted mb-3">Order Items</h6>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Image</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th class="text-right">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody id="order-items">
-                            <!-- Items will be inserted here -->
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="4" class="text-right"><strong>Total Amount:</strong></td>
-                                <td class="text-right" id="order-total"></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
 </div>
@@ -353,65 +272,6 @@ $(document).ready(function() {
     if ('ontouchstart' in window) {
         initializeTouchScroll();
     }
-
-    // Handle View Order Details
-    $(document).on('click', '.view-order', function() {
-        const orderData = $(this).data('order');
-        
-        // Update Customer Information
-        $('#customer-name').text(`${orderData.first_name} ${orderData.last_name}`);
-        $('#customer-email').text(orderData.email);
-        $('#customer-phone').text(orderData.phone);
-        
-        // Update Shipping Information
-        $('#shipping-city').text(orderData.city);
-        $('#shipping-country').text(orderData.country);
-        $('#shipping-postal').text(orderData.postal_code);
-        
-        // Parse and display order items
-        const items = JSON.parse(orderData.order_items || '[]');
-        let itemsHtml = '';
-        
-        items.forEach(item => {
-            const itemTotal = (item.price * item.quantity).toFixed(2);
-            itemsHtml += `
-                <tr>
-                    <td>${item.name}</td>
-                    <td>
-                        <img src="${item.image}" alt="${item.name}" class="img-thumbnail" style="height: 50px;">
-                    </td>
-                    <td>$${item.price.toFixed(2)}</td>
-                    <td>${item.quantity}</td>
-                    <td class="text-right">$${itemTotal}</td>
-                </tr>
-            `;
-        });
-        
-        $('#order-items').html(itemsHtml);
-        $('#order-total').text(`$${parseFloat(orderData.total).toFixed(2)}`);
-        
-        $('#viewOrderModal').modal('show');
-    });
-
-    // Modal reset handler
-    $('#viewOrderModal').on('hidden.bs.modal', function() {
-        $('#customer-name').text('');
-        $('#customer-email').text('');
-        $('#customer-phone').text('');
-        $('#shipping-city').text('');
-        $('#shipping-country').text('');
-        $('#shipping-postal').text('');
-        $('#order-items').html('');
-        $('#order-total').text('');
-    });
-
-    // Open modal if 'openModal' parameter is present
-    @if(request()->has('openModal'))
-        $('#openOrderModal').trigger('click');
-        const url = new URL(window.location.href);
-        url.searchParams.delete('openModal');
-        window.history.replaceState({}, '', url.toString());
-    @endif
 });
 
 // Initialize touch scroll functionality

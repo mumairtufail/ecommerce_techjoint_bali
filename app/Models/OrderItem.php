@@ -15,7 +15,10 @@ class OrderItem extends Model
         'product_price',
         'product_image',
         'quantity',
-        'subtotal'
+        'subtotal',
+        'variant_id',
+        'variant_color_id',
+        'variant_color_name',
     ];
 
     public function order()
@@ -26,5 +29,15 @@ class OrderItem extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function variant()
+    {
+        return $this->belongsTo(ProductVariant::class, 'variant_id');
+    }
+
+    public function variantColor()
+    {
+        return $this->belongsTo(ProductColor::class, 'variant_color_id');
     }
 }

@@ -41,7 +41,8 @@ Route::get('/product/{id}', [ShopController::class, 'show'])->name('web.product.
 
 // New route to store the order
 
-Route::get('/checkout', [WebOrderController::class, 'view'])->name('web.orders.checkout');
+Route::get('/checkout', [WebOrderController::class, 'view'])->name('web.orders.view');
+Route::get('/payment', [WebOrderController::class, 'payment'])->name('web.payment.view');
 Route::post('/orders/store', [WebOrderController::class, 'storeWebOrders'])->name('web.orders.store');
 
 // OTP validation endpoints

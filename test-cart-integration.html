@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Integration Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>E-commerce Cart Integration Test</h1>
+    
+    <div class="test-section info">
+        <h3>Cart Manager Status</h3>
+        <p id="cart-status">Checking...</p>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Product with Color Variant</h3>
+        <button class="ecommerce-add-to-cart-btn" 
+                data-product-id="1" 
+                data-product-name="Test Product" 
+                data-product-price="29.99" 
+                data-product-image="/assets/img/default.jpg" 
+                data-product-quantity="1" 
+                data-variant-id="101"
+                data-variant-color-id="5"
+                data-variant-color-name="Red">
+            Add Red Variant to Cart
+        </button>
+        
+        <button class="ecommerce-add-to-cart-btn" 
+                data-product-id="1" 
+                data-product-name="Test Product" 
+                data-product-price="29.99" 
+                data-product-image="/assets/img/default.jpg" 
+                data-product-quantity="1" 
+                data-variant-id="102"
+                data-variant-color-id="6"
+                data-variant-color-name="Blue">
+            Add Blue Variant to Cart
+        </button>
+        
+        <button onclick="testQuantityUpdate()">Test Quantity Update</button>
+        <button onclick="showCartContents()">Show Cart Contents</button>
+        <button onclick="clearTestCart()">Clear Cart</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Results</h3>
+        <div id="test-results"></div>
+    </div>
+
+    <script src="./public/assets/js/cart.js"></script>
+    <script>
+        function addTestResult(message, type = 'info') {
+            const results = document.getElementById('test-results');
+            const div = document.createElement('div');
+            div.className = `test-section ${type}`;
+            div.innerHTML = `<p>${message}</p>`;
+            results.appendChild(div);
+        }
+
+        function testCartManager() {
+            const status = document.getElementById('cart-status');
+            if (window.ecommerceCartManager) {
+                status.innerHTML = `✅ Cart Manager loaded successfully<br>Cart items: ${window.ecommerceCartManager.getItemCount()}`;
+                addTestResult('Cart Manager is available and functional', 'success');
+                return true;
+            } else {
+                status.innerHTML = '❌ Cart Manager not found';
+                addTestResult('Cart Manager is not available', 'error');
+                return false;
+            }
+        }
+
+        function testQuantityUpdate() {
+            if (!window.ecommerceCartManager) {
+                addTestResult('Cart Manager not available for quantity test', 'error');
+                return;
+            }
+
+            // Test updating quantity for a variant
+            const result = window.ecommerceCartManager.updateQuantity('1-variant-101', 3);
+            if (result) {
+                addTestResult('Quantity update test passed', 'success');
+            } else {
+                addTestResult('Quantity update test failed - item may not exist in cart', 'error');
+            }
+        }
+
+        function showCartContents() {
+            if (!window.ecommerceCartManager) {
+                addTestResult('Cart Manager not available', 'error');
+                return;
+            }
+
+            const cart = window.ecommerceCartManager.getCart();
+            console.log('Current cart contents:', cart);
+            
+            if (cart.length === 0) {
+                addTestResult('Cart is empty', 'info');
+            } else {
+                let cartInfo = `Cart has ${cart.length} unique items:<br>`;
+                cart.forEach(item => {
+                    cartInfo += `- ${item.name} (${item.variant_info || 'No variants'}) - Qty: ${item.quantity}, Price: $${item.price}<br>`;
+                });
+                addTestResult(cartInfo, 'success');
+            }
+        }
+
+        function clearTestCart() {
+            if (!window.ecommerceCartManager) {
+                addTestResult('Cart Manager not available', 'error');
+                return;
+            }
+
+            window.ecommerceCartManager.clearCart();
+            addTestResult('Cart cleared successfully', 'success');
+        }
+
+        // Wait for DOM and cart manager to load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                testCartManager();
+            }, 500);
+        });
+
+        // Test variant-specific cart functionality
+        function testVariantHandling() {
+            if (!window.ecommerceCartManager) {
+                addTestResult('Cart Manager not available for variant test', 'error');
+                return;
+            }
+
+            // Test adding same product with different variants
+            const redVariant = {
+                id: '1-variant-101',
+                name: 'Test Product (Red)',
+                price: 29.99,
+                image: '/assets/img/default.jpg',
+                quantity: 1,
+                variant_id: '101',
+                variant_color_id: '5',
+                variant_color_name: 'Red',
+                base_product_id: '1',
+                unique_id: '1-variant-101',
+                max_stock: 10
+            };
+
+            const blueVariant = {
+                id: '1-variant-102', 
+                name: 'Test Product (Blue)',
+                price: 29.99,
+                image: '/assets/img/default.jpg',
+                quantity: 1,
+                variant_id: '102',
+                variant_color_id: '6',
+                variant_color_name: 'Blue',
+                base_product_id: '1',
+                unique_id: '1-variant-102',
+                max_stock: 10
+            };
+
+            // Add both variants
+            window.ecommerceCartManager.addItem(redVariant);
+            window.ecommerceCartManager.addItem(blueVariant);
+            
+            const cart = window.ecommerceCartManager.getCart();
+            if (cart.length === 2) {
+                addTestResult('Variant handling test passed - 2 different variants added as separate items', 'success');
+            } else {
+                addTestResult(`Variant handling test failed - expected 2 items, got ${cart.length}`, 'error');
+            }
+        }
+
+        // Auto-run variant test after a delay
+        setTimeout(() => {
+            if (window.ecommerceCartManager) {
+                testVariantHandling();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

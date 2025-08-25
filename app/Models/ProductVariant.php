@@ -41,7 +41,12 @@ class ProductVariant extends Model
 
     public function getFinalPriceAttribute()
     {
-        return $this->product->price + $this->price_adjustment;
+        // Ensure we have a product relationship loaded
+        if (!$this->product) {
+            $this->load('product');
+        }
+        
+        return $this->product ? ($this->product->price + ($this->price_adjustment ?? 0)) : $this->price_adjustment ?? 0;
     }
 
     public function getVariantNameAttribute()

@@ -48,7 +48,20 @@ class EcommerceCartManager {
     loadCart() {
         try {
             const savedCart = localStorage.getItem(this.cartKey);
-            return savedCart ? JSON.parse(savedCart) : [];
+            const parsed = savedCart ? JSON.parse(savedCart) : [];
+            // Normalize numeric fields for safety
+            if (Array.isArray(parsed)) {
+                parsed.forEach(item => {
+                    if (item) {
+                        item.price = Number(item.price) || 0;
+                        item.quantity = parseInt(item.quantity) || 0;
+                        if (item.max_stock !== undefined && item.max_stock !== null) {
+                            item.max_stock = Number(item.max_stock) || null;
+                        }
+                    }
+                });
+            }
+            return parsed;
         } catch (error) {
             console.error('Error loading cart:', error);
             return [];
@@ -64,21 +77,46 @@ class EcommerceCartManager {
         }
     }
 
-    // Add item to cart
+        // Add item to cart
     addItem(product) {
         try {
-            const existingItem = this.cart.find(item => item.id === product.id);
+            // Normalize numeric fields to avoid runtime errors when price is a string
+            product.price = Number(product.price) || 0;
+            product.quantity = parseInt(product.quantity) || 1;
+            product.max_stock = (product.max_stock !== undefined && product.max_stock !== null) ? Number(product.max_stock) : null;
+
+            // Create unique identifier considering variants
+            const uniqueId = product.variant_id ? 
+                `${product.base_product_id || product.id}-variant-${product.variant_id}` : 
+                product.id;
             
-            if (existingItem) {
-                existingItem.quantity += product.quantity || 1;
+            // Check for existing item with same unique ID
+            const existingItem = this.cart.find(item => item.unique_id === uniqueId);
+            
+                if (existingItem) {
+                // Update quantity if item exists
+                    const newQuantity = Number(existingItem.quantity) + Number(product.quantity);
+                    const maxStock = (product.max_stock !== null && product.max_stock !== undefined) ? product.max_stock : 999;
+                
+                    if (newQuantity > maxStock) {
+                    this.showSweetAlert(
+                        'Stock Limit Reached',
+                        `Only ${maxStock} items available in stock.`,
+                        'warning'
+                    );
+                    return false;
+                }
+                
+                    existingItem.quantity = newQuantity;
             } else {
-                this.cart.push({
-                    id: product.id,
-                    name: product.name,
-                    price: parseFloat(product.price),
-                    image: product.image || '',
-                    quantity: product.quantity || 1
+                // Add new item with complete variant information
+                const newItem = Object.assign({}, product, {
+                    price: Number(product.price) || 0,
+                    quantity: Number(product.quantity) || 1,
+                    unique_id: uniqueId,
+                    variant_info: this.formatVariantInfo(product)
                 });
+                this.cart.push(newItem);
             }
             
             this.saveCart();
@@ -94,10 +132,23 @@ class EcommerceCartManager {
         }
     }
 
+    // Format variant information for display
+    formatVariantInfo(product) {
+        const variantParts = [];
+        if (product.variant_color_name) {
+            variantParts.push(`Color: ${product.variant_color_name}`);
+        }
+        // Size support disabled:
+        // if (product.variant_size_name) {
+        //     variantParts.push(`Size: ${product.variant_size_name}`);
+        // }
+        return variantParts.join(', ');
+    }
+
     // Remove item from cart
     removeItem(productId) {
         try {
-            const itemIndex = this.cart.findIndex(item => item.id === productId);
+            const itemIndex = this.cart.findIndex(item => item.unique_id === productId || item.id === productId);
             if (itemIndex > -1) {
                 const removedItem = this.cart[itemIndex];
                 this.cart.splice(itemIndex, 1);
@@ -117,7 +168,7 @@ class EcommerceCartManager {
     // Update item quantity
     updateQuantity(productId, quantity) {
         try {
-            const item = this.cart.find(item => item.id === productId);
+            const item = this.cart.find(item => item.unique_id === productId || item.id === productId);
             if (item) {
                 if (quantity <= 0) {
                     this.removeItem(productId);
@@ -143,7 +194,6 @@ class EcommerceCartManager {
             this.saveCart();
             this.updateCartDisplay();
             this.updateFloatingButton();
-            this.showToast('Cart cleared', 'warning');
             return true;
         } catch (error) {
             console.error('Error clearing cart:', error);
@@ -151,9 +201,25 @@ class EcommerceCartManager {
         }
     }
 
+    // Clear cart from external call (for order completion)
+    clearCartAfterOrder() {
+        try {
+            // Clear both possible cart keys for compatibility
+            localStorage.removeItem(this.cartKey);
+            localStorage.removeItem('ts-cart');
+            this.cart = [];
+            this.updateCartDisplay();
+            this.updateFloatingButton();
+            return true;
+        } catch (error) {
+            console.error('Error clearing cart after order:', error);
+            return false;
+        }
+    }
+
     // Get cart total
     getTotal() {
-        return this.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return this.cart.reduce((total, item) => total + (Number(item.price) * Number(item.quantity)), 0);
     }
 
     // Get cart item count
@@ -177,30 +243,34 @@ class EcommerceCartManager {
                 </div>
             `;
         } else {
-            cartItems.innerHTML = this.cart.map(item => `
-                <div class="ecommerce-cart-item ecommerce-fade-in" data-product-id="${item.id}">
+            cartItems.innerHTML = this.cart.map(item => {
+                const variantInfo = item.variant_info || this.formatVariantInfo(item);
+                const variantDisplay = variantInfo ? `<br><small class="text-success" style="font-weight: 500;">${variantInfo}</small>` : '';
+                return `
+                <div class="ecommerce-cart-item ecommerce-fade-in" data-product-id="${item.unique_id}">
                     <img src="${item.image || '/assets/images/default-product.jpg'}" 
                          alt="${item.name}" 
                          class="ecommerce-cart-item-image"
                          onerror="this.src='/assets/images/default-product.jpg'">
                     <div class="ecommerce-cart-item-details">
-                        <div class="ecommerce-cart-item-title">${item.name}</div>
+                        <div class="ecommerce-cart-item-title">${item.name}${variantDisplay}</div>
                         <div class="ecommerce-cart-item-price">$${item.price.toFixed(2)}</div>
                         <div class="ecommerce-quantity-control">
-                            <button class="ecommerce-quantity-btn ecommerce-decrease-qty" data-product-id="${item.id}">
+                            <button class="ecommerce-quantity-btn ecommerce-decrease-qty" data-product-id="${item.unique_id}">
                                 <i class="fas fa-minus"></i>
                             </button>
                             <span class="ecommerce-quantity-display">${item.quantity}</span>
-                            <button class="ecommerce-quantity-btn ecommerce-increase-qty" data-product-id="${item.id}">
+                            <button class="ecommerce-quantity-btn ecommerce-increase-qty" data-product-id="${item.unique_id}">
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
                     </div>
-                    <button class="ecommerce-cart-item-remove" data-product-id="${item.id}">
+                    <button class="ecommerce-cart-item-remove" data-product-id="${item.unique_id}">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // Update total
@@ -245,13 +315,19 @@ class EcommerceCartManager {
             }
         });
 
-        // Add to cart buttons
+        // Add to cart buttons (variant-aware)
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.ecommerce-add-to-cart-btn')) {
+            const btn = e.target.closest('.ecommerce-add-to-cart-btn');
+            if (!btn) return;
+
+            // Allow specific page handlers to take precedence by checking if propagation
+            // was stopped (those handlers should call e.stopPropagation()). If not stopped,
+            // the global handler will build a product payload including variant fields.
+            try {
                 e.preventDefault();
-                const button = e.target.closest('.ecommerce-add-to-cart-btn');
-                this.handleAddToCart(button);
-            }
+            } catch (err) {}
+
+            this.handleAddToCart(btn);
         });
 
         // Checkout button
@@ -282,7 +358,7 @@ class EcommerceCartManager {
         document.querySelectorAll('.ecommerce-decrease-qty').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const productId = e.target.closest('.ecommerce-decrease-qty').dataset.productId;
-                const item = this.cart.find(item => item.id === productId);
+                const item = this.cart.find(item => item.unique_id === productId || item.id === productId);
                 if (item) {
                     this.updateQuantity(productId, item.quantity - 1);
                 }
@@ -293,8 +369,17 @@ class EcommerceCartManager {
         document.querySelectorAll('.ecommerce-increase-qty').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const productId = e.target.closest('.ecommerce-increase-qty').dataset.productId;
-                const item = this.cart.find(item => item.id === productId);
+                const item = this.cart.find(item => item.unique_id === productId || item.id === productId);
                 if (item) {
+                    const maxStock = item.max_stock || 999;
+                    if (item.quantity >= maxStock) {
+                        this.showSweetAlert(
+                            'Stock Limit Reached',
+                            `Only ${maxStock} items available in stock.`,
+                            'warning'
+                        );
+                        return;
+                    }
                     this.updateQuantity(productId, item.quantity + 1);
                 }
             });
@@ -313,12 +398,20 @@ class EcommerceCartManager {
     handleAddToCart(button) {
         try {
             // Get product data from button attributes or closest product element
+            const quantity = parseInt(button.dataset.productQuantity || button.getAttribute('data-product-quantity') || 1) || 1;
+
             const productData = {
                 id: button.dataset.productId || button.getAttribute('data-product-id'),
                 name: button.dataset.productName || button.getAttribute('data-product-name'),
-                price: button.dataset.productPrice || button.getAttribute('data-product-price'),
+                price: parseFloat(button.dataset.productPrice || button.getAttribute('data-product-price')) || 0,
                 image: button.dataset.productImage || button.getAttribute('data-product-image'),
-                quantity: 1
+                quantity: quantity,
+                // Variant-aware fields (optional)
+                variant_id: button.dataset.variantId || button.getAttribute('data-variant-id') || null,
+                variant_color_id: button.dataset.variantColorId || button.getAttribute('data-variant-color-id') || null,
+                variant_color_name: button.dataset.variantColorName || button.getAttribute('data-variant-color-name') || null,
+                // Backwards-compatible base id
+                base_product_id: button.dataset.productId || button.getAttribute('data-product-id')
             };
 
             // Validate required data
@@ -332,9 +425,14 @@ class EcommerceCartManager {
 
             // Simulate network delay for better UX
             setTimeout(() => {
-                this.addItem(productData);
+                const added = this.addItem(productData);
                 button.classList.remove('ecommerce-loading');
                 button.disabled = false;
+
+                if (!added) {
+                    // Show a helpful alert if adding failed (stock or other checks)
+                    this.showSweetAlert('Could not add to cart', 'Product could not be added to the cart. Check stock or try again.', 'error');
+                }
             }, 300);
 
         } catch (error) {
@@ -348,7 +446,7 @@ class EcommerceCartManager {
     // Handle checkout
     handleCheckout() {
         if (this.cart.length === 0) {
-            this.showToast('Your cart is empty', 'warning');
+            this.showSweetAlert('Your cart is empty', 'Please add some items before proceeding to checkout.', 'warning');
             return;
         }
 
@@ -359,13 +457,20 @@ class EcommerceCartManager {
     // Handle clear cart
     handleClearCart() {
         if (this.cart.length === 0) {
-            this.showToast('Cart is already empty', 'warning');
+            this.showSweetAlert('Cart is already empty', 'There are no items in your cart to clear.', 'info');
             return;
         }
 
-        if (confirm('Are you sure you want to clear your cart?')) {
-            this.clearCart();
-        }
+        this.showSweetAlert(
+            'Clear Cart?',
+            'Are you sure you want to remove all items from your cart? This action cannot be undone.',
+            'warning',
+            true,
+            () => {
+                this.clearCart();
+                this.showSweetAlert('Cart Cleared', 'All items have been removed from your cart.', 'success');
+            }
+        );
     }
 
     // Open cart sidebar
@@ -395,6 +500,41 @@ class EcommerceCartManager {
         
         if (backdrop) {
             backdrop.classList.remove('active');
+        }
+    }
+
+    // Show SweetAlert notification
+    showSweetAlert(title, text, icon = 'success', showConfirmButton = false, callback = null) {
+        if (typeof Swal !== 'undefined') {
+            const config = {
+                icon: icon,
+                title: title,
+                text: text,
+                showCancelButton: showConfirmButton,
+                confirmButtonText: showConfirmButton ? 'Yes, proceed!' : 'OK',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33'
+            };
+
+            if (showConfirmButton && callback) {
+                Swal.fire(config).then((result) => {
+                    if (result.isConfirmed && callback) {
+                        callback();
+                    }
+                });
+            } else {
+                Swal.fire(config);
+            }
+        } else {
+            // Fallback to basic alert if SweetAlert is not available
+            if (showConfirmButton) {
+                if (confirm(`${title}\n\n${text}`)) {
+                    if (callback) callback();
+                }
+            } else {
+                alert(`${title}\n\n${text}`);
+            }
         }
     }
 

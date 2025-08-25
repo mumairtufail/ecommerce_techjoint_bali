@@ -457,6 +457,19 @@
                                 <td>
                                     <div>
                                         <strong style="color: var(--text-dark);">{{ $item->product_name }}</strong>
+                                        @if($item->variant_color_name)
+                                        <br>
+                                        <small style="color: var(--primary-color);">
+                                            <i class="fas fa-palette"></i>
+                                            Color: <strong>{{ $item->variant_color_name }}</strong>
+                                        </small>
+                                        @endif
+                                        @if($item->variant_id)
+                                        <br>
+                                        <small style="color: var(--text-light);">
+                                            Variant ID: #{{ $item->variant_id }}
+                                        </small>
+                                        @endif
                                         <br>
                                         <small style="color: var(--text-light);">Product ID: #{{ $item->product_id }}</small>
                                     </div>
@@ -474,6 +487,12 @@
                                 </td>
                                 <td>
                                     <strong style="color: var(--text-dark);">${{ number_format($item->product_price, 2) }}</strong>
+                                    @if($item->variant_id)
+                                    <br>
+                                    <small style="color: var(--text-medium);">
+                                        <i class="fas fa-tags"></i> Variant Price
+                                    </small>
+                                    @endif
                                 </td>
                                 <td>
                                     <span class="quantity-badge">{{ $item->quantity }}</span>

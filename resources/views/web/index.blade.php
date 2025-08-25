@@ -621,13 +621,13 @@
                     <i class="fa-regular fa-eye"></i>
                   </a>
                 </div>
-                <button class="cs_cart_btn cs_accent_bg cs_fs_16 cs_white_color cs_medium position-absolute ecommerce-add-to-cart-btn"
+                {{-- <button class="cs_cart_btn cs_accent_bg cs_fs_16 cs_white_color cs_medium position-absolute ecommerce-add-to-cart-btn"
                         data-product-id="{{ $product->id }}"
                         data-product-name="{{ $product->name }}"
                         data-product-price="{{ $product->price }}"
                         data-product-image="{{ asset('storage/' . $product->image) }}">
                   Add To Cart
-                </button>
+                </button> --}}
               </div>
               <div class="cs_product_info text-center">
                 <h3 class="cs_product_title cs_fs_21 cs_medium">
@@ -766,29 +766,31 @@ Our Bali Jewelers Collection reflects our commitment to elegance, craftsmanship,
             <div class="slick_slide_in">
               <div class="cs_product cs_style_1">
                 <div class="cs_product_thumb position-relative">
-                  @if($product->image)
-                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
-                  @else
-                    <img src="web/assets/img/product1.png" alt="{{ $product->name }}">
-                  @endif
+                  <a href="{{ route('web.product.details', $product->id) }}">
+                    @if($product->image)
+                      <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
+                    @else
+                      <img src="web/assets/img/product1.png" alt="{{ $product->name }}">
+                    @endif
+                  </a>
                   <span class="cs_product_badge cs_accent_bg cs_white_color cs_fs_12 cs_medium position-absolute">
                     {{ ucfirst($product->flag) }}
                   </span>
                   <div class="cs_cart_badge position-absolute">
-                    <a href="#" class="cs_cart_icon cs_accent_bg cs_white_color">
+                    {{-- <a href="#" class="cs_cart_icon cs_accent_bg cs_white_color">
                       <i class="fa-regular fa-heart"></i>
-                    </a>
+                    </a> --}}
                     <a href="{{ route('web.product.details', $product->id) }}" class="cs_cart_icon cs_accent_bg cs_white_color">
                       <i class="fa-regular fa-eye"></i>
                     </a>
                   </div>
-                  <button class="cs_cart_btn cs_accent_bg cs_fs_16 cs_white_color cs_medium position-absolute ecommerce-add-to-cart-btn"
+                  {{-- <button class="cs_cart_btn cs_accent_bg cs_fs_16 cs_white_color cs_medium position-absolute ecommerce-add-to-cart-btn"
                           data-product-id="{{ $product->id }}"
                           data-product-name="{{ $product->name }}"
                           data-product-price="{{ $product->price }}"
                           data-product-image="{{ asset('storage/' . $product->image) }}">
                     Add To Cart
-                  </button>
+                  </button> --}}
                 </div>
                 <div class="cs_product_info text-center">
                   <h3 class="cs_product_title cs_fs_21 cs_medium">

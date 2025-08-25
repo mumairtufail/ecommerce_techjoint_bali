@@ -569,13 +569,13 @@
                                             </a>
                                         </div>
                                         
-                                        <button class="cs_cart_btn cs_accent_bg cs_fs_16 cs_white_color cs_medium position-absolute ecommerce-add-to-cart-btn"
+                                        {{-- <button class="cs_cart_btn cs_accent_bg cs_fs_16 cs_white_color cs_medium position-absolute ecommerce-add-to-cart-btn"
                                                 data-product-id="{{ $product->id }}"
                                                 data-product-name="{{ $product->name }}"
                                                 data-product-price="{{ $product->price }}"
                                                 data-product-image="{{ asset('storage/' . $product->image) }}">
                                             Add To Cart
-                                        </button>
+                                        </button> --}}
                                     </div>
                                     
                                     <div class="cs_product_info text-center">
@@ -854,6 +854,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize filters and pagination
     updateFilters();
+    
+    // Make product cards clickable
+    document.addEventListener('click', function(e) {
+        const productCard = e.target.closest('.cs_product');
+        if (productCard && !e.target.closest('button') && !e.target.closest('a')) {
+            const productLink = productCard.querySelector('.cs_product_title a');
+            if (productLink) {
+                window.location.href = productLink.href;
+            }
+        }
+    });
 });
 </script>
 

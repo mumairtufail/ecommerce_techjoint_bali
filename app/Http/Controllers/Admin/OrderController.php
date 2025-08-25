@@ -13,7 +13,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::with('orderItems')
+        $orders = Order::with(['orderItems', 'orderItems.variant', 'orderItems.variantColor'])
             ->orderBy('created_at', 'desc')
             ->paginate(15);
             
@@ -25,7 +25,12 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $order = Order::with(['orderItems', 'orderItems.product'])
+        $order = Order::with([
+                'orderItems', 
+                'orderItems.product', 
+                'orderItems.variant', 
+                'orderItems.variantColor'
+            ])
             ->findOrFail($id);
             
         return view('admin.orders.order-details', compact('order'));

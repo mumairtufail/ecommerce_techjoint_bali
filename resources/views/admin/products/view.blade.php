@@ -411,16 +411,16 @@
                                 <div class="variants-info">
                                     <small class="text-muted d-block">{{ $product->variants->count() }} variants</small>
                                     <div class="variant-summary">
-                                        @if($product->sizes->count() > 0)
+                                        {{-- @if($product->sizes->count() > 0)
                                         <span class="badge bg-light text-dark me-1" style="font-size: 0.7rem;">
                                             Sizes: {{ $product->sizes->pluck('name')->join(', ') }}
                                         </span>
-                                        @endif
-                                        @if($product->colors->count() > 0)
+                                        @endif --}}
+                                        {{-- @if($product->colors->count() > 0)
                                         <span class="badge bg-light text-dark" style="font-size: 0.7rem;">
                                             Colors: {{ $product->colors->pluck('name')->join(', ') }}
                                         </span>
-                                        @endif
+                                        @endif --}}
                                     </div>
                                     <small class="text-success">Total Stock: {{ $product->variants->sum('stock') }}</small>
                                 </div>

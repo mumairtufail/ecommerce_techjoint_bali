@@ -25,14 +25,18 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function sizes()
+    // Helper method to get available colors for this product
+    public function getAvailableColors()
     {
-        return $this->belongsToMany(ProductSize::class, 'product_size_assignments', 'product_id', 'size_id');
+        $colorIds = $this->variants()->whereNotNull('color_id')->pluck('color_id')->unique();
+        return ProductColor::whereIn('id', $colorIds)->get();
     }
 
-    public function colors()
+    // Helper method to get available sizes for this product
+    public function getAvailableSizes()
     {
-        return $this->belongsToMany(ProductColor::class, 'product_color_assignments', 'product_id', 'color_id');
+        $sizeIds = $this->variants()->whereNotNull('size_id')->pluck('size_id')->unique();
+        return ProductSize::whereIn('id', $sizeIds)->get();
     }
 
     public function variants()
