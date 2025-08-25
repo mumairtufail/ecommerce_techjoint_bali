@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\{
     ProductSizeController,
     ProductColorController,
 };
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CustomerController;
 
 
@@ -48,6 +49,8 @@ Route::post('/orders/store', [WebOrderController::class, 'storeWebOrders'])->nam
 // OTP validation endpoints
 Route::post('/customer/send-otp', [CustomerController::class, 'sendOtp'])->name('customer.send-otp');
 Route::post('/customer/verify-otp', [CustomerController::class, 'verifyOtp'])->name('customer.verify-otp');
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -98,7 +101,8 @@ Route::middleware(['auth'])->group(function () {
 
     // contact
 
-
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/update-profile', [ProfileController::class, 'update'])->name('profile.update');
 
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::put('/settings/banners', [SettingsController::class, 'updateBanners'])->name('settings.update.banners');
